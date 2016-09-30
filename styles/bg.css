@@ -1,0 +1,16 @@
+@keyframes bg-anim {
+	from { 
+		background-position:0px 0px; 
+	}
+	to { 
+		background-position:365px 250px; 
+	}
+}
+
+
+body {
+	background-color: #778B44;
+
+	background-image: url("bg.png");
+	animation: bg-anim 15s linear infinite;
+}
