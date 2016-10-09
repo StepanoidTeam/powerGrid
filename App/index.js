@@ -4,5 +4,4 @@ var getApiVersion = function(){
   
 };
 
-
 getApiVersion();

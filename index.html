@@ -7,26 +7,27 @@
 
 	<!--LIBS-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>-->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
 	<!--APP CODE-->
 
 	<link href="Dest/styles.css" rel="stylesheet">
+	<script src="Dest/templates.js"></script>
 	<script src="Dest/scripts.js"></script>
 </head>
 
-<body>
+<body ng-app="powerGrid">
 	<div id="feature">
 		<div id="content">
 			<h1>Power Grid web app has been successfully updated from Github</h1>
 			<p>There's nothing here yet, but Microsoft Azure makes it simple to publish content.
 
 				<h4>Test commit from github</h4>
+				<pg-test-component>pg test component not inited yet</pg-test-component>
 		</div>
 	</div>
-	<script type="text/javascript">
-
-	</script>
+	
+	
 </body>
 
 </html>
