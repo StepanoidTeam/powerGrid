@@ -7,6 +7,7 @@ var componentController = function ($http) {
     //todo: move to manager/service
 
     var apiVerUrl= 'http://powergrid-api.azurewebsites.net/api/Version';
+    //var apiVerUrl= 'http://powergrid-api.azurewebsites.net/api';
 
     $http.get(apiVerUrl).then(function(data){
         ctrl.value = data;
