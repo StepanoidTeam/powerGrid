@@ -10,6 +10,7 @@ const assetsSrc = './assets';
 const rootDest = './dest';
 
 const config = {
+	'appName': 'powerGrid',
 	'root': {
 		'src': rootSrc,
 		'dest': rootDest,
@@ -17,16 +18,17 @@ const config = {
 	'tasks': {
 		'scripts': {
 			'src': [
-				path.join(libSrc, 'jquery-*.js'), 
-				path.join(libSrc, '/**/*.js'),  
-				path.join(rootSrc, 'app.js'), 
+				//path.join(libSrc, 'jquery-*.js'),
+				//path.join(libSrc, '/**/*.js'),
+				path.join(rootSrc, 'app.js'),
 				path.join(rootSrc, '/**/*.js')],
 			'dest': 'scripts.js'
 		},
 		'styles': {
-			'src': [ 
-				path.join(assetsSrc, '**/*.{less,css}'),
-				path.join(libSrc, '**/*.{less,css}'),
+			'src': [
+				//path.join(assetsSrc, '**/*.{less,css}'),
+				//path.join(libSrc, '**/*.{less,css}'),
+				path.join(rootSrc, '_global.less'),
 				path.join(rootSrc, '**/*.{less,css}')],
 			'dest': 'styles.css',
 		},

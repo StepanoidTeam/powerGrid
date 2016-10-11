@@ -11,10 +11,9 @@ module.exports = gulp.task('build:templates', function () {
 	gulp.src(config.tasks.templates.src)
 		.pipe(gulpIf(config.debug, debug({title: 'src'})))
 		.pipe(html2js({
-			outputModuleName: 'campaignBuilder',
+			outputModuleName: config.appName,
 			useStrict: true
 		}))
 		.pipe(concat('templates.js'))
 		.pipe(gulp.dest(config.root.dest));
 });
-
