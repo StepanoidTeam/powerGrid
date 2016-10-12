@@ -5,7 +5,7 @@ var componentController = function () {
 
 };
 
-angular.module('powerGrid')
+angular.module('app')
     .component('login', {
     	bindings: {
     		//some login callbacks

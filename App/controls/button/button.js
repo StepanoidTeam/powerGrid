@@ -4,7 +4,7 @@ var componentController = function () {
 	var ctrl = this;
 };
 
-angular.module('powerGrid')
+angular.module('app')
     .component('pgButton', {
     	bindings: {
     		value: '<',

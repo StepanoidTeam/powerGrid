@@ -45,7 +45,7 @@ var componentController = function ($http) {
     ctrl.value = 'loading...';
 };
 
-angular.module('powerGrid')
+angular.module('app')
     .component('version', {
         bindings: {
         },
