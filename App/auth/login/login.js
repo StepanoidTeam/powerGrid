@@ -13,18 +13,7 @@ var componentController = function () {
 		console.log(next);
 	};
 };
-
-angular.module('app')
-
-
-	.component('auth', {
-		template: '<h2>AUTH</h2><ng-outlet></ng-outlet>',
-		$routeConfig: [
-		  { path: '/login', name: 'Login', component: 'login', useAsDefault: true },
-		  //{path: '/:id', name: 'HeroDetail', component: 'heroDetail'}
-		]
-	})
-
+angular.module('auth')
     .component('login', {
     	bindings: {
     		//some login callbacks
