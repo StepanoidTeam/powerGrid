@@ -4,6 +4,7 @@
   "dependencies": {
     "@angular/router": "^0.2.0",
     "angular": "^1.5.8",
+    "angular-cookies": "^1.5.8",
     "lodash": "^4.16.4"
   },
   "scripts": {
@@ -14,17 +15,17 @@
   },
   "devDependencies": {
     "angular": "^1.5.8",
+    "del": "^2.2.1",
     "gulp": "^3.9.1",
-    "require-dir": "^0.3.0",
-    "gulp-debug": "^2.1.2",
+    "gulp-concat": "^2.6.0",
     "gulp-concat-filenames": "^1.1.1",
+    "gulp-debug": "^2.1.2",
+    "gulp-html2js": "^0.3.0",
     "gulp-if": "^2.0.1",
     "gulp-less": "^3.1.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-sourcemaps": "^1.6.0",
     "gulp-plumber": "^1.0.1",
-    "del": "^2.2.1",
-    "gulp-html2js": "^0.3.0"
+    "gulp-sourcemaps": "^1.8.1",
+    "require-dir": "^0.3.0"
   },
   "repository": {
     "type": "git",
