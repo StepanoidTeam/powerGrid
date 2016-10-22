@@ -2,19 +2,19 @@
 
 	<p>
 		<label>
-			<span>E-mail</span>
-			<pg-input ></pg-input>
+			<span>Username</span>
+			<pg-input value="$ctrl.username" on-change="$ctrl.usernameChanged(value)"></pg-input>
 		</label>
 	</p>
 
 	<p style="display:none;">
 		<label>
 			<span>Password</span>
-			<pg-input ></pg-input>
+			<pg-input value="$ctrl.password" on-change="$ctrl.usernameChanged(value)"></pg-input>
 		</label>
 	</p>
 
 	<p>
-		<pg-button value="'Enter game'"></pg-button>
+		<pg-button value="'Enter game'" on-click="$ctrl.logIn()"></pg-button>
 	</p>
 </form>

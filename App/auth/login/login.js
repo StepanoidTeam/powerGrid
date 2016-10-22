@@ -1,17 +1,33 @@
 'use strict';
 
-var componentController = function () {
+var componentController = function (authService) {
 	var ctrl = this;
 
+	ctrl.username = '';
+	ctrl.password = '';
 
-	this.$routerOnActivate = function (next) {
-		//// Load up the heroes for this view
-		//heroService.getHeroes().then(function (heroes) {
-		//	$ctrl.heroes = heroes;
-		//	selectedId = next.params.id;
-		//});
+
+	ctrl.$routerOnActivate = function (next) {
 		console.log(next);
 	};
+
+
+	ctrl.usernameChanged = function (value) {
+		ctrl.username = value;
+	};
+
+	ctrl.passwordChanged = function (value) {
+		ctrl.password = value;
+	};
+
+
+	ctrl.logIn = function () {
+		authService.logIn(ctrl.username, ctrl.password);
+
+		
+	}
+
+
 };
 angular.module('auth')
     .component('login', {

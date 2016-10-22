@@ -3,12 +3,16 @@
 //'routing', 'ngCookies',
 angular.module('app', [
 	'ngComponentRouter',
+	'ngCookies',
 	'heroes',
 	//'login',
 	'auth',
+	'rooms',
 ])
 	.config(function ($locationProvider) {
 		$locationProvider.html5Mode(false);
+
+
 	})
 	.value('$routerRootComponent', 'app')
 		.run(function () {
@@ -23,6 +27,8 @@ angular.module('app', [
 			{ path: '/heroes/...', name: 'Heroes', component: 'heroes' },
 
 			{ path: '/auth/...', name: 'Auth', component: 'auth', useAsDefault: true },
+
+			{ path: '/rooms/...', name: 'Rooms', component: 'rooms' },
 				//{ path: '/login', name: 'Login', component: 'login', useAsDefault: true },
 				//{path: '/:id', name: 'HeroDetail', component: 'heroDetail'}
 		]

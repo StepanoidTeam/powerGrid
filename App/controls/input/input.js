@@ -8,11 +8,11 @@ angular.module('app')
     .component('pgInput', {
     	bindings: {
     		value: '<',
-            
-            isDisabled:'<',
-            
-            onChange:'&',
-            onBlur:'&',
+
+    		isDisabled: '<',
+
+    		onChange: '&',
+    		onBlur: '&',
     	},
     	templateUrl: 'app/controls/input/input.html',
     	controller: componentController
