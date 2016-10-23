@@ -1,9 +1,26 @@
 ﻿'use strict';
 
 angular.module('app')
-.service('authService', function ($http, $cookies, apiConfig) {
+.service('authService', function ($q, $http, $cookies, apiConfig) {
 	var svc = this;
 	var userCookieKey = 'user';
+
+
+	svc.getCurrentUser = function () {
+
+		var df = $q.defer();
+
+		var user = $cookies.getObject(userCookieKey);
+
+		if (user) {
+			df.resolve(user);
+		} else {
+			df.reject('err');
+		}
+		
+
+		return df.promise;
+	};
 
 	svc.logIn = function (username, password) {
 		console.log(username, password);

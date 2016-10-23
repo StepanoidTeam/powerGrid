@@ -26,9 +26,9 @@ angular.module('app', [
 			//{ path: '/crisis-center/...', name: 'CrisisCenter', component: 'crisisCenter', useAsDefault: true },
 			{ path: '/heroes/...', name: 'Heroes', component: 'heroes' },
 
-			{ path: '/auth/...', name: 'Auth', component: 'auth', useAsDefault: true },
+			{ path: '/auth/...', name: 'Auth', component: 'auth'},
 
-			{ path: '/rooms/...', name: 'Rooms', component: 'rooms' },
+			{ path: '/rooms/...', name: 'Rooms', component: 'rooms', useAsDefault: true  },
 				//{ path: '/login', name: 'Login', component: 'login', useAsDefault: true },
 				//{path: '/:id', name: 'HeroDetail', component: 'heroDetail'}
 		]

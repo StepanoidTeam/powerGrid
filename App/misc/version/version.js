@@ -1,19 +1,12 @@
 'use strict';
 
-var componentController = function ($http, apiConfig) {
+var componentController = function (versionService) {
 	var ctrl = this;
 
-
-	//todo: move to manager/service
-
-	var apiVerUrl = apiConfig.apiUrl + 'version';
-
-	$http.get(apiVerUrl).then(function (data) {
+	versionService.getApiVersion().then(function (data) {
 		ctrl.value = data.data.data;
-		console.info('server responds ok', data);
 	}, function (data) {
 		ctrl.value = 'FAILED TO LOAD VERSION';
-		console.warn('server responds bad', data);
 	});
 
 	ctrl.value = 'loading...';

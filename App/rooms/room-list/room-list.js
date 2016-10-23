@@ -1,6 +1,6 @@
 'use strict';
 
-var componentController = function () {
+var componentController = function (authService, roomService) {
 	var ctrl = this;
 
 	this.$routerOnActivate = function (next) {
@@ -9,8 +9,27 @@ var componentController = function () {
 		//	$ctrl.heroes = heroes;
 		//	selectedId = next.params.id;
 		//});
-		console.log('room',next);
+		//console.log('room', next);
 	};
+
+	ctrl.rooms = [];
+
+	ctrl.updateRooms = function () {
+		roomService.getRoomList().then(function (rooms) {
+			ctrl.rooms = rooms;
+		});
+	};
+	
+	ctrl.createRoom = function (roomName) {
+		roomService.createRoom(roomName + Date.now()).then(function () {
+			ctrl.updateRooms();
+		});
+	};
+
+	
+	
+	//init
+	ctrl.updateRooms();
 };
 
 angular.module('rooms')
