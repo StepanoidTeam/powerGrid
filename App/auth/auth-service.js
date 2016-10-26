@@ -1,62 +1,76 @@
 ﻿'use strict';
 
-angular.module('app')
+angular.module('auth', [])
 .service('authService', function ($q, $http, $cookies, apiConfig) {
 	var svc = this;
 	var userCookieKey = 'user';
 
+	var _profile = null;
 
-	svc.getCurrentUser = function () {
+	svc.profile = function () {
+		return _profile;
+	};
 
-		var df = $q.defer();
-
-		var user = $cookies.getObject(userCookieKey);
-
-		if (user) {
-			df.resolve(user);
-		} else {
-			df.reject('err');
-		}
-		
-
-		return df.promise;
+	svc.isAuthorized = function () {
+		return _profile != null;
 	};
 
 	svc.logIn = function (username, password) {
 		console.log(username, password);
 
-
 		var url = apiConfig.apiUrl + 'login' + '/' + username;
 
-
-		//todo: somehow check auth on each request
-		//$cookies.getObject(userCookieKey);
-
-
-		$http.post(url, { username: username }).then(function (data) {
+		return $http.post(url, { username: username }).then(function (data) {
 			//ctrl.value = data.data.data;
 			console.info('server login ok', data);
 			//todo: save cookie
 
 			var userData = { userId: data.data.data };
 
-			$cookies.putObject(userCookieKey, userData);
-
+			if (data.data.isSuccess) {
+				$cookies.putObject(userCookieKey, userData);
+			} else {
+				console.warn('server ok but failed', data);
+			}
 		}, function (data) {
 			//ctrl.value = 'FAILED TO LOGIN';
-			console.warn('server responds bad', data);
+			console.warn('server login failed', data);
 		});
-
-
-
 	};
 
 	svc.logOut = function () {
+		_profile = null;
 		$cookies.remove(userCookieKey);
 	};
 
 	svc.register = function (username, password) {
 
+	};
+
+
+	svc.checkAuth = function () {
+		var df = $q.defer();
+
+		if (_profile) {
+			//already has profile
+			df.resolve(_profile);
+		} else {
+			//trying to get from cookies and log in
+			var userData = $cookies.getObject(userCookieKey);
+			if (userData) {
+				svc.logIn(userData.userId).then(
+					function (user) {
+						df.resolve(user || userData);
+					},
+					function (error) {
+						df.reject({ errorMsg: 'bad cookies', obj: userData, error: error });
+						svc.logOut();
+					});
+			} else {
+				df.reject({ errorMsg: 'no cookies found, try to re-log in' });
+			}
+		}
+		return df.promise;
 	};
 
 });

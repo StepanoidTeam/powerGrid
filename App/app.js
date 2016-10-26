@@ -1,38 +1,17 @@
 'use strict';
 
 //'routing', 'ngCookies',
-angular.module('app', [
-	'ngComponentRouter',
-	'ngCookies',
-	'heroes',
-	//'login',
-	'auth',
-	'rooms',
-])
-	.config(function ($locationProvider) {
-		$locationProvider.html5Mode(false);
+angular.module('app', ['ngCookies', 'routing',
+'rooms','auth'])
 
+.run(function () {
+	//init stuff goes here
+	console.log('app.js init from ng');
+})
 
-	})
-	.value('$routerRootComponent', 'app')
-		.run(function () {
-			//init stuff goes here
-			console.log('app.js init from ng');
-		})
-	.component('app', {
-		templateUrl: 'app/app.html',
-
-		$routeConfig: [
-			//{ path: '/crisis-center/...', name: 'CrisisCenter', component: 'crisisCenter', useAsDefault: true },
-			{ path: '/heroes/...', name: 'Heroes', component: 'heroes' },
-
-			{ path: '/auth/...', name: 'Auth', component: 'auth'},
-
-			{ path: '/rooms/...', name: 'Rooms', component: 'rooms', useAsDefault: true  },
-				//{ path: '/login', name: 'Login', component: 'login', useAsDefault: true },
-				//{path: '/:id', name: 'HeroDetail', component: 'heroDetail'}
-		]
-	});
+.component('app', {
+	templateUrl: 'app/app.html',
+});
 
 
 angular.module('app').config(['$httpProvider', function ($httpProvider) {

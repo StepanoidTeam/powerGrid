@@ -3,19 +3,16 @@
 var componentController = function (authService) {
 	var ctrl = this;
 
-	ctrl.value = 'loading...1';
+	ctrl.isAuthorized = authService.isAuthorized;
 
-	authService.getCurrentUser().then(function (user) {
-		ctrl.value = user.userId;
-	}, function (err) {
-		ctrl.value = 'unauthorized';
+	ctrl.profile = authService.profile;
 
-		//todo: navigate to login
+	authService.checkAuth().then(function (user) {
+
 	});
-	
 };
 
-angular.module('app')
+angular.module('auth')
     .component('currentUser', {
     	bindings: { },
     	templateUrl: 'app/auth/current-user/current-user.html',

@@ -1,1 +1,6 @@
-<span ng-bind="$ctrl.value"></span>
+<span ng-show="$ctrl.isAuthorized">
+	logged as: {{$ctrl.profile()}}
+</span>
+<span ng-hide="$ctrl.isAuthorized">
+	unauthorized
+</span>

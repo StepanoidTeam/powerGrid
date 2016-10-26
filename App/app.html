@@ -1,13 +1,12 @@
 <nav>
 	<!--<a ng-link="[\'CrisisCenter\']">Crisis Center</a>-->
-	<a ng-link="['Heroes']">Heroes</a>
+	<a href="#/heroes">Heroes</a>
 	<!--<a ng-link="['Login']">login</a>-->
-	<a ng-link="['Auth']">Auth</a>
-	<a ng-link="['Rooms']">Rooms</a>
-
+	<a href="#/auth">Auth</a>
+	<a  href="#/rooms">Rooms</a>
 </nav>
 
-<ng-outlet></ng-outlet>
+<ng-view></ng-view>
 
 <version></version>
 

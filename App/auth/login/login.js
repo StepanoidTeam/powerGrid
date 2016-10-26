@@ -1,15 +1,10 @@
 'use strict';
 
-var componentController = function (authService) {
+var componentController = function ($location, authService) {
 	var ctrl = this;
 
 	ctrl.username = '';
 	ctrl.password = '';
-
-
-	ctrl.$routerOnActivate = function (next) {
-		console.log(next);
-	};
 
 
 	ctrl.usernameChanged = function (value) {
@@ -22,13 +17,16 @@ var componentController = function (authService) {
 
 
 	ctrl.logIn = function () {
-		authService.logIn(ctrl.username, ctrl.password);
-
-		
+		authService.logIn(ctrl.username, ctrl.password).then(function () {
+			$location.path('/');
+		}, function () {
+			console.warn('login failed');
+		});
 	}
 
 
 };
+
 angular.module('auth')
     .component('login', {
     	bindings: {
@@ -36,6 +34,4 @@ angular.module('auth')
     	},
     	templateUrl: 'app/auth/login/login.html',
     	controller: componentController
-    })
-
-;
+    });

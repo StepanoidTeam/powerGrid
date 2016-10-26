@@ -8,10 +8,8 @@
     "lodash": "^4.16.4"
   },
   "scripts": {
-    "build": "gulp build --gulpfile build/gulpfile.js --cwd .",
-    "test1": "gulp test --gulpfile build/gulpfile.js --cwd .",
-    "watch": "gulp watch --gulpfile build/gulpfile.js --cwd .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp build",
+    "watch": "gulp watch"
   },
   "devDependencies": {
     "angular": "^1.5.8",

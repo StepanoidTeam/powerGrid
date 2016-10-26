@@ -1,31 +1,3 @@
-angular.module('crisis-center', ['dialog'])
-  .service('crisisService', CrisisService)
-
-  .component('crisisCenter', {
-  	template: '<h2>Crisis Center</h2><ng-outlet></ng-outlet>',
-  	$routeConfig: [
-      { path: '/', name: 'CrisisList', component: 'crisisList', useAsDefault: true },
-      { path: '/:id', name: 'CrisisDetail', component: 'crisisDetail' }
-  	]
-  })
-
-  .component('crisisList', {
-  	templateUrl: 'app/test/crisisList.html',
-  	bindings: { $router: '<' },
-  	controller: CrisisListComponent,
-  	$canActivate: function ($nextInstruction, $prevInstruction) {
-  		//console.log('$canActivate', arguments);
-  	}
-  })
-
-  .component('crisisDetail', {
-  	//templateUrl: 'crisisDetail.html',
-  	templateUrl: 'app/test/crisisDetail.html',
-  	bindings: { $router: '<' },
-  	controller: CrisisDetailComponent
-  });
-
-
 function CrisisService($q) {
 	var crisesPromise = $q.when([
 	  { id: 1, name: 'Princess Held Captive' },
