@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 angular.module('auth', [])
 .service('authService', function ($q, $http, $cookies, apiConfig) {
@@ -41,6 +41,14 @@ angular.module('auth', [])
 	svc.logOut = function () {
 		_profile = null;
 		$cookies.remove(userCookieKey);
+
+
+		var url = apiConfig.apiUrl + 'Logout' + '/' + userData.userId;
+
+
+
+
+
 	};
 
 	svc.register = function (username, password) {
@@ -58,6 +66,19 @@ angular.module('auth', [])
 			//trying to get from cookies and log in
 			var userData = $cookies.getObject(userCookieKey);
 			if (userData) {
+
+				var url = apiConfig.apiUrl + 'CheckAuthorization' + '/' + userData.userId;
+
+				//check is auth
+				$http.post(url, { userId: userData.userId }).then(function (data) {
+					if (data.data.isSuccess && data.data.data) {
+						//already logged
+						df.resolve(userData);
+					} else {
+						df.reject({ errorMsg: 'bad cookies', obj: userData, error: data });
+					}
+				});
+
 				svc.logIn(userData.userId).then(
 					function (user) {
 						df.resolve(user || userData);

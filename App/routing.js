@@ -7,7 +7,7 @@
 .config(function ($routeProvider) {
 	$routeProvider
 		.when('/', {
-			redirectTo:'/rooms',
+			redirectTo: '/rooms',
 		})
 		//.when('/inbox', {
 		//	template: '<inbox mails="$resolve.mails"></inbox>',
@@ -26,8 +26,12 @@
 			resolve: {}
 		})
 		.when('/rooms/:id', {
-			template: '<room></room>',
-			resolve: {  }
+			template: '<room room-id="$resolve.roomId"></room>',
+			resolve: {
+				roomId: function ($route) {
+					return $route.current.params.id;
+				},
+			}
 		})
 		.when('/404', {
 			templateUrl: 'app/404.html',

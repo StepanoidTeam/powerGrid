@@ -31,4 +31,10 @@ angular.module('rooms', [])
 		return $http.post(url, { userId: userId, name: roomName });
 	};
 
+
+	svc.getPlayerStatus = function () {
+		var url = apiConfig.apiUrl + 'status/player' + '/' + userId;
+		return $http.get(url);
+	};
+
 });
