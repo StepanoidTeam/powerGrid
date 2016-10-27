@@ -1,7 +1,7 @@
-'use strict';
+﻿'use strict';
 
 angular.module('auth', [])
-.service('authService', function ($q, $http, $cookies, apiConfig) {
+.service('authService', function ($q, $http, $cookies, apiEndpoints, apiConfig) {
 	var svc = this;
 	var userCookieKey = 'user';
 
@@ -15,83 +15,57 @@ angular.module('auth', [])
 		return _profile != null;
 	};
 
-	svc.logIn = function (username, password) {
-		console.log(username, password);
-
-		var url = apiConfig.apiUrl + 'login' + '/' + username;
-
-		return $http.post(url, { username: username }).then(function (data) {
-			//ctrl.value = data.data.data;
-			console.info('server login ok', data);
-			//todo: save cookie
-
-			var userData = { userId: data.data.data };
-
-			if (data.data.isSuccess) {
-				$cookies.putObject(userCookieKey, userData);
-			} else {
-				console.warn('server ok but failed', data);
-			}
-		}, function (data) {
-			//ctrl.value = 'FAILED TO LOGIN';
-			console.warn('server login failed', data);
+	svc.logIn = function (userId) {
+		return apiEndpoints.login(userId).then(function (userId) {
+			//store cookie
+			return svc.setUserData({ userId: userId });
+		}).catch(function (error) {
+			//error on login
+			return svc.logOut();
 		});
 	};
 
 	svc.logOut = function () {
-		_profile = null;
+		//_profile = null;
 		$cookies.remove(userCookieKey);
-
-
-		var url = apiConfig.apiUrl + 'Logout' + '/' + userData.userId;
-
-
-
-
-
+		return apiEndpoints.logout();
 	};
 
 	svc.register = function (username, password) {
 
 	};
 
+	svc.getUserData = function () {
+		var userData = $cookies.getObject(userCookieKey);
 
+		return (userData) ?
+			$q.when(userData) :
+			$q.reject('no user cookies found');
+	};
+
+	svc.setUserData = function (userData) {
+		$cookies.putObject(userCookieKey, userData);
+		return $q.when(true);
+	};
+
+
+	//returns: userId on OK, reject on fail
 	svc.checkAuth = function () {
-		var df = $q.defer();
-
-		if (_profile) {
-			//already has profile
-			df.resolve(_profile);
-		} else {
-			//trying to get from cookies and log in
-			var userData = $cookies.getObject(userCookieKey);
-			if (userData) {
-
-				var url = apiConfig.apiUrl + 'CheckAuthorization' + '/' + userData.userId;
-
-				//check is auth
-				$http.post(url, { userId: userData.userId }).then(function (data) {
-					if (data.data.isSuccess && data.data.data) {
-						//already logged
-						df.resolve(userData);
-					} else {
-						df.reject({ errorMsg: 'bad cookies', obj: userData, error: data });
-					}
-				});
-
-				svc.logIn(userData.userId).then(
-					function (user) {
-						df.resolve(user || userData);
-					},
-					function (error) {
-						df.reject({ errorMsg: 'bad cookies', obj: userData, error: error });
-						svc.logOut();
-					});
-			} else {
-				df.reject({ errorMsg: 'no cookies found, try to re-log in' });
-			}
-		}
-		return df.promise;
+		return svc.getUserData().then(function (userData) {
+			//check is isAuthorized
+			return apiEndpoints.isAuthorized(userData.userId).then(function (isAuthorized) {
+				if (isAuthorized) {
+					//already logged
+					return $q.when(userData.userId);
+				} else {
+					//not logged yet
+					return svc.logIn(userData.userId);
+				}
+			}, function (error) {
+				//is not authorized
+				return svc.logIn(userData.userId);
+			});
+		});
 	};
 
 });

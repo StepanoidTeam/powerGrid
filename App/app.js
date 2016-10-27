@@ -1,8 +1,12 @@
 'use strict';
 
 //'routing', 'ngCookies',
-angular.module('app', ['ngCookies', 'routing',
-'rooms','auth'])
+angular.module('app', [
+	'ngCookies',
+	'routing',
+	'rooms',
+	'auth'
+])
 
 .run(function () {
 	//init stuff goes here

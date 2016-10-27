@@ -3,13 +3,17 @@
 var componentController = function (versionService) {
 	var ctrl = this;
 
-	versionService.getApiVersion().then(function (data) {
-		ctrl.value = data.data.data;
-	}, function (data) {
+	ctrl.value = 'loading...';
+
+	versionService.getApiVersion()
+	.then(function (value) {
+		ctrl.value = value;
+	}, function (error) {
 		ctrl.value = 'FAILED TO LOAD VERSION';
+		console.error(error);
 	});
 
-	ctrl.value = 'loading...';
+
 };
 
 angular.module('app')

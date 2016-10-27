@@ -15,15 +15,9 @@
 		//})
 		.when('/login', {
 			template: '<login></login>',
-			resolve: {}
-		})
-		.when('/auth', {
-			template: '<login></login>',
-			resolve: {}
 		})
 		.when('/rooms', {
 			template: '<room-list></room-list>',
-			resolve: {}
 		})
 		.when('/rooms/:id', {
 			template: '<room room-id="$resolve.roomId"></room>',
