@@ -1,11 +1,20 @@
 'use strict';
 
-var componentController = function (authService) {
+var componentController = function ($q, authService) {
 	var ctrl = this;
 
-	ctrl.isAuthorized = authService.isAuthorized;
+	ctrl.isAuthorized = false;
 
-	ctrl.profile = authService.profile;
+
+	$q.all([authService.isAuthorized(), authService.getPlayerStatus()]).then(function (results) {
+		var player = results[1];
+
+		ctrl.userName = player.Name;
+		ctrl.isAuthorized = true;
+	}).catch(function () {
+		ctrl.isAuthorized = false;
+	});
+
 };
 
 angular.module('auth')

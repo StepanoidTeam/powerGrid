@@ -3,35 +3,33 @@
 var componentController = function ($location, authService) {
 	var ctrl = this;
 
-	ctrl.username = '';
-	ctrl.password = '';
+	ctrl.userData = { username: '', password: '' };
 
 
 	ctrl.usernameChanged = function (value) {
-		ctrl.username = value;
+		ctrl.userData.username = value;
 	};
 
 	ctrl.passwordChanged = function (value) {
-		ctrl.password = value;
+		ctrl.userData.password = value;
 	};
 
 
-	ctrl.logIn = function () {
-		authService.logIn(ctrl.username, ctrl.password).then(function () {
+	ctrl.login = function () {
+		authService.login(ctrl.userData).then(function () {
 			$location.path('/');
 		}, function () {
 			console.warn('login failed');
 		});
 	}
 
-
 };
 
 angular.module('auth')
-    .component('login', {
-    	bindings: {
-    		//some login callbacks
-    	},
-    	templateUrl: 'app/auth/login/login.html',
-    	controller: componentController
-    });
+	.component('login', {
+		bindings: {
+			//some login callbacks
+		},
+		templateUrl: 'app/auth/login/login.html',
+		controller: componentController
+	});

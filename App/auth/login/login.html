@@ -3,18 +3,18 @@
 	<p>
 		<label>
 			<span>Username</span>
-			<pg-input value="$ctrl.username" on-change="$ctrl.usernameChanged(value)"></pg-input>
-		</label>
-	</p>
-
-	<p style="display:none;">
-		<label>
-			<span>Password</span>
-			<pg-input value="$ctrl.password" on-change="$ctrl.usernameChanged(value)"></pg-input>
+			<pg-input value="$ctrl.userData.username" on-change="$ctrl.usernameChanged(value)"></pg-input>
 		</label>
 	</p>
 
 	<p>
-		<pg-button value="'Enter game'" on-click="$ctrl.logIn()"></pg-button>
+		<label>
+			<span>Password</span>
+			<pg-input value="$ctrl.userData.password" on-change="$ctrl.passwordChanged(value)"></pg-input>
+		</label>
+	</p>
+
+	<p>
+		<pg-button value="'Enter game'" on-click="$ctrl.login()"></pg-button>
 	</p>
 </form>

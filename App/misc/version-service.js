@@ -3,7 +3,7 @@ angular.module('app')
 	var svc = this;
 
 	svc.getApiVersion = function () {
-		return apiEndpoints.version();
+		return apiEndpoints.getVersion();
 	};
 
 });

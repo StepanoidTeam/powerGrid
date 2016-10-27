@@ -1,84 +1,91 @@
 'use strict';
 
 angular.module('app')
-.service('apiEndpoints', function ($q, $http, $cookies, apiConfig) {
+.service('apiEndpoints', function ($q, $http, tokenService, apiConfig) {
 	var svc = this;
-	var userCookieKey = 'user';
 
-	function getUrl(method, param) {
-		var url = apiConfig.apiUrl + method + (param ? '/' + param : '');
-		return url;
+	function httpRequest(httpMethod, apiMethod, data) {
+
+		var headers = { authToken: tokenService.getToken() };
+
+		var url = apiConfig.apiUrl + apiMethod;
+
+		return $http({
+			method: httpMethod,//'POST',
+			url: url,
+			data: data,
+			headers: headers
+		}).then(apiResp);
 	}
 
 	function apiResp(response) {
-		if (response.data.isSuccess) {
-			return $q.when(response.data.data);
-		} else {
-			return $q.reject(response.data);
-		}
+		//if (response.data.isSuccess) {
+		//	return $q.when(response.data.data);
+		//} else {
+		//	return $q.reject(response.data);
+		//}
+		return $q.when(response.data);
 	}
 
-	/*{
-		"message": null,
-		"isSuccess": true,
-		"data": "v0.01"
-	}*/
-	//GET / api / Version 
-	//Get API version
-	svc.version = function () {
-		return $http.get(getUrl('version')).then(apiResp);
+
+	svc.getVersion = function () {
+		return httpRequest('GET', 'version');
 	};
 
-	/*{
-		"message": null,
-		"isSuccess": true,
-		"data": true
-	}*/
-	//POST / api / CheckAuthorization / { userId } 
-	//Check if authorization token (user id) is not expired yet
+
+	/* USER */
+	
 	svc.isAuthorized = function (userId) {
-		return $http.post(getUrl('CheckAuthorization', userId)).then(apiResp);
+		return httpRequest('POST', 'user/CheckAuthorization');
 	};
 
 
-	/*{
-		"message": null,
-		"isSuccess": true,
-		"data": "bob11"
-	}*/
-	//POST / api / Login / { username } //Login user
-	svc.login = function (userId) {
-		return $http.post(getUrl('Login', userId)).then(apiResp);
+	svc.login = function (userModel) {
+		return httpRequest('POST', 'USER/Login', userModel).then(tokenService.saveToken);
 	};
-
-	/*{
-		"message": null,
-		"isSuccess": true,
-		"data": true
-	}*/
-	//POST / api / Logout / { userId } //Log out user
-	svc.logout = function (userId) {
-		return $http.post(getUrl('Logout', userId)).then(apiResp);
-	};
-
-
-	//$q.when("Hello World!")
 
 	
-	//GET / api / Status / Game / { userId } //Get status of game if it's active for current user, otherwise it will return appopriate message
-	//GET / api / Status / Player / { userId }//Player info
+	svc.logout = function () {
+		return httpRequest('POST', 'USER/Logout').then(tokenService.deleteToken);
+	};
 
-	//// rooms
+	/* ROOMS */
 
-	//GET / api / Rooms / { userId } //Rooms list
-	//POST / api / Rooms / Create / { userId } / { name }
-	//POST / api / Rooms / List
-	//POST / api / Rooms / Join //Join player into specific room
-	//POST / api / Rooms / Leave //Leave from current room
-	//POST / api / Rooms / Kick //Kick another player from the room if current user have enough permissions
-	//POST / api / Rooms / ToogleReady //Set if player ready to start or not
-	//GET / api / Rooms / StartGame //Initiate game
+	//GET /api/Rooms 
+	//Rooms list
+	svc.getRoomList = function () {
+		return httpRequest('GET', 'Rooms');
+	};
+
+	//POST /api/Rooms/Create/{name}
+	svc.createRoom = function (params) {
+		return httpRequest('POST', 'Rooms/CREATE', params);
+	};
+
+	//POST /api/Rooms/List
+
+	//POST /api/Rooms/Join 
+	//Join player into specific room
+
+	//POST /api/Rooms/Leave 
+	//Leave from current room
+
+	//POST /api/Rooms/Kick 
+	//Kick another player from the room if current user have enough permissions
+
+	//POST /api/Rooms/ToggleReady 
+	//Set if player ready to start or not
+
+	//GET /api/Rooms/StartGame 
+	//Initiate game
 
 
+
+
+	//GET /api/Status/Player 
+	//Player info
+	svc.getPlayerStatus = function () {
+		return httpRequest('GET', 'Status/Player');
+	};
 
 });
