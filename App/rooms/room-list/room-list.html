@@ -1,13 +1,17 @@
 <div class="panel">
-	<div>room list here</div>
-	<pg-button value="'create room'"
-			   on-click="$ctrl.createRoom('newroom')"
-	></pg-button>
-	<ul>
-		<li ng-repeat="room in $ctrl.rooms">
-			Name:<span ng-bind="room.Name"></span><br />
-			players:<span ng-bind="room.PlayerCount"></span>
-			players:<span>{{room.PlayerHeaders}}</span><br />
+	<h2>
+		Rooms
+		<pg-button value="''" icon="'add_box'"
+				   on-click="$ctrl.createRoom()"></pg-button>
+	</h2>
+
+	<ul class="room-list">
+		<li class="list-item" ng-repeat="room in $ctrl.rooms">
+			<span ng-bind="room.Name"></span>
+			<span class="user-count">
+				<i class="material-icons">group</i>
+				<span ng-bind="room.UserCount"></span>
+			</span>
 
 			<pg-button value="'Join'"
 					   on-click="$ctrl.joinRoom(room.Id)"></pg-button>

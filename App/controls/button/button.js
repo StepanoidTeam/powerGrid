@@ -8,6 +8,7 @@ angular.module('app')
     .component('pgButton', {
     	bindings: {
     		value: '<',
+			icon:'<',
 
 			isDisabled:'<',
 			

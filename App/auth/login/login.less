@@ -1,9 +1,12 @@
 .login-form {
+	display: flex;
+	flex-direction: column;
 
 	p {
+		display: inline-block;
 		height: 40px;
+		margin: 10px;
 		background-color: rgba(0,0,0,0.1);
-
 
 		label {
 			position: relative;
@@ -11,8 +14,13 @@
 
 			span {
 				display: inline-block;
-				margin: 10px;
+				padding: 10px;
 			}
 		}
+	}
+
+
+	.login-button {
+		display: block;
 	}
 }

@@ -17,9 +17,9 @@ var componentController = function (versionService) {
 };
 
 angular.module('app')
-    .component('version', {
-    	bindings: {
-    	},
-    	templateUrl: 'app/misc/version/version.html',
-    	controller: componentController
-    });
+	.component('version', {
+		bindings: {
+		},
+		templateUrl: 'app/misc/version/version.html',
+		controller: componentController
+	});

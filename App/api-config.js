@@ -3,5 +3,5 @@
 angular.module('app')
 .constant('apiConfig', {
 	//apiUrl : 'http://localhost:5000/api/',
-	apiUrl: 'http://powergrid-api.azurewebsites.net/api/',
+	apiUrl: 'http://pg-api.azurewebsites.net/api/',
 });

@@ -1,6 +1,21 @@
-<span ng-show="$ctrl.isAuthorized">
+<span ng-show="$ctrl.isAuthorized()">
+	<i class="material-icons">account_circle</i>
 	logged as: {{$ctrl.userName}}
+	<pg-button on-click="$ctrl.logout()" value="'logout'"></pg-button>
 </span>
-<span ng-hide="$ctrl.isAuthorized">
+<span ng-hide="$ctrl.isAuthorized()">
 	unauthorized
 </span>
+<div class="debug-mode">
+	Debug mode
+	is auth: {{$ctrl.isAuthorized()}}
+	username: {{$ctrl.userName}}
+	<pg-button on-click="$ctrl.logout()" icon="'power_settings_new'" value="'logout'"></pg-button>
+	<nav>
+		<!--<a ng-link="[\'CrisisCenter\']">Crisis Center</a>-->
+		<a href="#/heroes">Heroes</a>
+		<!--<a ng-link="['Login']">login</a>-->
+		<a href="#/login">Login</a>
+		<a href="#/rooms">Rooms</a>
+	</nav>
+</div>

@@ -1,19 +1,33 @@
 'use strict';
 
-var componentController = function ($q, authService) {
+var componentController = function ($q, $location, authService) {
 	var ctrl = this;
 
-	ctrl.isAuthorized = false;
+	var isAuth = false;
+	ctrl.isAuthorized = function () {
+		return isAuth;
+	};
+
+	ctrl.logout = function () {
+		authService.logout().then(function () {
+			$location.path('/login');
+		});
+	};
 
 
-	$q.all([authService.isAuthorized(), authService.getPlayerStatus()]).then(function (results) {
-		var player = results[1];
+	// debug
+	
 
-		ctrl.userName = player.Name;
-		ctrl.isAuthorized = true;
-	}).catch(function () {
-		ctrl.isAuthorized = false;
-	});
+	//$q.all([, authService.getPlayerStatus()]).then
+
+	authService.isAuthorized()
+		//.then(authService.getPlayerStatus)
+		.then(function (player) {
+			//ctrl.userName = player.Name;
+			isAuth = true;
+		}).catch(function () {
+			isAuth = false;
+		});
 
 };
 

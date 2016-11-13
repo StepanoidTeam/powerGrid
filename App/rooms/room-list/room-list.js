@@ -4,8 +4,8 @@ var componentController = function ($controller, $location, authService, roomSer
 	var ctrl = this;
 
 	$controller('authCheck', {});
-
-	//ctrl.rooms = [];
+	$controller('isInRoomCheck', {});
+	
 
 	ctrl.updateRooms = function () {
 		roomService.getRoomList().then(function (rooms) {
@@ -14,25 +14,26 @@ var componentController = function ($controller, $location, authService, roomSer
 	};
 
 	ctrl.createRoom = function (roomName) {
-		roomService.createRoom(roomName + Date.now()).then(function (data) {
-			
-			if (data.data.isSuccess) {
-				//creation ok
-				$location.path('/rooms/' + data.data);
-			} else {
-				//mb already in room?
-				roomService.getPlayerStatus().then(function (data) {
-					if (data.data.isSuccess) {
-						if (data.data.data.GameRoomId) {
-							$location.path('/rooms/' + data.data.data.GameRoomId);
-						}
-					} else {
-						ctrl.updateRooms();
-					}
-				});
-			}
+		var roomName = roomName + Date.now();
+		roomService.createRoom().then(function (data) {
+			//creation ok
+			$location.path('/rooms/' + data['Id']);
+		}, function (error) {
+			console.log('room creation error', error);
+			ctrl.updateRooms();
 		});
 	};
+
+	ctrl.joinRoom = function (roomId) {
+		roomService.joinRoom(roomId).then(function (data) {
+			//creation ok
+			$location.path('/rooms/' + data['Id']);
+		}, function (error) {
+			console.log('room join error', error);
+			ctrl.updateRooms();
+		});
+	};
+
 
 	//init
 	ctrl.updateRooms();

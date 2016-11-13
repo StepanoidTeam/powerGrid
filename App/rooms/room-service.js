@@ -4,18 +4,42 @@ angular.module('rooms', [])
 .service('roomService', function ($q, apiEndpoints, authService) {
 	var svc = this;
 
-	
-	svc.getRoomList = function () {
-		return apiEndpoints.getRoomList();
+
+	svc.getRoomList = function (params) {
+		return apiEndpoints.getRoomList(params);
 	};
 
-	svc.getRoom = function (id) {
-		return apiEndpoints.getRoom(id);
+	//todo: client-side API mock
+	svc.getRoom = function (roomId) {
+		//return apiEndpoints.getRoom(roomId); //todo: nesuwestvuet!!1
+		return svc.getRoomList().then(function (rooms) {
+			var currentRoom = rooms.find((r) =>r['Id'] === roomId);
+			if (currentRoom)
+				return currentRoom;
+			else
+				return $q.reject({ message: 'no room found', roomId: roomId });
+		});
 	};
 
 	svc.createRoom = function (roomName) {
-		return apiEndpoints.createRoom({roomName: roomName});
+		return apiEndpoints.createRoom({ name: roomName });
 	};
-	
+
+	svc.joinRoom = function (roomId) {
+		return apiEndpoints.joinRoom({ roomId: roomId });
+	};
+
+	svc.leaveRoom = function () {
+		return apiEndpoints.leaveRoom();
+	};
+
+	svc.kickUser = function (userId) {
+		return apiEndpoints.kickUser({ username: userId });
+	};
+
+
+	svc.startGameRoom = function () {
+		return apiEndpoints.startGameRoom();
+	};
 
 });

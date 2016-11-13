@@ -1,4 +1,6 @@
-<button ng-bind="$ctrl.value"
-		 ng-click="$ctrl.onClick()"
-		ng-disabled="$ctrl.isDisabled">
+<button ng-click="$ctrl.onClick()"
+		ng-disabled="$ctrl.isDisabled"
+		title="{{$ctrl.value}}">
+	<i class="material-icons" ng-bind="$ctrl.icon"></i>
+	<span class="label-text">{{$ctrl.value}}</span>
 </button>

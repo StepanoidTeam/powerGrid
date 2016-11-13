@@ -1,0 +1,16 @@
+<label ng-class="{
+	   'is-disabled' : $ctrl.isDisabled,
+	   'is-checked' : $ctrl.isChecked}"
+	   ng-click="$ctrl.onClick()">
+	<span class="checkbox">
+		<i class="icon-checked material-icons"
+		   ng-bind="$ctrl.iconChecked">
+			check_box_outline_blank
+		</i>
+		<i class="icon-unchecked material-icons"
+		   ng-bind="$ctrl.iconUnchecked">
+			check_box
+		</i>
+	</span>
+	<span class="label-text" ng-bind="$ctrl.value"></span>
+</label>
