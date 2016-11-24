@@ -16,18 +16,36 @@ angular.module('app')
 			data: data,
 			headers: headers
 		}).then(apiResp, apiResp);
+
+
+		//todo: maybe do unauth redirect here?
 	}
 
-	function apiResp(response) {
-		//var isSuccess  = response.data.isSuccess;
-		var isSuccess = response.status === 200;
+	function apiResp(httpResponse) {
+		//var isSuccess  = httpResponse.data.isSuccess;
+		var isSuccess = httpResponse.status === 200;//ambigous   && httpResponse.data.status === ok
+
+		/*
+			All Possible response statuses: 
+
+			Ok, 
+			UnexpectedError, 
+			Unauthorized, 
+			NotInRoom, 
+			NotInGame, 
+			NotYourTurn,
+			NotFound, 
+			InvalidModel, 
+			NotAllowed, 
+			NotAllowActionInThisPhase
+		*/
+
 
 		if (isSuccess) {
-			return $q.when(response.data.data);
+			return $q.when(httpResponse.data.data);
 		} else {
-			return $q.reject(response.data);
+			return $q.reject(httpResponse.data);
 		}
-		//return $q.when(response.data);
 	}
 
 
@@ -38,7 +56,12 @@ angular.module('app')
 
 	/* USER */
 
+
+
+	//POST /api/User/Status
 	svc.isAuthorized = function () {
+		// todo: use POST /api/User/Status instead
+		// checkauth is deprecated ANYMOR
 		return httpRequest('POST', 'user/CheckAuthorization');
 	};
 
@@ -122,5 +145,6 @@ angular.module('app')
 
 		return httpRequest('POST', 'user/Status', params);
 	};
+
 
 });
