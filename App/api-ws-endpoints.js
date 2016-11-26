@@ -14,8 +14,11 @@ angular.module('app')
 	function wsRequest(data) {
 		//var headers = { authToken: tokenService.getToken() };
 
-		//todo: somehow add token to ws send if possible
-		webSocket.send(data);
+	    //todo: somehow add token to ws send if possible
+	    request = { AuthToken: tokenService.getToken(), Message: data }
+	    var dataJson = JSON.stringify(request);
+	    console.log(dataJson);
+	    webSocket.send(dataJson);
 	}
 
 
