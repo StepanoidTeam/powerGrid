@@ -14,26 +14,22 @@ angular.module('app')
 	function wsRequest(data) {
 		//var headers = { authToken: tokenService.getToken() };
 
-	    //todo: somehow add token to ws send if possible
-	    request = { AuthToken: tokenService.getToken(), Message: data }
-	    var dataJson = JSON.stringify(request);
-	    console.log(dataJson);
-	    webSocket.send(dataJson);
+		//todo: somehow add token to ws send if possible
+		request = { AuthToken: tokenService.getToken(), Message: data };
+		var dataJson = JSON.stringify(request);
+		console.log(dataJson);
+		webSocket.send(dataJson);
 	}
 
 
 	function wsResp(wsResponse) {
-		console.log(wsResponse);
-		var incomingMessage = wsResponse.data;
-
-		console.log(incomingMessage);
-	};
+		console.info(wsResponse);
+		var responseObject = JSON.parse(wsResponse.data);
+		console.info(responseObject);
+	}
 
 	//todo: add subscribers/rxSubjects to server events
-
-
-
+	
 	//todo: add onClose handler
-
 
 });

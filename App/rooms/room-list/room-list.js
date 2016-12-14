@@ -13,9 +13,9 @@ var componentController = function ($controller, $location, authService, roomSer
 		});
 	};
 
-	ctrl.createRoom = function (roomName) {
-		var roomName = roomName + Date.now();
-		roomService.createRoom().then(function (data) {
+	ctrl.createRoom = function () {
+		var roomName = 'room' + Date.now();
+		roomService.createRoom(roomName).then(function (data) {
 			//creation ok
 			$location.path('/rooms/' + data['Id']);
 		}, function (error) {

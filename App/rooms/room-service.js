@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('rooms', [])
-.service('roomService', function ($q, apiEndpoints, authService) {
+.service('roomService', function ($q, apiEndpoints, apiWsEndpoints, authService) {
 	var svc = this;
 
 
@@ -40,6 +40,13 @@ angular.module('rooms', [])
 
 	svc.startGameRoom = function () {
 		return apiEndpoints.startGameRoom();
+	};
+
+	
+
+	svc.onRoomsUpdated = function () {
+		//todo: podpisatsa nado
+		//apiWsEndpoints
 	};
 
 });

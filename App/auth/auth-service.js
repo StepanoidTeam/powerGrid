@@ -21,7 +21,4 @@ angular.module('auth', [])
 
 	svc.getPlayerStatus = apiEndpoints.getPlayerStatus;
 
-	//returns: userId on OK, reject on fail
-	svc.isAuthorized = apiEndpoints.isAuthorized;
-
 });

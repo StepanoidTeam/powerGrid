@@ -20,10 +20,10 @@ var componentController = function ($q, $location, authService) {
 
 	//$q.all([, authService.getPlayerStatus()]).then
 
-	authService.isAuthorized()
+	authService.getPlayerStatus()
 		//.then(authService.getPlayerStatus)
 		.then(function (player) {
-			//ctrl.userName = player.Name;
+			ctrl.userName = player.Name;
 			isAuth = true;
 		}).catch(function () {
 			isAuth = false;

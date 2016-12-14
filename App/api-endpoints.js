@@ -13,7 +13,7 @@ angular.module('app')
 		return $http({
 			method: httpMethod,//'POST',
 			url: url,
-			data: data,
+			data: data || {},
 			headers: headers
 		}).then(apiResp, apiResp);
 
@@ -57,15 +57,6 @@ angular.module('app')
 	/* USER */
 
 
-
-	//POST /api/User/Status
-	svc.isAuthorized = function () {
-		// todo: use POST /api/User/Status instead
-		// checkauth is deprecated ANYMOR
-		return httpRequest('POST', 'user/CheckAuthorization');
-	};
-
-
 	svc.login = function (userModel) {
 		return httpRequest('POST', 'user/Login', userModel)
 			.then(tokenService.mapToken)
@@ -87,7 +78,7 @@ angular.module('app')
 	//GET /api/Rooms 
 	//Rooms list
 	svc.getRoomList = function (params) {
-		return httpRequest('POST', 'Rooms/List', params || {});
+		return httpRequest('POST', 'Rooms/List', params);
 	};
 
 	//POST /api/Rooms/Create/{name}
