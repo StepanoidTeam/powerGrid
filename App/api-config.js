@@ -5,4 +5,5 @@ angular.module('app')
 	apiUrl : 'http://localhost:5000/api/',
 	//apiUrl: 'http://pg-api.azurewebsites.net/api/',
 	wsUrl: 'ws://localhost:5000',
+	//wsUrl: 'ws://pg-api.azurewebsites.net/api',
 });
