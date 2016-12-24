@@ -14,13 +14,21 @@
 
 	<script type="text/javascript">
 
-		var socket = new WebSocket("ws://localhost:5000");
+		var config = {
+			wsUrl: 'ws://localhost:5000',
+			//wsUrl: 'ws://pg-api.azurewebsites.net/api',
+		};
+
+		var mockMessage = JSON.stringify({ authToken: '4d824e03-e485-4763-9e52-3fff98346a55'});
+
+		var socket = new WebSocket(config.wsUrl);
 
 		// отправить сообщение из формы publish
 		document.forms.publish.onsubmit = function () {
 			var outgoingMessage = this.message.value;
 
-			socket.send(outgoingMessage);
+			//socket.send(outgoingMessage);
+			socket.send(mockMessage);
 			return false;
 		};
 

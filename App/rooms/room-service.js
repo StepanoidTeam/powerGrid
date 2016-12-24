@@ -42,6 +42,8 @@ angular.module('rooms', [])
 		return apiEndpoints.startGameRoom();
 	};
 
+
+	
 	
 
 	svc.onRoomsUpdated = function () {
