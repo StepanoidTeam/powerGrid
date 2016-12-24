@@ -16,13 +16,8 @@ angular.module('app')
 
 		//JSON.stringify(data)
 
-		var wsData = { Message: 'lol', ToUserId: null, InRoomChannel: false };
-		//wsData = '{ "Message": "the stroka\n normalno epta", "ToUserId":null, "InRoomChannel": false }';
+	    var request = { AuthToken: tokenService.getToken(), Type: 0, Message: 'I\'m connected, bitches', To: null, InRoomChannel: false };
 
-		wsData = JSON.stringify(wsData);
-
-		//todo: somehow add token to ws send if possible
-		var request = { AuthToken: tokenService.getToken(), Type: 0, Data: wsData };
 		var dataJson = JSON.stringify(request);
 		console.log('ws send',dataJson);
 		webSocket.send(dataJson);
