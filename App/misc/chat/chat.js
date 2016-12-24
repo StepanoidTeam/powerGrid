@@ -6,7 +6,6 @@ var componentController = function ($scope,chatService) {
 	ctrl.chatMessages = [];
 
 	function updateChat(data) {
-		console.log('chat update:', data);
 		ctrl.chatMessages.push(data);
 		$scope.$applyAsync();
 	}

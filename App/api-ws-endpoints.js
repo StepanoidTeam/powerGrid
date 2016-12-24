@@ -25,8 +25,6 @@ angular.module('app')
 			Data: wsDataString
 		};
 
-		console.log('ws send', request);
-
 		var requestString = JSON.stringify(request);
 		webSocket.send(requestString);
 	}
@@ -34,9 +32,7 @@ angular.module('app')
 
 	function wsResponse(dataEvent) {
 		var dataRaw = dataEvent.data;
-		var responseObject = JSON.parse(dataRaw.replace(/\0/g, ''));
-
-		console.info('ws resp obj', responseObject);
+		var responseObject = JSON.parse(dataRaw);//.replace(/\0/g, '')
 		//todo: refac and subscribe directly to ws.event
 		svc.subject.next(responseObject);
 	}
