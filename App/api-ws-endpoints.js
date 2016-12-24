@@ -15,19 +15,14 @@ angular.module('app')
 
 		var headers = { authToken: tokenService.getToken() };
 
-		//todo: get rid of this double stringify and nested structure - after Izya's server fix
-		var wsDataString = JSON.stringify(wsData);
-
 		var wsType = wsMethod;
-		var request = {
-			AuthToken: headers.authToken,
-			Type: wsType,
-			Data: wsDataString
-		};
 
-		console.log('ws send', request);
+		wsData.AuthToken = headers.authToken;
+		wsData.Type = wsType;
+		
+		console.log('ws send', wsData);
 
-		var requestString = JSON.stringify(request);
+		var requestString = JSON.stringify(wsData);
 		webSocket.send(requestString);
 	}
 
@@ -59,7 +54,7 @@ angular.module('app')
 		//todo: rename toUserId to receiver or channelId/subscriberID
 		var wsData = {
 			Message: message,
-			ToUserId: subscriberId || null,
+			To: subscriberId || null,
 			InRoomChannel: false
 		};
 
