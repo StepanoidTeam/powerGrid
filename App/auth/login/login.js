@@ -20,7 +20,7 @@ var componentController = function ($location, authService, apiWsEndpoints) {
 			$location.path('/');
 			console.log('trying to send 1st ws message');
 			
-			apiWsEndpoints.wsRequest();
+			
 
 		}, function () {
 			console.warn('login failed');

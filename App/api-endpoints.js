@@ -3,25 +3,27 @@
 angular.module('app')
 .service('apiEndpoints', function ($q, $http, tokenService, apiConfig) {
 	var svc = this;
+	//init
+	var apiUrl = apiConfig.apiUrl;
 
-	function httpRequest(httpMethod, apiMethod, data) {
+	function apiRequest(httpMethod, apiMethod, data) {
 
 		var headers = { authToken: tokenService.getToken() };
 
-		var url = apiConfig.apiUrl + apiMethod;
+		var url = apiUrl + apiMethod;
 
 		return $http({
 			method: httpMethod,//'POST',
 			url: url,
 			data: data || {},
 			headers: headers
-		}).then(apiResp, apiResp);
+		}).then(apiResponse, apiResponse);
 
 
 		//todo: maybe do unauth redirect here?
 	}
 
-	function apiResp(httpResponse) {
+	function apiResponse(httpResponse) {
 		//var isSuccess  = httpResponse.data.isSuccess;
 		var isSuccess = httpResponse.status === 200;//ambigous   && httpResponse.data.status === ok
 
@@ -50,7 +52,7 @@ angular.module('app')
 
 
 	svc.getVersion = function () {
-		return httpRequest('GET', 'version');
+		return apiRequest('GET', 'VERSION');
 	};
 
 
@@ -58,32 +60,32 @@ angular.module('app')
 
 
 	svc.login = function (userModel) {
-		return httpRequest('POST', 'user/Login', userModel)
+		return apiRequest('POST', 'USER/Login', userModel)
 			.then(tokenService.mapToken)
 			.then(tokenService.saveToken);
 	};
 
 
 	svc.logout = function () {
-		return httpRequest('POST', 'user/Logout').then(tokenService.deleteToken);
+		return apiRequest('POST', 'USER/logout').then(tokenService.deleteToken);
 	};
 
 	/* ROOMS */
 
 	//GET /api/Rooms 
 	svc.getRooms = function () {
-		return httpRequest('GET', 'Rooms');
+		return apiRequest('GET', 'ROOMS');
 	};
 
 	//GET /api/Rooms 
 	//Rooms list
 	svc.getRoomList = function (params) {
-		return httpRequest('POST', 'Rooms/List', params);
+		return apiRequest('POST', 'ROOMS/list', params);
 	};
 
 	//POST /api/Rooms/Create/{name}
 	svc.createRoom = function (params) {
-		return httpRequest('POST', 'Rooms/CREATE', params);
+		return apiRequest('POST', 'ROOMS/create', params);
 	};
 
 	//POST /api/Rooms/List
@@ -92,19 +94,19 @@ angular.module('app')
 	//Join player into specific room
 	//roomId
 	svc.joinRoom = function (params) {
-		return httpRequest('POST', 'Rooms/JOIN', params);
+		return apiRequest('POST', 'ROOMS/join', params);
 	};
 
 	//POST /api/Rooms/Leave 
 	//Leave from current room
 	svc.leaveRoom = function () {
-		return httpRequest('POST', 'Rooms/LEAVE');
+		return apiRequest('POST', 'ROOMS/leave');
 	};
 
 	//POST /api/Rooms/Kick 
 	//Kick another player from the room if current user have enough permissions
 	svc.kickUser = function (params) {
-		return httpRequest('POST', 'Rooms/kick', params);
+		return apiRequest('POST', 'ROOMS/kick', params);
 	};
 
 
@@ -112,7 +114,7 @@ angular.module('app')
 	/* { "state": true } */
 	//Set if player ready to start or not
 	svc.ToggleReadyRoom = function (params) {
-		return httpRequest('POST', 'Rooms/ToggleReady', params);
+		return apiRequest('POST', 'ROOMS/ToggleReady', params);
 	};
 
 	//GET /api/Rooms/StartGame 
@@ -120,7 +122,7 @@ angular.module('app')
 
 	svc.startGameRoom = function () {
 		//todo: change to POST on serv and here
-		return httpRequest('GET', 'Rooms/StartGame');
+		return apiRequest('GET', 'ROOMS/StartGame');
 	};
 
 
@@ -134,7 +136,7 @@ angular.module('app')
 			"name": true
 		};
 
-		return httpRequest('POST', 'user/Status', params);
+		return apiRequest('POST', 'USER/Status', params);
 	};
 
 
