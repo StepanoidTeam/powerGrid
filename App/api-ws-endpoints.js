@@ -3,36 +3,71 @@
 angular.module('app')
 .service('apiWsEndpoints', function ($q, $http, tokenService, apiConfig) {
 	var svc = this;
-
 	//init
-	var url = apiConfig.wsUrl;
-	var webSocket = new WebSocket(url);
-	webSocket.onmessage = wsResp;
+	var webSocket = new WebSocket(apiConfig.wsUrl);
+	webSocket.addEventListener('message', wsResponse);
+	//webSocket.addEventListener('open', wsResponse);
+	//webSocket.addEventListener('close', wsResponse);
+	//webSocket.addEventListener('error', wsResponse);
 
 
-	svc.wsRequest = function (data) {
-		//var headers = { authToken: tokenService.getToken() };
+	function wsRequest(wsMethod, wsData) {
 
+		var headers = { authToken: tokenService.getToken() };
 
-		//JSON.stringify(data)
+		//todo: get rid of this double stringify and nested structure - after Izya's server fix
+		var wsDataString = JSON.stringify(wsData);
 
-	    var request = { AuthToken: tokenService.getToken(), Type: 0, Message: 'I\'m connected, bitches', To: null, InRoomChannel: false };
+		var wsType = wsMethod;
+		var request = {
+			AuthToken: headers.authToken,
+			Type: wsType,
+			Data: wsDataString
+		};
 
-		var dataJson = JSON.stringify(request);
-		console.log('ws send',dataJson);
-		webSocket.send(dataJson);
+		console.log('ws send', request);
+
+		var requestString = JSON.stringify(request);
+		webSocket.send(requestString);
 	}
 
-	
-	function wsResp(wsResponse) {
-		//console.info('ws resp', wsResponse);
-		var dataRaw = wsResponse.data;
+
+	function wsResponse(dataEvent) {
+		var dataRaw = dataEvent.data;
 		var responseObject = JSON.parse(dataRaw.replace(/\0/g, ''));
+
 		console.info('ws resp obj', responseObject);
+		//todo: refac and subscribe directly to ws.event
+		svc.subject.next(responseObject);
 	}
+	
+
+	//todo: add onClose handler
+
+	svc.wsRequest = wsRequest;
+
+	/* CHAT */
 
 	//todo: add subscribers/rxSubjects to server events
-	
-	//todo: add onClose handler
+	svc.subject = new Rx.Subject();
+	//to log updates
+	svc.subject.subscribe((data) => { console.log('data:', data); });
+
+	svc.chatSendMessage = function (message, subscriberId) {
+
+		//todo: remove inroom 
+		//todo: rename toUserId to receiver or channelId/subscriberID
+		var wsData = {
+			Message: message,
+			ToUserId: subscriberId || null,
+			InRoomChannel: false
+		};
+
+		return wsRequest('CHAT', wsData);
+	};
+
+	svc.chatSubscribe = function (callback) {
+		svc.subject.subscribe(callback);
+	};
 
 });

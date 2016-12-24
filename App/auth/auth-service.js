@@ -1,11 +1,13 @@
 ﻿'use strict';
 
 angular.module('auth', [])
-.service('authService', function ($q, apiEndpoints) {
+.service('authService', function ($q, apiEndpoints, chatService) {
 	var svc = this;
-	
-	svc.login = function (user) {
-		return apiEndpoints.login(user).then(function () {
+
+	svc.login = function (userData) {
+		return apiEndpoints.login(userData).then(function (data) {
+
+			chatService.sendMessage(`${userData.username} user logined`);
 
 		}).catch(function (error) {
 			//error on login
