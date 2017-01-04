@@ -1,0 +1,49 @@
+chat {
+
+  position: fixed;
+  bottom: 0px;
+  width: 50%;
+  right: 50%;
+  margin-right: -25%;
+
+  ul {
+
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+
+    .scroll-bar(
+      @bg-color: darken(@global-panel-bg,10%);
+      @thumb-color: @global-panel-bg;);
+
+    li {
+      list-style-type: none;
+
+      .chat-name {
+        color: #ead361;
+        font-weight: bold;
+      }
+      .chat-time {
+        color: rgba(0, 0, 0, 0.38);
+      }
+    }
+  }
+
+  .message-box {
+    display: flex;
+    margin-top: 20px;
+
+    pg-input {
+      margin: 4px;
+    }
+
+    * > {
+      flex: 1 1 auto;
+
+    }
+
+  }
+}

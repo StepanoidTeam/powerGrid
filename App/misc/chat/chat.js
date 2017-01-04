@@ -1,31 +1,42 @@
 'use strict';
 
-var componentController = function ($scope,chatService) {
-	var ctrl = this;
-	
-	ctrl.chatMessages = [];
+var componentController = function ($scope,$timeout, chatService) {
+    var ctrl = this;
 
-	function updateChat(data) {
-		ctrl.chatMessages.push(data);
-		$scope.$applyAsync();
-	}
+    ctrl.chatMessages = [];
 
-	chatService.subscribe(updateChat);
+    function updateChat(data) {
+        data.Time = new Date(data.Date).toLocaleTimeString();
+        ctrl.chatMessages.push(data);
+        $scope.$applyAsync();
 
-	//chatService.sendMessage(message, to);
+        $timeout(function() {
+            var lastItem = document.querySelector('chat ul>li:last-child');
+            if (lastItem)lastItem.scrollIntoView();
+        }, 0, false);
+    }
 
-	ctrl.chatMessage = 'type message here';
+    chatService.subscribe(updateChat);
 
-	ctrl.sendMessage = function () {
-		chatService.sendMessage(ctrl.chatMessage);
-	};
+    //chatService.sendMessage(message, to);
+
+    ctrl.chatMessage = 'type message here';
+
+    ctrl.messageChanged = function (value) {
+        ctrl.chatMessage = value;
+    };
+
+    ctrl.sendMessage = function (value) {
+        chatService.sendMessage(value);
+
+        //ctrl.chatMessage = '';
+    };
 
 };
 
 angular.module('app')
-	.component('chat', {
-		bindings: {
-		},
-		templateUrl: 'app/misc/chat/chat.html',
-		controller: componentController
-	});
+    .component('chat', {
+        bindings: {},
+        templateUrl: 'app/misc/chat/chat.html',
+        controller: componentController
+    });

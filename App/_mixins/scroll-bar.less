@@ -1,0 +1,46 @@
+.scroll-bar(@bg-color; @thumb-color; @thumb-width: 10px; @padding: 3px) {
+
+  @width: @thumb-width + @padding;
+  @height: @width;
+
+  /* IE scrollbar color theming - doesn't support rgba */
+  -ms-scrollbar-track-color: @bg-color;
+  -ms-scrollbar-arrow-color: @thumb-color;
+  -ms-scrollbar-base-color: @thumb-color;
+  -ms-scrollbar-shadow-color: @thumb-color;
+
+  -ms-overflow-style: scrollbar;
+
+  &::-webkit-scrollbar {
+	width: @width;
+	height: @height;
+	background-color: @bg-color;
+  }
+
+  &::-webkit-scrollbar-track {
+	background-color: @bg-color;
+	&:hover {
+	  //background-color: inherit;
+	}
+	&:active {
+	  //background-color: inherit;
+	}
+  }
+
+  &::-webkit-scrollbar-thumb {
+	background-color: @thumb-color;
+	border-radius: 100px;
+	border: @padding solid @bg-color;
+
+	&:hover {
+	  //background-color: inherit;
+	}
+	&:active {
+	  //background-color: inherit;
+	}
+  }
+
+  &::-webkit-scrollbar-corner {
+	background-color: @bg-color;
+  }
+}

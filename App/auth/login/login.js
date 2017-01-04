@@ -3,7 +3,7 @@
 var componentController = function ($location, authService, apiWsEndpoints) {
 	var ctrl = this;
 
-	ctrl.userData = { username: '', password: '' };
+	ctrl.userData = { username: 'bob', password: '123' };
 
 
 	ctrl.usernameChanged = function (value) {

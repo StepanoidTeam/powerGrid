@@ -20,7 +20,7 @@ angular.module('app')
 		wsData.AuthToken = headers.authToken;
 		wsData.Type = wsType;
 		
-		console.log('ws send', wsData);
+		//console.log('ws send', wsData);
 
 		var requestString = JSON.stringify(wsData);
 		webSocket.send(requestString);
@@ -44,7 +44,7 @@ angular.module('app')
 	//todo: add subscribers/rxSubjects to server events
 	svc.subject = new Rx.Subject();
 	//to log updates
-	svc.subject.subscribe((data) => { console.log('data:', data); });
+	svc.subject.subscribe((data) => { console.log('data:', data);});
 
 	svc.chatSendMessage = function (message, subscriberId) {
 
