@@ -6,6 +6,6 @@ angular.module('auth')
 			console.log('auth check ok', user);
 		}, function (error) {
 			console.log('auth check bad', error);
-			$location.path('/login');
+			$location.path('/init');
 		});
 	});

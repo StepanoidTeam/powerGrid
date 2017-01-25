@@ -1,7 +1,7 @@
 'use strict';
 
-var componentController = function ($location, authService, apiWsEndpoints) {
-	var ctrl = this;
+let componentController = function ($location, authService, apiWsEndpoints) {
+	const ctrl = this;
 
 	ctrl.userData = { username: 'bob', password: '123' };
 
@@ -17,15 +17,13 @@ var componentController = function ($location, authService, apiWsEndpoints) {
 
 	ctrl.login = function () {
 		authService.login(ctrl.userData).then(function () {
-			$location.path('/');
+			$location.path('/rooms');
 			console.log('trying to send 1st ws message');
-			
-			
-
 		}, function () {
 			console.warn('login failed');
 		});
-	}
+	};
+
 
 };
 

@@ -1,40 +1,40 @@
 'use strict';
 
-var componentController = function ($q, $location, authService) {
-	var ctrl = this;
+let componentController = function ($q, $location, authService) {
+    const ctrl = this;
 
-	var isAuth = false;
-	ctrl.isAuthorized = function () {
-		return isAuth;
-	};
+    let isAuth = false;
+    ctrl.isAuthorized = function () {
+        return isAuth;
+    };
 
-	ctrl.logout = function () {
-		authService.logout().then(function () {
-			$location.path('/login');
-		});
-	};
+    ctrl.logout = function () {
+        authService.logout().then(function () {
+            $location.path('/init');
+        });
+    };
 
 
-	// debug
-	
+    // debug
 
-	//$q.all([, authService.getPlayerStatus()]).then
 
-	authService.getPlayerStatus()
-		//.then(authService.getPlayerStatus)
-		.then(function (player) {
-			ctrl.userName = player.Name;
-			isAuth = true;
-		}).catch(function () {
-			isAuth = false;
-		});
+    //$q.all([, authService.getPlayerStatus()]).then
 
+    ctrl.$onInit = function () {
+        authService.onPlayerStatusChange(function (player) {
+            if (player) {
+                ctrl.userName = player.Name;
+                isAuth = true;
+            } else {
+                isAuth = false;
+            }
+        });
+    };
 };
 
 angular.module('auth')
-	.component('currentUser', {
-		bindings: {
-		},
-		templateUrl: 'app/auth/current-user/current-user.html',
-		controller: componentController
-	});
+    .component('currentUser', {
+        bindings: {},
+        templateUrl: 'app/auth/current-user/current-user.html',
+        controller: componentController
+    });
