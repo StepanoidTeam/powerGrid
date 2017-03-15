@@ -6,7 +6,10 @@ chat {
   right: 50%;
   margin-right: -25%;
 
-  ul {
+  .message-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 
     max-height: 200px;
     overflow-y: auto;
@@ -19,14 +22,35 @@ chat {
       @bg-color: darken(@global-panel-bg,10%);
       @thumb-color: @global-panel-bg;);
 
-    li {
+    .message {
       list-style-type: none;
 
-      .chat-name {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      margin: 5px;
+      margin-left: 15px;
+      padding: 10px;
+      background-color: white;
+      max-width: 700px;
+      border-radius: 5px;
+      border: 1px solid rgba(0,0,0,0.2);
+      box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.2);
+
+      .message-sender {
         color: #ead361;
         font-weight: bold;
       }
-      .chat-time {
+
+      .message-text-block{
+
+      }
+
+      .message-text{
+
+      }
+
+      .message-time {
         color: rgba(0, 0, 0, 0.38);
       }
     }

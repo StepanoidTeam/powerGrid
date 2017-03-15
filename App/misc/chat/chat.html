@@ -1,9 +1,9 @@
 <div class="panel">
-    <ul>
-        <li ng-repeat="entry in $ctrl.chatMessages">
-            <span class="chat-name" ng-bind="entry.SenderName"></span>
-            <span class="chat-time"> [{{entry.Time}}] : </span>
-            {{entry.Message}}
+    <ul class="message-list">
+        <li class="message" ng-repeat="entry in $ctrl.chatMessages">
+            <span class="message-sender" ng-bind="entry.SenderName"></span>
+            <span class="message-text" ng-bind="entry.Message"></span>
+            <span class="message-time"> [{{entry.Time}}] : </span>
         </li>
     </ul>
 
@@ -11,7 +11,6 @@
         <pg-input value="$ctrl.chatMessage" on-change="$ctrl.messageChanged(value)"></pg-input>
         <pg-button on-click="$ctrl.sendMessage($ctrl.chatMessage)" value="'Send'"></pg-button>
     </div>
-
 
 </div>
 
