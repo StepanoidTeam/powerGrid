@@ -1,6 +1,6 @@
 'use strict';
 
-let componentController = function ($location, versionService) {
+var componentController = function ($location, versionService) {
     const ctrl = this;
 
     ctrl.$onInit = function () {

@@ -1,6 +1,6 @@
 'use strict';
 
-let componentController = function ($location, authService, apiWsEndpoints) {
+var componentController = function ($location, authService, apiWsEndpoints) {
 	const ctrl = this;
 
 	ctrl.userData = { username: 'bob', password: '123' };

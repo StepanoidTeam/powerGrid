@@ -1,6 +1,6 @@
 'use strict';
 
-let componentController = function (versionService) {
+var componentController = function (versionService) {
 	const ctrl = this;
 
 	ctrl.value = 'loading...';

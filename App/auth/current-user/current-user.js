@@ -1,6 +1,6 @@
 'use strict';
 
-let componentController = function ($q, $location, authService) {
+var componentController = function ($q, $location, authService) {
     const ctrl = this;
 
     let isAuth = false;
