@@ -10,7 +10,7 @@
             .when('/', {redirectTo: '/init'})
             .when('/init', {template: '<init></init>'})
             .when('/login', {template: '<login></login>'})
-            .when('/chat', {template: '<chat></chat>'})
+            .when('/chat', {template: '<side-panel><chat></chat></side-panel>'})
             .when('/rooms', {template: '<room-list></room-list>'})
             .when('/rooms/:id', {
                 template: '<room room-id="$resolve.roomId"></room>',

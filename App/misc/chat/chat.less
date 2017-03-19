@@ -1,64 +1,36 @@
 chat {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  font-family: "Open Sans", "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, Verdana, sans-serif;
 
-  position: fixed;
-  bottom: 0px;
-  width: 50%;
-  right: 50%;
-  margin-right: -25%;
+  .message-container{
+    flex: 1 1 auto;
 
-  .message-list {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    max-height: 200px;
+    overflow: hidden;
     overflow-y: auto;
-    padding: 10px;
 
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
 
     .scroll-bar(
       @bg-color: darken(@global-panel-bg,10%);
       @thumb-color: @global-panel-bg;);
+  }
 
-    .message {
-      list-style-type: none;
+  .message-list {
 
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      margin: 5px;
-      margin-left: 15px;
-      padding: 10px;
-      background-color: white;
-      max-width: 700px;
-      border-radius: 5px;
-      border: 1px solid rgba(0,0,0,0.2);
-      box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.2);
+    display: flex;
 
-      .message-sender {
-        color: #ead361;
-        font-weight: bold;
-      }
+    flex-direction: column;
+    align-items: flex-start;
 
-      .message-text-block{
 
-      }
-
-      .message-text{
-
-      }
-
-      .message-time {
-        color: rgba(0, 0, 0, 0.38);
-      }
-    }
   }
 
   .message-box {
+    flex: 0 0 auto;
     display: flex;
-    margin-top: 20px;
 
     pg-input {
       margin: 4px;

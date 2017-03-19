@@ -1,12 +1,20 @@
 'use strict';
 
-var componentController = function ($scope,$timeout, chatService) {
+var componentController = function ($scope, $timeout, chatService) {
     var ctrl = this;
 
     ctrl.chatMessages = [];
 
     function updateChat(data) {
-        data.Time = new Date(data.Date).toLocaleTimeString();
+
+        if(data.Date===undefined){
+            console.warn('no date provided',data);
+            return;
+        }
+
+        data.Time = data.Date.toString().split('T')[1];
+        data.SenderColor = getSenderColor(data.SenderId);
+
         ctrl.chatMessages.push(data);
         $scope.$applyAsync();
 
@@ -17,6 +25,21 @@ var componentController = function ($scope,$timeout, chatService) {
     }
 
     chatService.subscribe(updateChat);
+
+    function getSenderColor(senderId){
+
+
+        // const color = {
+        //     r: parseInt(senderId.substr(0,2),16),
+        //     g: parseInt(senderId.substr(2,2),16),
+        //     b: parseInt(senderId.substr(4,2),16),
+        // };
+
+        return '#' + senderId.substr(0,6);
+
+    }
+
+
 
     //chatService.sendMessage(message, to);
 

@@ -1,0 +1,88 @@
+@me-bg: lighten(green, 67%);
+
+.message {
+  list-style-type: none;
+  font-size: 0.8em;
+  color:black;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  margin-left: 15px;
+  padding: 10px;
+  background-color: white;
+  max-width: 700px;
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,0.2);
+  box-shadow: 0px 1px 2px -1px rgba(0,0,0,0.2);
+
+  &:before{
+    @arrow-size: 10px;
+    @arrow-color: white;
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: 0px;
+    left: 0px;
+    background-color: transparent;
+
+    border-top: @arrow-size solid transparent;
+    border-left: @arrow-size solid transparent;
+    border-right: @arrow-size solid @arrow-color;
+    border-bottom: @arrow-size solid @arrow-color;
+
+    margin-left: -@arrow-size*1.5;
+
+  }
+
+  .message-sender {
+    color: crimson;
+    font-size: 0.9em;
+    color: #e56555;
+  }
+
+  .message-text-block{
+    display: flex;
+    justify-content: space-between;
+    align-content: space-between;
+  }
+
+  .message-text{
+
+  }
+
+  .message-time {
+    color: rgba(0, 0, 0, 0.38);
+    font-size: 0.8em;
+    padding-left: 5px;
+    //color: rgba(0,0,0,0.4);
+    align-self: flex-end;
+    //display: inline-block;
+    text-align: right;
+  }
+}
+
+.message.self{
+  @bg: @me-bg;
+  align-self: flex-end;
+  margin-right: 15px;
+  background-color: @bg;
+
+  &:before{
+    @arrow-size: 10px;
+
+    left: auto;
+    right: 0px;
+
+    border-top: @arrow-size solid transparent;
+    border-left: @arrow-size solid @bg;
+    border-right: @arrow-size solid transparent;
+    border-bottom: @arrow-size solid @bg;
+
+    //margin-bottom: -1px;
+    margin-right: -@arrow-size*1.5;
+
+  }
+
+}

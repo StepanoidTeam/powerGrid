@@ -1,16 +1,20 @@
-<div class="panel">
-    <ul class="message-list">
+<div class="message-container">
+ <ul class="message-list">
         <li class="message" ng-repeat="entry in $ctrl.chatMessages">
-            <span class="message-sender" ng-bind="entry.SenderName"></span>
-            <span class="message-text" ng-bind="entry.Message"></span>
-            <span class="message-time"> [{{entry.Time}}] : </span>
+            <span class="message-sender"
+
+                  ng-style="{ color: entry.SenderColor }"
+                  ng-bind="entry.SenderName"></span>
+            <div class="message-text-block">
+                <span class="message-text" ng-bind="entry.Message"></span>
+                <span class="message-time">{{entry.Time}}</span>
+            </div>
         </li>
     </ul>
+</div>
 
-    <div class="message-box">
-        <pg-input value="$ctrl.chatMessage" on-change="$ctrl.messageChanged(value)"></pg-input>
-        <pg-button on-click="$ctrl.sendMessage($ctrl.chatMessage)" value="'Send'"></pg-button>
-    </div>
-
+<div class="message-box">
+    <pg-input value="$ctrl.chatMessage" on-change="$ctrl.messageChanged(value)"></pg-input>
+    <pg-button on-click="$ctrl.sendMessage($ctrl.chatMessage)" value="'Send'"></pg-button>
 </div>
 
