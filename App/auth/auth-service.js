@@ -19,10 +19,31 @@ angular.module('auth', [])
 
         };
 
-        svc.getPlayerStatus = apiEndpoints.getPlayerStatus;
+
+        svc.playerSubject = new Rx.Subject();
+
+        svc.getPlayerStatus = function(){
+            return apiEndpoints.getPlayerStatus().then(function (player) {
+                if(player){
+
+                }
+
+                svc.playerSubject.next(player);
+
+                console.info('status ok', player);
+
+            },function (error) {
+                console.warn('status fail?', error);
+                svc.playerSubject.next(null);
+            });
+        };
 
 
         //debug
+        apiEndpoints.playerSubject.subscribe((data) => {
+            console.info('player status changed:', data);
+        });
+
         apiEndpoints.isLoggedSubject.subscribe((data) => {
             console.info('player status changed:', data);
         });
@@ -38,7 +59,7 @@ angular.module('auth', [])
         };
 
         svc.$onInit = function () {
-            svc.getPlayerStatus().then((e)=>console.warn(e));
+            //svc.getPlayerStatus().then((e)=>console.info(e));
         };
 
 
