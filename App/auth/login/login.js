@@ -16,9 +16,6 @@ var componentController = function ($location, authService, apiWsEndpoints) {
 	ctrl.login = function () {
 		authService.login(ctrl.userData).then(function () {
 			$location.path('/rooms');
-			console.log('trying to send 1st ws message');
-		}, function () {
-			console.warn('login failed');
 		});
 	};
 

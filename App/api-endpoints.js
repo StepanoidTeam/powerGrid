@@ -133,7 +133,7 @@ angular.module('app')
         //GET /api/USER/Status
         //Player info
         svc.getPlayerStatus = function () {
-            var params = {
+            const params = {
                 "gameRoomId": true,
                 "readyMark": true,
                 "id": true,
