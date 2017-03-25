@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('auth', [])
-    .service('authService', function ($q, apiEndpoints, chatService) {
+    .service('authService', function ($q, $location, apiEndpoints, chatService) {
         const svc = this;
 
         svc.login = function (userData) {
@@ -9,7 +9,8 @@ angular.module('auth', [])
                 chatService.sendMessage(`${userData.username} logined`);
             }).catch(function (error) {
                 //error on login
-                return svc.logout();
+                console.warn('login failed');
+                return svc.logout()//.then(() =>$location.path('init'));;
             });
         };
 
@@ -22,30 +23,26 @@ angular.module('auth', [])
 
         svc.playerSubject = new Rx.Subject();
 
-        svc.getPlayerStatus = function(){
+        svc.getPlayerStatus = function () {
             return apiEndpoints.getPlayerStatus().then(function (player) {
-                if(player){
-
-                }
-
                 svc.playerSubject.next(player);
-
                 console.info('status ok', player);
-
-            },function (error) {
-                console.warn('status fail?', error);
+            }, function (error) {
+                console.warn('failed to login', error);
                 svc.playerSubject.next(null);
+                svc.logout();
+                $location.path('init');
             });
         };
 
 
         //debug
         svc.playerSubject.subscribe((data) => {
-            console.info('player status changed:', data);
+            console.info('player status changed', data);
         });
 
         apiEndpoints.isLoggedSubject.subscribe((data) => {
-            console.info('player status changed:', data);
+            console.info('is logged status changed', data);
         });
 
         svc.onPlayerStatusChange = function (callback) {
@@ -63,6 +60,5 @@ angular.module('auth', [])
         };
 
 
-        svc.$onInit();
-
+        //svc.$onInit();
     });
