@@ -2,7 +2,7 @@
 
 angular.module('rooms', [])
 .service('roomService', function ($q, apiEndpoints, apiWsEndpoints, authService) {
-	var svc = this;
+	const svc = this;
 
 
 	svc.getRoomList = function (params) {

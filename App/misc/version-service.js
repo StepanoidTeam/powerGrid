@@ -1,6 +1,6 @@
 angular.module('app')
 .service('versionService', function ($location, apiEndpoints) {
-	var svc = this;
+	const svc = this;
 
 	svc.getApiVersion = function () {
 		return apiEndpoints.getVersion();

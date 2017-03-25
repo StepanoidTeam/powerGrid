@@ -1,6 +1,6 @@
 ﻿angular.module('app')
 .service('tokenService', function ($cookies) {
-	var svc = this;
+	const svc = this;
 
 	var tokenCookieKey = 'AuthToken';
 

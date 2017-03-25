@@ -2,7 +2,7 @@
 
 angular.module('app')
 .service('apiWsEndpoints', function ($q, $http, tokenService, apiConfig) {
-	var svc = this;
+	const svc = this;
 	//init
 	var webSocket = new WebSocket(apiConfig.wsUrl);
 	webSocket.addEventListener('message', wsResponse);
@@ -44,7 +44,7 @@ angular.module('app')
 	//todo: add subscribers/rxSubjects to server events
 	svc.subject = new Rx.Subject();
 	//to log updates
-	svc.subject.subscribe((data) => { console.log('data:', data);});
+	//svc.subject.subscribe((data) => { console.log('data:', data);});
 
 	svc.chatSendMessage = function (message, subscriberId) {
 

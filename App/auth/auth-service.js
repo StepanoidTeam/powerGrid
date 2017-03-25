@@ -6,7 +6,7 @@ angular.module('auth', [])
 
         svc.login = function (userData) {
             return apiEndpoints.login(userData).then(function (data) {
-                chatService.sendMessage(`${userData.username} user logined`);
+                chatService.sendMessage(`${userData.username} logined`);
             }).catch(function (error) {
                 //error on login
                 return svc.logout();
@@ -40,7 +40,7 @@ angular.module('auth', [])
 
 
         //debug
-        apiEndpoints.playerSubject.subscribe((data) => {
+        svc.playerSubject.subscribe((data) => {
             console.info('player status changed:', data);
         });
 
