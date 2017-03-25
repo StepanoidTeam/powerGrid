@@ -19,6 +19,7 @@
                     },
                 }
             })
+            .when('/game', {template: '<game></game>'})
             .when('/404', {templateUrl: 'app/404.html'})
             .when('/error', {templateUrl: 'app/error.html'})
             .otherwise({redirectTo: '/404'});

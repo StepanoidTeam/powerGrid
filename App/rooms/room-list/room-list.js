@@ -29,7 +29,7 @@ var componentController = function ($controller, $location, authService, roomSer
 			//creation ok
 			$location.path('/rooms/' + data['Id']);
 		}, function (error) {
-			console.log('room join error', error);
+			console.warn(error.message);
 			ctrl.updateRooms();
 		});
 	};
