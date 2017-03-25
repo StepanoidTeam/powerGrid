@@ -41,7 +41,11 @@ var componentController = function ($controller, $location, roomService, apiEndp
 
 	};
 
-	ctrl.initRoom(ctrl.roomId);
+
+
+	ctrl.$onInit = function () {
+        ctrl.initRoom(ctrl.roomId);
+    }
 
 };
 
