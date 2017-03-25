@@ -39,9 +39,7 @@ var componentController = function ($scope, $timeout, chatService) {
 
     }
 
-
-
-    //chatService.sendMessage(message, to);
+    ctrl.chatToggle = chatService.chatToggle;
 
     ctrl.chatMessage = 'type message here';
 
@@ -51,8 +49,7 @@ var componentController = function ($scope, $timeout, chatService) {
 
     ctrl.sendMessage = function (value) {
         chatService.sendMessage(value);
-
-        //ctrl.chatMessage = '';
+        ctrl.chatMessage = '';
     };
 
 };

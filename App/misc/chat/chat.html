@@ -1,8 +1,7 @@
 <div class="message-container">
- <ul class="message-list">
+    <ul class="message-list">
         <li class="message" ng-repeat="entry in $ctrl.chatMessages">
             <span class="message-sender"
-
                   ng-style="{ color: entry.SenderColor }"
                   ng-bind="entry.SenderName"></span>
             <div class="message-text-block">
@@ -13,8 +12,11 @@
     </ul>
 </div>
 
-<div class="message-box">
+<form class="message-box" ng-submit="$ctrl.sendMessage($ctrl.chatMessage)">
+    <pg-button type="'reset'" icon="'arrow_back'"
+               on-click="$ctrl.chatToggle(false)"
+    ></pg-button>
     <pg-input value="$ctrl.chatMessage" on-change="$ctrl.messageChanged(value)"></pg-input>
-    <pg-button on-click="$ctrl.sendMessage($ctrl.chatMessage)" value="'Send'"></pg-button>
-</div>
+    <pg-button type="'submit'" icon="'send'"></pg-button>
+</form>
 
