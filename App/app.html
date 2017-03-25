@@ -1,9 +1,25 @@
-<side-panel>
+<holder top bottom left
+        class="side-panel"
+        ng-class="{'is-open': $ctrl.chatIsOpen }">
     <chat></chat>
-</side-panel>
+</holder>
+
+
+<holder left bottom>
+    <pg-button
+            ng-hide="$ctrl.chatIsOpen"
+            on-click="$ctrl.chatToggle(true)"
+            icon="'chat'"
+    ></pg-button>
+</holder>
 
 <ng-view></ng-view>
 
-<current-user></current-user>
+<holder right top>
+    <current-user></current-user>
+</holder>
 
-<version></version>
+
+<holder right bottom>
+    <version></version>
+</holder>

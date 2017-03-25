@@ -1,8 +1,9 @@
-side-panel{
-  display: flex;
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
+.side-panel {
+
   width: 50%;
+  transition: 300ms left ease-in-out;
+
+  &:not(.is-open) {
+    left: -50%;
+  }
 }
