@@ -1,66 +1,56 @@
 'use strict';
 
 angular.module('app')
-.service('apiWsEndpoints', function ($q, $http, tokenService, apiConfig) {
-	const svc = this;
-	//init
-	var webSocket = new WebSocket(apiConfig.wsUrl);
-	webSocket.addEventListener('message', wsResponse);
-	//webSocket.addEventListener('open', wsResponse);
-	//webSocket.addEventListener('close', wsResponse);
-	//webSocket.addEventListener('error', wsResponse);
+    .service('apiWsEndpoints', function ($q, $http, tokenService, apiConfig) {
+        const svc = this;
+        //init
+        const webSocket = new WebSocket(apiConfig.wsUrl);
+        webSocket.addEventListener('message', wsResponse); //'open' 'close' 'error'
 
 
-	function wsRequest(wsMethod, wsData) {
 
-		var headers = { authToken: tokenService.getToken() };
+        function wsRequest(wsMethod, wsData) {
 
-		var wsType = wsMethod;
+            wsData.AuthToken = tokenService.getToken();
+            wsData.Type = wsMethod;
 
-		wsData.AuthToken = headers.authToken;
-		wsData.Type = wsType;
-		
-		//console.log('ws send', wsData);
-
-		var requestString = JSON.stringify(wsData);
-		webSocket.send(requestString);
-	}
+            const requestString = JSON.stringify(wsData);
+            webSocket.send(requestString);
+        }
 
 
-	function wsResponse(dataEvent) {
-		var dataRaw = dataEvent.data;
-		var responseObject = JSON.parse(dataRaw);//.replace(/\0/g, '')
-		//todo: refac and subscribe directly to ws.event
-		svc.subject.next(responseObject);
-	}
-	
+        function wsResponse(dataEvent) {
+            const dataRaw = dataEvent.data;
+            const responseObject = JSON.parse(dataRaw);//.replace(/\0/g, '')
+            //todo: refac and subscribe directly to ws.event
+            svc.subject.next(responseObject);
+        }
 
-	//todo: add onClose handler
+        //todo: add onClose handler
 
-	svc.wsRequest = wsRequest;
+        svc.wsRequest = wsRequest;
 
-	/* CHAT */
+        /* CHAT */
+        //todo: add subscribers/rxSubjects to server events
+        svc.subject = new Rx.Subject();
+        //to log updates
+        //svc.subject.subscribe((data) => { console.log('data:', data);});
 
-	//todo: add subscribers/rxSubjects to server events
-	svc.subject = new Rx.Subject();
-	//to log updates
-	//svc.subject.subscribe((data) => { console.log('data:', data);});
+        svc.chatSendMessage = function (message, subscriberId) {
 
-	svc.chatSendMessage = function (message, subscriberId) {
+            //todo: remove inroom
+            //todo: rename toUserId to receiver or channelId/subscriberID
+            var wsData = {
+                Message: message,
+                To: subscriberId || null,
+                InRoomChannel: false
+            };
 
-		//todo: remove inroom 
-		//todo: rename toUserId to receiver or channelId/subscriberID
-		var wsData = {
-			Message: message,
-			To: subscriberId || null,
-			InRoomChannel: false
-		};
+            return wsRequest('CHAT', wsData);
+        };
 
-		return wsRequest('CHAT', wsData);
-	};
+        svc.chatSubscribe = function (callback) {
+            svc.subject.subscribe(callback);
+        };
 
-	svc.chatSubscribe = function (callback) {
-		svc.subject.subscribe(callback);
-	};
-
-});
+    });
