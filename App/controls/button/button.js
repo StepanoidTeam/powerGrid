@@ -9,7 +9,7 @@ angular.module('app')
     	bindings: {
     		value: '<',
 			icon:'<',
-
+			type:'<',
 			isDisabled:'<',
 			
 			onClick: '&',
