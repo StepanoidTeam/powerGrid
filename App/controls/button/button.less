@@ -25,18 +25,6 @@ pg-button {
     border: none;
     box-shadow: 0 0 0 @button-border-width @button-border-color;
 
-
-    &:not(:disabled) {
-      &:hover {
-        background-color: @button-hover-bg;
-      }
-
-      &:active {
-        background-color: @button-active-bg;
-      }
-    }
-
-
     &.is-disabled,
     &:disabled {
       cursor: not-allowed;
@@ -60,10 +48,17 @@ pg-button {
     }
   }
 
+  &:hover:not([flat]) > button:not(:disabled) {
+    background-color: @button-hover-bg;
+  }
+
+  &:active:not([flat]) > button:not(:disabled) {
+    background-color: @button-active-bg;
+  }
+
   &[flat] > button {
     background-color: transparent;
     box-shadow: none;
-
-
+    padding: 0px;
   }
 }

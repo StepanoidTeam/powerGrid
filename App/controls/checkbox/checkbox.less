@@ -1,5 +1,5 @@
 checkbox {
-	
+
 	@checkbox-color: saturate( @global-accent-color,50%);
 
 	@checkbox-unchecked-color: @checkbox-color;
@@ -24,13 +24,13 @@ checkbox {
 
 		opacity: 0.8;
 
-		&:hover {
+		&:hover:not(.is-disabled) {
 			.checkbox {
 				opacity: 0.7;
 			}
 		}
 
-		&:active {
+		&:active:not(.is-disabled) {
 			.checkbox {
 				opacity: 1;
 			}
@@ -67,10 +67,8 @@ checkbox {
 	}
 
 
-	&.is-disabled {
+	label.is-disabled {
 		opacity: @checkbox-disabled-opacity;
-
-		.checkbox {
-		}
+    cursor: not-allowed;
 	}
 }
