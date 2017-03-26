@@ -1,28 +1,22 @@
 <div class="panel">
 	<h2>
 		<pg-button icon="'arrow_back'"
-				   ng-click="$ctrl.leaveRoom()"></pg-button>
+					  ng-click="$ctrl.leaveRoom()"></pg-button>
 		{{$ctrl.room.Name}}
 		<i class="material-icons">group</i>
 		{{$ctrl.room.UserCount}}
 	</h2>
-	<ul class="user-list">
-		<li class="list-item" ng-repeat="user in $ctrl.room.UserDetails">
-			<span>
-				<i class="material-icons">face</i>
-				{{user.Name}}
-			</span>
-			<checkbox accent
-					  is-checked="$ctrl.testCheck"
-					  icon-checked="thumb_up"
-					  icon-unchecked="thumb_down"
-					  on-click="$ctrl.testCheck = !$ctrl.testCheck"
-					  title="is ready"></checkbox>
-
-			<pg-button flat icon="'highlight_off'" value="''"
-					   on-click="$ctrl.kickUser(user.Id)"></pg-button>
-		</li>
-	</ul>
+	<div class="user-list">
+		<room-user class="list-item is-selected"
+					  user="$ctrl.currentUser"
+					  on-kick="$ctrl.kickUser(user.Id)"
+					  on-ready="$ctrl.toggleReady(currentUser.ReadyMark)"
+		></room-user>
+		<room-user ng-repeat="user in $ctrl.room.UserDetails"
+					  class="list-item"
+					  user="user"
+		></room-user>
+	</div>
 	<pg-button icon="'airport_shuttle'" value="'start game'"
-			   on-click="$ctrl.startGameRoom()"></pg-button>
+				  on-click="$ctrl.startGameRoom()"></pg-button>
 </div>
