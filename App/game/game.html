@@ -1,3 +1,32 @@
-<span>
-	game here
-</span>
+<svg height="100%" width="100%">
+
+	<image xlink:href="Assets/images/usa-map-mine.png" x="0" y="0" height="1000" width="1600"/>
+
+
+	<line x1="0" y1="0" x2="100%" y2="100%"></line>
+	<line x1="100%" y1="0" x2="0" y2="100%"></line>
+
+
+	<circle ng-repeat="city in $ctrl.cities"
+			  cx="{{city.CoordX}}" cy="{{city.CoordY}}"
+			  fill="{{city.RegionKey}}"
+			  stroke="black"
+			  r="30"
+	></circle>
+
+</svg>
+
+
+<div class="panel" hidden>
+	<h2>cities</h2>
+
+	<div class="list-panel">
+		<ul>
+			<li ng-repeat="city in $ctrl.cities">
+				{{city.Name}} {{city.CoordX}} {{city.CoordY}}
+			</li>
+		</ul>
+	</div>
+
+
+</div>
