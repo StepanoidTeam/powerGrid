@@ -14,7 +14,7 @@
 
 <form class="message-box" ng-submit="$ctrl.sendMessage($ctrl.chatMessage)">
     <pg-button type="'reset'" icon="'arrow_back'"
-               on-click="$ctrl.chatToggle(false)"
+               on-click="$ctrl.toggleChat(false)"
     ></pg-button>
     <pg-input value="$ctrl.chatMessage" on-change="$ctrl.messageChanged(value)"></pg-input>
     <pg-button type="'submit'" icon="'send'"></pg-button>

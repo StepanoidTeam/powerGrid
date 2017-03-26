@@ -35,7 +35,7 @@ var componentController = function ($scope, $timeout, chatService, authService) 
         return '#' + senderId.substr(0, 6);
     }
 
-    ctrl.chatToggle = chatService.chatToggle;
+    ctrl.toggleChat = chatService.toggleChat;
 
     ctrl.chatMessage = 'type message here';
 
