@@ -1,7 +1,7 @@
 'use strict';
 
 var componentController = function ($controller, $location, authService, roomService) {
-	var ctrl = this;
+	const ctrl = this;
 
 	$controller('authCheck', {});
 	$controller('isInRoomCheck', {});
@@ -14,7 +14,7 @@ var componentController = function ($controller, $location, authService, roomSer
 	};
 
 	ctrl.createRoom = function () {
-		var roomName = 'room' + Date.now();
+		const roomName = 'room' + Date.now();
 		roomService.createRoom(roomName).then(function (data) {
 			//creation ok
 			$location.path('/rooms/' + data['Id']);

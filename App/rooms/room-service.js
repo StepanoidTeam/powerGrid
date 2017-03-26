@@ -5,9 +5,7 @@ angular.module('rooms', [])
 	const svc = this;
 
 
-	svc.getRoomList = function (params) {
-		return apiEndpoints.getRoomList(params);
-	};
+	svc.getRoomList = apiEndpoints.getRoomList;
 
 	//todo: client-side API mock
 	svc.getRoom = function (roomId) {
@@ -38,9 +36,7 @@ angular.module('rooms', [])
 	};
 
 
-	svc.startGameRoom = function () {
-		return apiEndpoints.startGameRoom();
-	};
+	svc.startGameRoom =  apiEndpoints.startGameRoom;
 
 
 	

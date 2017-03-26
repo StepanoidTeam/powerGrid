@@ -14,6 +14,7 @@
 			</span>
 
 			<pg-button value="'Join'"
+					   is-disabled="room.IsInGame"
 					   on-click="$ctrl.joinRoom(room.Id)"></pg-button>
 		</li>
 	</ul>
