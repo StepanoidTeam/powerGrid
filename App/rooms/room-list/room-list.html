@@ -2,20 +2,22 @@
 	<h2>
 		Rooms
 		<pg-button value="''" icon="'add_box'"
-				   on-click="$ctrl.createRoom()"></pg-button>
+					  on-click="$ctrl.createRoom()"></pg-button>
 	</h2>
 
-	<ul class="room-list">
-		<li class="list-item" ng-repeat="room in $ctrl.rooms">
-			<span ng-bind="room.Name"></span>
-			<span class="user-count">
+	<div class="room-list-panel">
+		<ul class="room-list">
+			<li class="list-item" ng-repeat="room in $ctrl.rooms">
+				<span ng-bind="room.Name"></span>
+				<span class="user-count">
 				<i class="material-icons">group</i>
 				<span ng-bind="room.UserCount"></span>
 			</span>
 
-			<pg-button value="'Join'"
-					   is-disabled="room.IsInGame"
-					   on-click="$ctrl.joinRoom(room.Id)"></pg-button>
-		</li>
-	</ul>
+				<pg-button value="'Join'"
+							  is-disabled="room.IsInGame"
+							  on-click="$ctrl.joinRoom(room.Id)"></pg-button>
+			</li>
+		</ul>
+	</div>
 </div>

@@ -1,10 +1,23 @@
 room-list {
-	.list-item {
-		.user-count {
-			margin-left: auto;
-			>*{
-				vertical-align: middle;
-			}
-		}
-	}
+
+  .room-list-panel {
+    max-height: 70vh;
+    overflow-y: auto;
+
+    background-color: darken(@global-panel-bg, 10%);
+
+    .scroll-bar(
+      @bg-color: darken(@global-panel-bg,10%);
+      @thumb-color:@global-panel-bg;);
+  }
+
+  .list-item {
+
+    .user-count {
+      margin-left: auto;
+      > * {
+        vertical-align: middle;
+      }
+    }
+  }
 }
