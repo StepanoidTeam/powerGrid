@@ -9,19 +9,13 @@ var componentController = function ($q, $location, authService) {
     };
 
     ctrl.logout = function () {
-        authService.logout().then(function () {
+        authService.logout().then(() => {
             $location.path('/init');
-        });
+        })
     };
 
-
-    // debug
-
-
-    //$q.all([, authService.getPlayerStatus()]).then
-
     ctrl.$onInit = function () {
-        authService.onPlayerStatusChange(function (player) {
+        authService.playerSubject.subscribe(player => {
             if (player) {
                 ctrl.userName = player.Name;
                 isAuth = true;

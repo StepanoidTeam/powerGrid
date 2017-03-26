@@ -1,4 +1,4 @@
-<span ng-show="$ctrl.isAuthorized()">
+<span class="user-auth" ng-show="$ctrl.isAuthorized()">
 	<i class="material-icons">account_circle</i>
 	logged as: {{$ctrl.userName}}
 	<pg-button on-click="$ctrl.logout()" value="'logout'"></pg-button>
