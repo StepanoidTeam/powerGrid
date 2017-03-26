@@ -159,5 +159,74 @@ angular.module('app')
 			return apiRequest('POST', 'CHAT/GetMessages', params);
 		};
 
+
+
+		//GAME
+		//GET /api/Maps
+		svc.getGameMaps = function () {
+			return apiRequest('GET', 'MAPS');
+		};
+
+		//POST /api/Maps/Map
+		svc.getGameMapById = function (mapId) {
+			const params = {
+				"mapId": mapId,
+				"options": {
+					"cities": true,
+					"regions": true,
+					"connectors": true,
+					"cityViewOptions": {
+						"regionKey": true,
+						"regionName": true,
+						"coords": true,
+						"levels": true,
+						"conntectors": true,
+						"connectorViewOptions": {
+							"id": true,
+							"cost": true,
+							"cityKeys": true,
+							"cityNames": true
+						},
+						"id": true,
+						"name": true
+					},
+					"connectorViewOptions": {
+						"id": true,
+						"cost": true,
+						"cityKeys": true,
+						"cityNames": true
+					},
+					"regionViewOptions": {
+						"isLocked": true,
+						"cities": true,
+						"cityViewOptions": {
+							"regionKey": true,
+							"regionName": true,
+							"coords": true,
+							"levels": true,
+							"conntectors": true,
+							"connectorViewOptions": {
+								"id": true,
+								"cost": true,
+								"cityKeys": true,
+								"cityNames": true
+							},
+							"id": true,
+							"name": true
+						},
+						"id": true,
+						"name": true
+					}
+				}
+			};
+
+
+			//regex: (.+),(.+) : (\d+),(\d+)
+
+			return apiRequest('POST', 'MAPS/Map', params);
+		};
+
+
+
 		window.apiSvc = svc;
 	});
