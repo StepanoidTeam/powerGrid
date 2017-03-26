@@ -6,13 +6,12 @@ angular.module('app', [
     'routing',
     'rooms',
     'auth',
+	//'game',
 ])
 
     .run(function () {
         //init stuff goes here
-        console.log('app.js init from ng');
-
-
+        //console.log('app.js init from ng');
     })
 
     .component('app', {
