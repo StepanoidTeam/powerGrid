@@ -25,6 +25,13 @@ angular.module('auth', [])
         svc.playerSubject = new Rx.Subject();
         svc.isLoggedSubject = apiEndpoints.isLoggedSubject;
 
+        svc.currentPlayer = null;
+
+        svc.playerSubject.subscribe(data => {
+            svc.currentPlayer = data && data.data;
+        });
+
+
         svc.getPlayerStatus = function () {
             return apiEndpoints.getPlayerStatus().then(function (player) {
                 svc.playerSubject.next(player);

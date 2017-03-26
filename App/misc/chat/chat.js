@@ -1,7 +1,7 @@
 'use strict';
 
 var componentController = function ($scope, $timeout, chatService, authService) {
-    var ctrl = this;
+    const ctrl = this;
 
     ctrl.chatMessages = [];
 
@@ -9,6 +9,7 @@ var componentController = function ($scope, $timeout, chatService, authService) 
     function messageMapper(message) {
         message.Time = message.Date.toString().split('T')[1];
         message.SenderColor = getSenderColor(message.SenderId);
+        message.isSelf = message.SenderId === (authService.currentPlayer && authService.currentPlayer.Id);
         return message;
     }
 
