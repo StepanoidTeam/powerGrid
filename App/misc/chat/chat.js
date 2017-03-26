@@ -1,33 +1,37 @@
 'use strict';
 
-var componentController = function ($scope, $timeout, chatService) {
+var componentController = function ($scope, $timeout, chatService, authService) {
     var ctrl = this;
 
     ctrl.chatMessages = [];
 
-    function updateChatMessages(chatMessage) {
-        chatMessage.Time = chatMessage.Date.toString().split('T')[1];
-        chatMessage.SenderColor = getSenderColor(chatMessage.SenderId);
 
-        ctrl.chatMessages.push(chatMessage);
+    function messageMapper(message) {
+        message.Time = message.Date.toString().split('T')[1];
+        message.SenderColor = getSenderColor(message.SenderId);
+        return message;
+    }
+
+    function updateChatMessages(message) {
+        ctrl.chatMessages.push(messageMapper(message));
         $scope.$applyAsync();
 
-        $timeout(function() {
+        $timeout(function () {
             const lastItem = document.querySelector('chat ul>li:last-child');
-            if (lastItem)lastItem.scrollIntoView();
+            if (lastItem) lastItem.scrollIntoView();
         }, 0, false);
     }
 
-    function updateChatSystem(systemMessage) {
-        console.info('sys',systemMessage);
+    function updateChatSystem(message) {
+        console.info('sys', message);
     }
 
     chatService.chatMessages.subscribe(updateChatMessages);
 
     chatService.systemMessages.subscribe(updateChatSystem);
 
-    function getSenderColor(senderId){
-        return '#' + senderId.substr(0,6);
+    function getSenderColor(senderId) {
+        return '#' + senderId.substr(0, 6);
     }
 
     ctrl.chatToggle = chatService.chatToggle;
@@ -42,6 +46,15 @@ var componentController = function ($scope, $timeout, chatService) {
         chatService.sendMessage(value);
         ctrl.chatMessage = '';
     };
+
+
+    authService.isLoggedSubject.filter(value => value).subscribe(function () {
+        chatService.getLastMessages()
+            .then(messages => messages.map(messageMapper))
+            .then(messages => {
+                ctrl.chatMessages.push(...messages);
+            });
+    });
 
 };
 

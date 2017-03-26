@@ -9,6 +9,18 @@ angular.module('app')
             }
         );
 
+        svc.getLastMessages = function () {
+            return apiEndpoints.getChatChannels()
+                .then(data => data.data)
+                .then(channels => channels.find(channel => channel.Name === "Global"))
+                .then(channel => channel.Id)
+                .then(channelId => {
+                    return apiEndpoints.getChatMessages(channelId)
+                })
+                .then(data => data.data);
+        };
+
+
         svc.systemMessages = apiWsEndpoints.wsSource.filter(wsData => {
             return wsData.Data !== undefined;
         }).map(wsData => wsData.Data);

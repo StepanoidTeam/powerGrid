@@ -143,5 +143,22 @@ angular.module('app')
             return apiRequest('POST', 'USER/Status', params);
         };
 
+
+        //GET /api/Chat/Channels
+        svc.getChatChannels = function () {
+            return apiRequest('GET', 'CHAT/Channels');
+        };
+
+        //POST /api/Chat/GetMessages
+        svc.getChatMessages = function (channelId) {
+            const params = {
+                "id": channelId,
+                "start": (new Date(new Date() - 1000 * 60 * 60)).toISOString(),
+                "end": (new Date()).toISOString()
+            };
+
+            return apiRequest('POST', 'CHAT/GetMessages', params);
+        };
+
         window.apiSvc = svc;
     });

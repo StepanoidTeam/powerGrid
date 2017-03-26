@@ -23,6 +23,7 @@ angular.module('auth', [])
 
 
         svc.playerSubject = new Rx.Subject();
+        svc.isLoggedSubject = apiEndpoints.isLoggedSubject;
 
         svc.getPlayerStatus = function () {
             return apiEndpoints.getPlayerStatus().then(function (player) {
@@ -42,12 +43,12 @@ angular.module('auth', [])
             console.log('player status changed', data);
         });
 
-        apiEndpoints.isLoggedSubject.distinctUntilChanged().subscribe((data) => {
+        svc.isLoggedSubject.distinctUntilChanged().subscribe((data) => {
             console.log('is logged status changed', data);
         });
 
         svc.onPlayerStatusChange = function (callback) {
-            apiEndpoints.isLoggedSubject.distinctUntilChanged().subscribe(function (isLogged) {
+            svc.isLoggedSubject.distinctUntilChanged().subscribe(function (isLogged) {
                 if (isLogged) {
                     svc.getPlayerStatus().then(callback);
                 } else {
