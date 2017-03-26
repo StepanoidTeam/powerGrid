@@ -14,6 +14,7 @@
 
 	svc.saveToken = function (token) {
 		$cookies.putObject(tokenCookieKey, token);
+		return token;
 	};
 
 	svc.deleteToken = function () {
