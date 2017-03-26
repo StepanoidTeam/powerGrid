@@ -1,6 +1,6 @@
-<span class="user-auth" ng-show="$ctrl.isAuthorized()">
+<span class="user-info" ng-show="$ctrl.isAuthorized()">
 	<i class="material-icons">account_circle</i>
-	logged as: {{$ctrl.userName}}
+	<span ng-bind="$ctrl.userName"></span>
 	<pg-button on-click="$ctrl.logout()" value="'logout'"></pg-button>
 </span>
 <span ng-hide="$ctrl.isAuthorized()">

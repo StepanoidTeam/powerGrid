@@ -1,18 +1,22 @@
 .list-item {
-	@list-item-bg: rgba(0,0,0,0.2);
-	@list-item-border: 2px solid rgba(0,0,0,0.6);
+  @list-item-bg: rgba(0, 0, 0, 0.2);
+  @list-item-bg-selected: rgba(255, 255, 255, 0.2);
+  @list-item-border: 2px solid rgba(0, 0, 0, 0.6);
 
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
 
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	box-sizing: border-box;
-	
-	padding: 10px;
-	margin: 5px;
+  padding: 10px;
+  margin: 5px;
 
-	border: @list-item-border;
-	border-radius: 3px;
-	background-color: @list-item-bg;
-	box-shadow: 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
+  border: @list-item-border;
+  border-radius: 3px;
+  background-color: @list-item-bg;
+  box-shadow: 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+
+  &.is-selected {
+    background-color: @list-item-bg-selected;
+  }
 }
