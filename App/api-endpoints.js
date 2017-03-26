@@ -8,9 +8,9 @@ angular.module('app')
 
         function apiRequest(httpMethod, apiMethod, data) {
 
-            var headers = {authToken: tokenService.getToken()};
+            const headers = {authToken: tokenService.getToken()};
 
-            var url = apiUrl + apiMethod;
+            const url = apiUrl + apiMethod;
 
             return $http({
                 method: httpMethod,//'POST',
@@ -25,7 +25,7 @@ angular.module('app')
 
         function apiResponse(httpResponse) {
             //var isSuccess  = httpResponse.data.isSuccess;
-            var isSuccess = httpResponse.status === 200;//ambigous   && httpResponse.data.status === ok
+            const isSuccess = httpResponse.status === 200;//ambigous   && httpResponse.data.status === ok
 
             /*
              All Possible response statuses:
@@ -57,7 +57,6 @@ angular.module('app')
 
 
         /* USER */
-
         svc.isLoggedSubject = new Rx.Subject();
 
         svc.login = function (userModel) {
@@ -67,12 +66,24 @@ angular.module('app')
                 .then(() => svc.isLoggedSubject.next(true));
         };
 
-
         svc.logout = function () {
             return apiRequest('POST', 'USER/logout')
                 .then(tokenService.deleteToken)
                 .then(() => svc.isLoggedSubject.next(false));
         };
+
+        //GET /api/USER/Status
+        svc.getPlayerStatus = function () {
+            const params = {
+                "gameRoomId": true,
+                "readyMark": true,
+                "id": true,
+                "name": true
+            };
+
+            return apiRequest('POST', 'USER/Status', params);
+        };
+
 
         /* ROOMS */
 
@@ -127,20 +138,6 @@ angular.module('app')
         svc.startGameRoom = function () {
             //todo: change to POST on serv and here
             return apiRequest('GET', 'ROOMS/StartGame');
-        };
-
-
-        //GET /api/USER/Status
-        //Player info
-        svc.getPlayerStatus = function () {
-            const params = {
-                "gameRoomId": true,
-                "readyMark": true,
-                "id": true,
-                "name": true
-            };
-
-            return apiRequest('POST', 'USER/Status', params);
         };
 
 
