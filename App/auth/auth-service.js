@@ -1,17 +1,13 @@
 ﻿'use strict';
 
 angular.module('auth', [])
-    .service('authService', function ($q, $location, apiEndpoints, chatService) {
+    .service('authService', function ($q, $location, apiEndpoints) {
         const svc = this;
 
         svc.login = function (userData) {
-            return apiEndpoints.login(userData).then(function (data) {
-                //todo: do we need this? server should do this instead - check, maybe he does
-                chatService.sendMessage(`${userData.username} logined`);
-            }).catch(function (error) {
-                //error on login
+            return apiEndpoints.login(userData).catch(function (error) {
                 console.warn('login failed');
-                return svc.logout()//.then(() =>$location.path('init'));;
+                return svc.logout();
             });
         };
 
@@ -23,51 +19,46 @@ angular.module('auth', [])
 
 
         svc.playerSubject = new Rx.Subject();
-        svc.isLoggedSubject = apiEndpoints.isLoggedSubject;
+        svc.isLoggedSubject = apiEndpoints.isLoggedSubject.distinctUntilChanged();
 
         svc.currentPlayer = null;
 
-        svc.playerSubject.subscribe(data => {
-            svc.currentPlayer = data && data.data;
+        svc.playerSubject.subscribe(player => {
+            svc.currentPlayer = player;
         });
 
 
         svc.getPlayerStatus = function () {
-            return apiEndpoints.getPlayerStatus().then(function (player) {
-                svc.playerSubject.next(player);
-                //console.info('status ok', player);
-            }, function (error) {
-                console.warn('failed to login', error);
-                svc.playerSubject.next(null);
-                svc.logout();
-                $location.path('init');
-            });
+            return apiEndpoints.getPlayerStatus()
+                .then(function (response) {
+                    svc.playerSubject.next(response.data);
+                }, function (error) {
+                    svc.playerSubject.next(null);
+                    console.warn('failed to login', error);
+                    svc.logout();
+                    $location.path('init');
+                });
         };
+
+        /////looks shitty
+        svc.isLoggedSubject.subscribe(function (isLogged) {
+            if (isLogged) {
+                svc.getPlayerStatus();
+            } else {
+                svc.playerSubject.next(null);
+            }
+        });
 
 
         //debug
-        svc.playerSubject.distinctUntilChanged(data => data && data.data && data.data.Id).subscribe((data) => {
-            console.log('player status changed', data);
+        svc.playerSubject.distinctUntilChanged(player => player && player.Id).subscribe(player => {
+            console.log('player status changed', player);
         });
 
-        svc.isLoggedSubject.distinctUntilChanged().subscribe((data) => {
+        svc.isLoggedSubject.subscribe((data) => {
             console.log('is logged status changed', data);
         });
 
-        svc.onPlayerStatusChange = function (callback) {
-            svc.isLoggedSubject.distinctUntilChanged().subscribe(function (isLogged) {
-                if (isLogged) {
-                    svc.getPlayerStatus().then(callback);
-                } else {
-                    callback(isLogged);
-                }
-            });
-        };
 
-        svc.$onInit = function () {
-            //svc.getPlayerStatus().then((e)=>console.info(e));
-        };
-
-
-        //svc.$onInit();
+        svc.$onInit = function () {};
     });
