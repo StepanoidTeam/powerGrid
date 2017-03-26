@@ -1,16 +1,15 @@
 'use strict';
 
-var componentController = function ($controller, $location, authService, roomService) {
+var componentController = function ($controller, $location, authService, roomService, errorHandler) {
 	const ctrl = this;
 
 	$controller('authCheck', {});
 	$controller('isInRoomCheck', {});
-	
 
 	ctrl.updateRooms = function () {
 		roomService.getRoomList().then(function (rooms) {
-			ctrl.rooms = rooms;
-		});
+			ctrl.rooms = rooms.filter(room => !room.IsInGame);
+		}).catch(errorHandler);
 	};
 
 	ctrl.createRoom = function () {
@@ -18,20 +17,16 @@ var componentController = function ($controller, $location, authService, roomSer
 		roomService.createRoom(roomName).then(function (data) {
 			//creation ok
 			$location.path('/rooms/' + data['Id']);
-		}, function (error) {
-			console.log('room creation error', error);
-			ctrl.updateRooms();
-		});
+		}).catch(errorHandler)
+			.then(ctrl.updateRooms);
 	};
 
 	ctrl.joinRoom = function (roomId) {
 		roomService.joinRoom(roomId).then(function (data) {
 			//creation ok
 			$location.path('/rooms/' + data['Id']);
-		}, function (error) {
-			console.warn(error.message);
-			ctrl.updateRooms();
-		});
+		}).catch(errorHandler)
+			.then(ctrl.updateRooms);
 	};
 
 
