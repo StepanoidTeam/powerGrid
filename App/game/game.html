@@ -3,16 +3,20 @@
 	<image xlink:href="Assets/images/usa-map-mine.png" x="0" y="0" height="1000" width="1600"/>
 
 
-	<line x1="0" y1="0" x2="100%" y2="100%"></line>
-	<line x1="100%" y1="0" x2="0" y2="100%"></line>
-
+	<polygon class="region purple" points="10,10 645,20 685,190 890,290 890,375 515,460 450,300 0,300"></polygon>
 
 	<circle ng-repeat="city in $ctrl.cities"
+			  class="city"
 			  cx="{{city.CoordX}}" cy="{{city.CoordY}}"
 			  fill="{{city.RegionKey}}"
 			  stroke="black"
 			  r="30"
 	></circle>
+
+	<text ng-repeat="city in $ctrl.cities"
+			x="{{city.CoordX}}" y="{{city.CoordY}}">
+		{{ city.Name }}
+	</text>
 
 </svg>
 
