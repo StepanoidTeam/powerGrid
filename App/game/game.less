@@ -23,7 +23,7 @@ game {
       opacity: 0.7;
     }
 
-    .region.purple {
+    .region {
       stroke: fadeout(white, 50%);
       stroke-width: 2;
       fill: transparent;
@@ -40,8 +40,12 @@ game {
 
   }
 
-  svg .region:hover {
+  svg .region.purple:hover {
     fill: fadeout(violet, 50%);
+  }
+
+  svg .region.teal:hover {
+    fill: fadeout(teal, 50%);
   }
 
 }

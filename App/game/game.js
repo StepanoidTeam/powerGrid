@@ -18,7 +18,6 @@ var componentController = function ($location, gameService) {
 		gameService.getCities()
 			.then(cities => {
 				ctrl.cities = cities;
-				console.log(cities);
 			});
 
 

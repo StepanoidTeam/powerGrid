@@ -3,7 +3,9 @@
 	<image xlink:href="Assets/images/usa-map-mine.png" x="0" y="0" height="1000" width="1600"/>
 
 
-	<polygon class="region purple" points="10,10 645,20 685,190 890,290 890,375 515,460 450,300 0,300"></polygon>
+	<polygon ng-repeat="region in $ctrl.regions"
+		class="region" ng-class="region.Id"
+				points="{{ region.Points }}"></polygon>
 
 	<circle ng-repeat="city in $ctrl.cities"
 			  class="city"
