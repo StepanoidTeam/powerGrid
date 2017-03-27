@@ -17,12 +17,31 @@ game {
     top: 0px;
     left: 0px;
 
-    z-index: -1;
+    //z-index: -1;
 
-    line {
-      stroke: rgba(255, 0, 0,0.2);
-      stroke-width: 2;
+    .city{
+      opacity: 0.7;
     }
+
+    .region.purple {
+      stroke: fadeout(white, 50%);
+      stroke-width: 2;
+      fill: transparent;
+
+    }
+
+
+    text{
+      font-family: 'Arial Black';
+      font-size: 18px;
+      stroke: #000000;
+      fill: #ffffff;
+    }
+
+  }
+
+  svg .region:hover {
+    fill: fadeout(violet, 50%);
   }
 
 }
