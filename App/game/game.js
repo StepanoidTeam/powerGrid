@@ -27,6 +27,12 @@ var componentController = function ($location, gameService) {
 				console.log(regions);
 			});
 
+		gameService.getConnectors()
+			.then(connectors=> {
+				ctrl.connectors = connectors;
+				console.log(connectors);
+			})
+
 	};
 };
 
