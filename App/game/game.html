@@ -5,18 +5,18 @@
 
 	<polygon ng-repeat="region in $ctrl.regions"
 		class="region" ng-class="region.Id"
-				points="{{ region.Points }}"></polygon>
+				ng-attr-points="{{ region.Points }}"></polygon>
 
 	<circle ng-repeat="city in $ctrl.cities"
 			  class="city"
-			  cx="{{city.CoordX}}" cy="{{city.CoordY}}"
-			  fill="{{city.RegionKey}}"
+			  ng-attr-cx="{{city.CoordX}}" ng-attr-cy="{{city.CoordY}}"
+			  ng-attr-fill="{{city.RegionKey}}"
 			  stroke="black"
 			  r="30"
 	></circle>
 
 	<text ng-repeat="city in $ctrl.cities"
-			x="{{city.CoordX}}" y="{{city.CoordY}}">
+			ng-attr-x="{{city.CoordX}}" ng-attr-y="{{city.CoordY}}">
 		{{ city.Name }}
 	</text>
 
