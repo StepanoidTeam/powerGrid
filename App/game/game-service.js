@@ -29,24 +29,7 @@ angular.module('app')
 
 
 		svc.getConnectors = function () {
-			return Promise.resolve([
-				{
-					"Id": "denver_omaha",
-					"Cost": 7,
-					"City1Key": "omaha",
-					"City2Key": "denver",
-					"City1Name": "Omaha",
-					"City2Name": "Denver"
-				},
-				{
-					"Id": "denver_omaha",
-					"Cost": 7,
-					"City1Key": "omaha",
-					"City2Key": "denver",
-					"City1Name": "Omaha",
-					"City2Name": "Denver"
-				},
-			]);
+			return fetch('Assets/connectors.json', {method: 'GET'}).then(response => response.json());
 		};
 
 	});
