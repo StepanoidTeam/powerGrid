@@ -1,10 +1,17 @@
 <svg height="100%" width="100%">
 
-	<image xlink:href="Assets/images/usa-map-mine.png" x="0" y="0" height="1000" width="1600"/>
+	<image xlink:href="Assets/images/usa-map-mine.png" x="0" y="0" height="1000" width="1600" ></image>
 
+	<line ng-repeat="connector in $ctrl.connectors"
+			class="connector"
+			ng-attr-x1="{{$ctrl.getCityCoords(connector.City1Key).CoordX}}"
+			ng-attr-y1="{{$ctrl.getCityCoords(connector.City1Key).CoordY}}"
+			ng-attr-x2="{{$ctrl.getCityCoords(connector.City2Key).CoordX}}"
+			ng-attr-y2="{{$ctrl.getCityCoords(connector.City2Key).CoordY}}"
+	></line>
 
 	<polygon ng-repeat="region in $ctrl.regions"
-		class="region" ng-class="region.Id"
+				class="region" ng-class="region.Id"
 				ng-attr-points="{{ region.Points }}"></polygon>
 
 	<circle ng-repeat="city in $ctrl.cities"
@@ -19,6 +26,9 @@
 			ng-attr-x="{{city.CoordX}}" ng-attr-y="{{city.CoordY}}">
 		{{ city.Name }}
 	</text>
+
+
+
 
 </svg>
 
