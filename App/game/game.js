@@ -1,8 +1,7 @@
 'use strict';
 
-var componentController = function ($location, gameService) {
+var componentController = function ($scope, $location, gameService) {
 	const ctrl = this;
-
 
 	ctrl.$onInit = function () {
 
@@ -15,30 +14,25 @@ var componentController = function ($location, gameService) {
 
 		 });*/
 
-		gameService.getCities()
-			.then(cities => {
-				ctrl.cities = cities;
-				console.log(cities);
-			});
-
-
-		gameService.getRegions()
-			.then(regions => {
-				ctrl.regions = regions;
-				console.log(regions);
-			});
-
-		gameService.getConnectors()
-			.then(connectors => {
-				ctrl.connectors = connectors;
-				console.log(connectors);
-			})
+		Promise.all([gameService.getCities(), gameService.getRegions(), gameService.getConnectors()]).then(results => {
+			ctrl.cities = results[0];
+			ctrl.regions = results[1];
+			ctrl.connectors = results[2];
+			$scope.$applyAsync();
+		});
 	};
 
 
 	ctrl.getCityCoords = function (cityId) {
-		return ctrl.cities && ctrl.cities.find(x => x.Id === cityId);
-	}
+		return ctrl.cities.find(x => x.Id === cityId);
+	};
+
+	ctrl.getCostCoords = function (connector) {
+		const x = (ctrl.getCityCoords(connector.City1Key).CoordX + ctrl.getCityCoords(connector.City2Key).CoordX) / 2;
+		const y = (ctrl.getCityCoords(connector.City1Key).CoordY + ctrl.getCityCoords(connector.City2Key).CoordY) / 2;
+
+		return {CoordX: x, CoordY: y};
+	};
 
 };
 

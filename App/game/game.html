@@ -27,6 +27,13 @@
 		{{ city.Name }}
 	</text>
 
+	<text ng-repeat="connector in $ctrl.connectors"
+			class="cost"
+			ng-attr-x="{{ connector && $ctrl.getCostCoords(connector).CoordX }}"
+			ng-attr-y="{{ connector && $ctrl.getCostCoords(connector).CoordY }}">
+		{{ connector.Cost }}
+	</text>
+
 
 
 
