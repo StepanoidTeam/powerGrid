@@ -1,3 +1,6 @@
+(.+),(.+),(\d+)
+{ "Id": "[$1]_TO_[$2]", "Cost": $3, "City1Key": "$1", "City2Key": "$2", "City1Name": "$1", "City2Name": "$2"},
+
 portland,seattle,3
 portland,boise,13
 portland,sanfrancisco,24

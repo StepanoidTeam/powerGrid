@@ -1,0 +1,698 @@
+[
+  {
+    "Id": "[portland]_TO_[seattle]",
+    "Cost": 3,
+    "City1Key": "portland",
+    "City2Key": "seattle",
+    "City1Name": "portland",
+    "City2Name": "seattle"
+  },
+  {
+    "Id": "[portland]_TO_[boise]",
+    "Cost": 13,
+    "City1Key": "portland",
+    "City2Key": "boise",
+    "City1Name": "portland",
+    "City2Name": "boise"
+  },
+  {
+    "Id": "[portland]_TO_[sanfrancisco]",
+    "Cost": 24,
+    "City1Key": "portland",
+    "City2Key": "sanfrancisco",
+    "City1Name": "portland",
+    "City2Name": "sanfrancisco"
+  },
+  {
+    "Id": "[seattle]_TO_[boise]",
+    "Cost": 12,
+    "City1Key": "seattle",
+    "City2Key": "boise",
+    "City1Name": "seattle",
+    "City2Name": "boise"
+  },
+  {
+    "Id": "[seattle]_TO_[billings]",
+    "Cost": 9,
+    "City1Key": "seattle",
+    "City2Key": "billings",
+    "City1Name": "seattle",
+    "City2Name": "billings"
+  },
+  {
+    "Id": "[boise]_TO_[billings]",
+    "Cost": 12,
+    "City1Key": "boise",
+    "City2Key": "billings",
+    "City1Name": "boise",
+    "City2Name": "billings"
+  },
+  {
+    "Id": "[boise]_TO_[cheyenne]",
+    "Cost": 24,
+    "City1Key": "boise",
+    "City2Key": "cheyenne",
+    "City1Name": "boise",
+    "City2Name": "cheyenne"
+  },
+  {
+    "Id": "[boise]_TO_[sanfrancisco]",
+    "Cost": 23,
+    "City1Key": "boise",
+    "City2Key": "sanfrancisco",
+    "City1Name": "boise",
+    "City2Name": "sanfrancisco"
+  },
+  {
+    "Id": "[boise]_TO_[saltlakecity]",
+    "Cost": 8,
+    "City1Key": "boise",
+    "City2Key": "saltlakecity",
+    "City1Name": "boise",
+    "City2Name": "saltlakecity"
+  },
+  {
+    "Id": "[billings]_TO_[fargo]",
+    "Cost": 17,
+    "City1Key": "billings",
+    "City2Key": "fargo",
+    "City1Name": "billings",
+    "City2Name": "fargo"
+  },
+  {
+    "Id": "[billings]_TO_[minneapolis]",
+    "Cost": 18,
+    "City1Key": "billings",
+    "City2Key": "minneapolis",
+    "City1Name": "billings",
+    "City2Name": "minneapolis"
+  },
+  {
+    "Id": "[billings]_TO_[cheyenne]",
+    "Cost": 9,
+    "City1Key": "billings",
+    "City2Key": "cheyenne",
+    "City1Name": "billings",
+    "City2Name": "cheyenne"
+  },
+  {
+    "Id": "[denver]_TO_[cheyenne]",
+    "Cost": 0,
+    "City1Key": "denver",
+    "City2Key": "cheyenne",
+    "City1Name": "denver",
+    "City2Name": "cheyenne"
+  },
+  {
+    "Id": "[denver]_TO_[saltlakecity]",
+    "Cost": 21,
+    "City1Key": "denver",
+    "City2Key": "saltlakecity",
+    "City1Name": "denver",
+    "City2Name": "saltlakecity"
+  },
+  {
+    "Id": "[denver]_TO_[santafe]",
+    "Cost": 13,
+    "City1Key": "denver",
+    "City2Key": "santafe",
+    "City1Name": "denver",
+    "City2Name": "santafe"
+  },
+  {
+    "Id": "[denver]_TO_[kansascity]",
+    "Cost": 16,
+    "City1Key": "denver",
+    "City2Key": "kansascity",
+    "City1Name": "denver",
+    "City2Name": "kansascity"
+  },
+  {
+    "Id": "[cheyenne]_TO_[minneapolis]",
+    "Cost": 18,
+    "City1Key": "cheyenne",
+    "City2Key": "minneapolis",
+    "City1Name": "cheyenne",
+    "City2Name": "minneapolis"
+  },
+  {
+    "Id": "[cheyenne]_TO_[omaha]",
+    "Cost": 14,
+    "City1Key": "cheyenne",
+    "City2Key": "omaha",
+    "City1Name": "cheyenne",
+    "City2Name": "omaha"
+  },
+  {
+    "Id": "[omaha]_TO_[minneapolis]",
+    "Cost": 8,
+    "City1Key": "omaha",
+    "City2Key": "minneapolis",
+    "City1Name": "omaha",
+    "City2Name": "minneapolis"
+  },
+  {
+    "Id": "[omaha]_TO_[chicago]",
+    "Cost": 13,
+    "City1Key": "omaha",
+    "City2Key": "chicago",
+    "City1Name": "omaha",
+    "City2Name": "chicago"
+  },
+  {
+    "Id": "[omaha]_TO_[kansascity]",
+    "Cost": 5,
+    "City1Key": "omaha",
+    "City2Key": "kansascity",
+    "City1Name": "omaha",
+    "City2Name": "kansascity"
+  },
+  {
+    "Id": "[sanfrancisco]_TO_[saltlakecity]",
+    "Cost": 27,
+    "City1Key": "sanfrancisco",
+    "City2Key": "saltlakecity",
+    "City1Name": "sanfrancisco",
+    "City2Name": "saltlakecity"
+  },
+  {
+    "Id": "[sanfrancisco]_TO_[lasvegas]",
+    "Cost": 14,
+    "City1Key": "sanfrancisco",
+    "City2Key": "lasvegas",
+    "City1Name": "sanfrancisco",
+    "City2Name": "lasvegas"
+  },
+  {
+    "Id": "[sanfrancisco]_TO_[losangeles]",
+    "Cost": 9,
+    "City1Key": "sanfrancisco",
+    "City2Key": "losangeles",
+    "City1Name": "sanfrancisco",
+    "City2Name": "losangeles"
+  },
+  {
+    "Id": "[saltlakecity]_TO_[lasvegas]",
+    "Cost": 18,
+    "City1Key": "saltlakecity",
+    "City2Key": "lasvegas",
+    "City1Name": "saltlakecity",
+    "City2Name": "lasvegas"
+  },
+  {
+    "Id": "[saltlakecity]_TO_[santafe]",
+    "Cost": 28,
+    "City1Key": "saltlakecity",
+    "City2Key": "santafe",
+    "City1Name": "saltlakecity",
+    "City2Name": "santafe"
+  },
+  {
+    "Id": "[lasvegas]_TO_[losangeles]",
+    "Cost": 9,
+    "City1Key": "lasvegas",
+    "City2Key": "losangeles",
+    "City1Name": "lasvegas",
+    "City2Name": "losangeles"
+  },
+  {
+    "Id": "[lasvegas]_TO_[sandiego]",
+    "Cost": 9,
+    "City1Key": "lasvegas",
+    "City2Key": "sandiego",
+    "City1Name": "lasvegas",
+    "City2Name": "sandiego"
+  },
+  {
+    "Id": "[lasvegas]_TO_[phoenix]",
+    "Cost": 15,
+    "City1Key": "lasvegas",
+    "City2Key": "phoenix",
+    "City1Name": "lasvegas",
+    "City2Name": "phoenix"
+  },
+  {
+    "Id": "[lasvegas]_TO_[santafe]",
+    "Cost": 27,
+    "City1Key": "lasvegas",
+    "City2Key": "santafe",
+    "City1Name": "lasvegas",
+    "City2Name": "santafe"
+  },
+  {
+    "Id": "[losangeles]_TO_[sandiego]",
+    "Cost": 3,
+    "City1Key": "losangeles",
+    "City2Key": "sandiego",
+    "City1Name": "losangeles",
+    "City2Name": "sandiego"
+  },
+  {
+    "Id": "[sandiego]_TO_[phoenix]",
+    "Cost": 14,
+    "City1Key": "sandiego",
+    "City2Key": "phoenix",
+    "City1Name": "sandiego",
+    "City2Name": "phoenix"
+  },
+  {
+    "Id": "[phoenix]_TO_[santafe]",
+    "Cost": 18,
+    "City1Key": "phoenix",
+    "City2Key": "santafe",
+    "City1Name": "phoenix",
+    "City2Name": "santafe"
+  },
+  {
+    "Id": "[santafe]_TO_[kansascity]",
+    "Cost": 16,
+    "City1Key": "santafe",
+    "City2Key": "kansascity",
+    "City1Name": "santafe",
+    "City2Name": "kansascity"
+  },
+  {
+    "Id": "[santafe]_TO_[oklahomacity]",
+    "Cost": 15,
+    "City1Key": "santafe",
+    "City2Key": "oklahomacity",
+    "City1Name": "santafe",
+    "City2Name": "oklahomacity"
+  },
+  {
+    "Id": "[santafe]_TO_[dallas]",
+    "Cost": 16,
+    "City1Key": "santafe",
+    "City2Key": "dallas",
+    "City1Name": "santafe",
+    "City2Name": "dallas"
+  },
+  {
+    "Id": "[santafe]_TO_[houston]",
+    "Cost": 21,
+    "City1Key": "santafe",
+    "City2Key": "houston",
+    "City1Name": "santafe",
+    "City2Name": "houston"
+  },
+  {
+    "Id": "[houston]_TO_[dallas]",
+    "Cost": 5,
+    "City1Key": "houston",
+    "City2Key": "dallas",
+    "City1Name": "houston",
+    "City2Name": "dallas"
+  },
+  {
+    "Id": "[houston]_TO_[neworleans]",
+    "Cost": 8,
+    "City1Key": "houston",
+    "City2Key": "neworleans",
+    "City1Name": "houston",
+    "City2Name": "neworleans"
+  },
+  {
+    "Id": "[dallas]_TO_[neworleans]",
+    "Cost": 12,
+    "City1Key": "dallas",
+    "City2Key": "neworleans",
+    "City1Name": "dallas",
+    "City2Name": "neworleans"
+  },
+  {
+    "Id": "[dallas]_TO_[memphis]",
+    "Cost": 12,
+    "City1Key": "dallas",
+    "City2Key": "memphis",
+    "City1Name": "dallas",
+    "City2Name": "memphis"
+  },
+  {
+    "Id": "[dallas]_TO_[oklahomacity]",
+    "Cost": 3,
+    "City1Key": "dallas",
+    "City2Key": "oklahomacity",
+    "City1Name": "dallas",
+    "City2Name": "oklahomacity"
+  },
+  {
+    "Id": "[neworleans]_TO_[birmingham]",
+    "Cost": 11,
+    "City1Key": "neworleans",
+    "City2Key": "birmingham",
+    "City1Name": "neworleans",
+    "City2Name": "birmingham"
+  },
+  {
+    "Id": "[neworleans]_TO_[memphis]",
+    "Cost": 7,
+    "City1Key": "neworleans",
+    "City2Key": "memphis",
+    "City1Name": "neworleans",
+    "City2Name": "memphis"
+  },
+  {
+    "Id": "[neworleans]_TO_[jacksonville]",
+    "Cost": 16,
+    "City1Key": "neworleans",
+    "City2Key": "jacksonville",
+    "City1Name": "neworleans",
+    "City2Name": "jacksonville"
+  },
+  {
+    "Id": "[birmingham]_TO_[memphis]",
+    "Cost": 6,
+    "City1Key": "birmingham",
+    "City2Key": "memphis",
+    "City1Name": "birmingham",
+    "City2Name": "memphis"
+  },
+  {
+    "Id": "[birmingham]_TO_[jacksonville]",
+    "Cost": 9,
+    "City1Key": "birmingham",
+    "City2Key": "jacksonville",
+    "City1Name": "birmingham",
+    "City2Name": "jacksonville"
+  },
+  {
+    "Id": "[birmingham]_TO_[atlanta]",
+    "Cost": 3,
+    "City1Key": "birmingham",
+    "City2Key": "atlanta",
+    "City1Name": "birmingham",
+    "City2Name": "atlanta"
+  },
+  {
+    "Id": "[memphis]_TO_[oklahomacity]",
+    "Cost": 14,
+    "City1Key": "memphis",
+    "City2Key": "oklahomacity",
+    "City1Name": "memphis",
+    "City2Name": "oklahomacity"
+  },
+  {
+    "Id": "[memphis]_TO_[kansascity]",
+    "Cost": 12,
+    "City1Key": "memphis",
+    "City2Key": "kansascity",
+    "City1Name": "memphis",
+    "City2Name": "kansascity"
+  },
+  {
+    "Id": "[memphis]_TO_[st.louis]",
+    "Cost": 7,
+    "City1Key": "memphis",
+    "City2Key": "st.louis",
+    "City1Name": "memphis",
+    "City2Name": "st.louis"
+  },
+  {
+    "Id": "[oklahomacity]_TO_[kansascity]",
+    "Cost": 8,
+    "City1Key": "oklahomacity",
+    "City2Key": "kansascity",
+    "City1Name": "oklahomacity",
+    "City2Name": "kansascity"
+  },
+  {
+    "Id": "[kansascity]_TO_[st.louis]",
+    "Cost": 6,
+    "City1Key": "kansascity",
+    "City2Key": "st.louis",
+    "City1Name": "kansascity",
+    "City2Name": "st.louis"
+  },
+  {
+    "Id": "[kansascity]_TO_[chicago]",
+    "Cost": 8,
+    "City1Key": "kansascity",
+    "City2Key": "chicago",
+    "City1Name": "kansascity",
+    "City2Name": "chicago"
+  },
+  {
+    "Id": "[fargo]_TO_[minneapolis]",
+    "Cost": 6,
+    "City1Key": "fargo",
+    "City2Key": "minneapolis",
+    "City1Name": "fargo",
+    "City2Name": "minneapolis"
+  },
+  {
+    "Id": "[fargo]_TO_[duluth]",
+    "Cost": 6,
+    "City1Key": "fargo",
+    "City2Key": "duluth",
+    "City1Name": "fargo",
+    "City2Name": "duluth"
+  },
+  {
+    "Id": "[minneapolis]_TO_[duluth]",
+    "Cost": 5,
+    "City1Key": "minneapolis",
+    "City2Key": "duluth",
+    "City1Name": "minneapolis",
+    "City2Name": "duluth"
+  },
+  {
+    "Id": "[minneapolis]_TO_[chicago]",
+    "Cost": 8,
+    "City1Key": "minneapolis",
+    "City2Key": "chicago",
+    "City1Name": "minneapolis",
+    "City2Name": "chicago"
+  },
+  {
+    "Id": "[duluth]_TO_[chicago]",
+    "Cost": 12,
+    "City1Key": "duluth",
+    "City2Key": "chicago",
+    "City1Name": "duluth",
+    "City2Name": "chicago"
+  },
+  {
+    "Id": "[duluth]_TO_[detroit]",
+    "Cost": 15,
+    "City1Key": "duluth",
+    "City2Key": "detroit",
+    "City1Name": "duluth",
+    "City2Name": "detroit"
+  },
+  {
+    "Id": "[chicago]_TO_[st.louis]",
+    "Cost": 10,
+    "City1Key": "chicago",
+    "City2Key": "st.louis",
+    "City1Name": "chicago",
+    "City2Name": "st.louis"
+  },
+  {
+    "Id": "[chicago]_TO_[cincinnati]",
+    "Cost": 7,
+    "City1Key": "chicago",
+    "City2Key": "cincinnati",
+    "City1Name": "chicago",
+    "City2Name": "cincinnati"
+  },
+  {
+    "Id": "[chicago]_TO_[detroit]",
+    "Cost": 7,
+    "City1Key": "chicago",
+    "City2Key": "detroit",
+    "City1Name": "chicago",
+    "City2Name": "detroit"
+  },
+  {
+    "Id": "[st.louis]_TO_[cincinnati]",
+    "Cost": 12,
+    "City1Key": "st.louis",
+    "City2Key": "cincinnati",
+    "City1Name": "st.louis",
+    "City2Name": "cincinnati"
+  },
+  {
+    "Id": "[st.louis]_TO_[atlanta]",
+    "Cost": 12,
+    "City1Key": "st.louis",
+    "City2Key": "atlanta",
+    "City1Name": "st.louis",
+    "City2Name": "atlanta"
+  },
+  {
+    "Id": "[cincinnati]_TO_[knoxville]",
+    "Cost": 6,
+    "City1Key": "cincinnati",
+    "City2Key": "knoxville",
+    "City1Name": "cincinnati",
+    "City2Name": "knoxville"
+  },
+  {
+    "Id": "[cincinnati]_TO_[detroit]",
+    "Cost": 4,
+    "City1Key": "cincinnati",
+    "City2Key": "detroit",
+    "City1Name": "cincinnati",
+    "City2Name": "detroit"
+  },
+  {
+    "Id": "[cincinnati]_TO_[pittsburgh]",
+    "Cost": 7,
+    "City1Key": "cincinnati",
+    "City2Key": "pittsburgh",
+    "City1Name": "cincinnati",
+    "City2Name": "pittsburgh"
+  },
+  {
+    "Id": "[cincinnati]_TO_[raleigh]",
+    "Cost": 15,
+    "City1Key": "cincinnati",
+    "City2Key": "raleigh",
+    "City1Name": "cincinnati",
+    "City2Name": "raleigh"
+  },
+  {
+    "Id": "[knoxville]_TO_[atlanta]",
+    "Cost": 5,
+    "City1Key": "knoxville",
+    "City2Key": "atlanta",
+    "City1Name": "knoxville",
+    "City2Name": "atlanta"
+  },
+  {
+    "Id": "[detroit]_TO_[buffalo]",
+    "Cost": 7,
+    "City1Key": "detroit",
+    "City2Key": "buffalo",
+    "City1Name": "detroit",
+    "City2Name": "buffalo"
+  },
+  {
+    "Id": "[detroit]_TO_[pittsburgh]",
+    "Cost": 6,
+    "City1Key": "detroit",
+    "City2Key": "pittsburgh",
+    "City1Name": "detroit",
+    "City2Name": "pittsburgh"
+  },
+  {
+    "Id": "[buffalo]_TO_[pittsburgh]",
+    "Cost": 7,
+    "City1Key": "buffalo",
+    "City2Key": "pittsburgh",
+    "City1Name": "buffalo",
+    "City2Name": "pittsburgh"
+  },
+  {
+    "Id": "[buffalo]_TO_[newyork]",
+    "Cost": 8,
+    "City1Key": "buffalo",
+    "City2Key": "newyork",
+    "City1Name": "buffalo",
+    "City2Name": "newyork"
+  },
+  {
+    "Id": "[pittsburgh]_TO_[washington]",
+    "Cost": 6,
+    "City1Key": "pittsburgh",
+    "City2Key": "washington",
+    "City1Name": "pittsburgh",
+    "City2Name": "washington"
+  },
+  {
+    "Id": "[pittsburgh]_TO_[raleigh]",
+    "Cost": 7,
+    "City1Key": "pittsburgh",
+    "City2Key": "raleigh",
+    "City1Name": "pittsburgh",
+    "City2Name": "raleigh"
+  },
+  {
+    "Id": "[boston]_TO_[newyork]",
+    "Cost": 3,
+    "City1Key": "boston",
+    "City2Key": "newyork",
+    "City1Name": "boston",
+    "City2Name": "newyork"
+  },
+  {
+    "Id": "[newyork]_TO_[philadelphia]",
+    "Cost": 0,
+    "City1Key": "newyork",
+    "City2Key": "philadelphia",
+    "City1Name": "newyork",
+    "City2Name": "philadelphia"
+  },
+  {
+    "Id": "[philadelphia]_TO_[washington]",
+    "Cost": 3,
+    "City1Key": "philadelphia",
+    "City2Key": "washington",
+    "City1Name": "philadelphia",
+    "City2Name": "washington"
+  },
+  {
+    "Id": "[washington]_TO_[norfolk]",
+    "Cost": 5,
+    "City1Key": "washington",
+    "City2Key": "norfolk",
+    "City1Name": "washington",
+    "City2Name": "norfolk"
+  },
+  {
+    "Id": "[norfolk]_TO_[raleigh]",
+    "Cost": 3,
+    "City1Key": "norfolk",
+    "City2Key": "raleigh",
+    "City1Name": "norfolk",
+    "City2Name": "raleigh"
+  },
+  {
+    "Id": "[raleigh]_TO_[atlanta]",
+    "Cost": 7,
+    "City1Key": "raleigh",
+    "City2Key": "atlanta",
+    "City1Name": "raleigh",
+    "City2Name": "atlanta"
+  },
+  {
+    "Id": "[raleigh]_TO_[savannah]",
+    "Cost": 7,
+    "City1Key": "raleigh",
+    "City2Key": "savannah",
+    "City1Name": "raleigh",
+    "City2Name": "savannah"
+  },
+  {
+    "Id": "[atlanta]_TO_[savannah]",
+    "Cost": 7,
+    "City1Key": "atlanta",
+    "City2Key": "savannah",
+    "City1Name": "atlanta",
+    "City2Name": "savannah"
+  },
+  {
+    "Id": "[savannah]_TO_[jacksonville]",
+    "Cost": 0,
+    "City1Key": "savannah",
+    "City2Key": "jacksonville",
+    "City1Name": "savannah",
+    "City2Name": "jacksonville"
+  },
+  {
+    "Id": "[jacksonville]_TO_[tampa]",
+    "Cost": 4,
+    "City1Key": "jacksonville",
+    "City2Key": "tampa",
+    "City1Name": "jacksonville",
+    "City2Name": "tampa"
+  },
+  {
+    "Id": "[tampa]_TO_[miami]",
+    "Cost": 4,
+    "City1Key": "tampa",
+    "City2Key": "miami",
+    "City1Name": "tampa",
+    "City2Name": "miami"
+  }
+]
