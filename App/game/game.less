@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Teko:700');
+
 game {
   .list-panel {
     max-height: 70vh;
@@ -19,9 +21,7 @@ game {
 
     //z-index: -1;
 
-    .city {
-      opacity: 0.7;
-    }
+
 
     .region {
       stroke: fadeout(white, 50%);
@@ -30,11 +30,46 @@ game {
 
     }
 
-    text {
-      font-family: 'Arial Black';
-      font-size: 18px;
-      stroke: #000000;
-      fill: #ffffff;
+    .connector {
+      stroke: #e3e3e3;
+      stroke-width: 15px;
+    }
+
+    .city-marker {
+      opacity: 0.7;
+      stroke: black;
+      stroke-width:2px;
+      r: 30px;
+    }
+
+    .city-name{
+      font-family: 'Teko', sans-serif;
+      font-size: 1.5em;
+      text-anchor: middle;
+      alignment-baseline:middle;
+      fill: white;
+
+      stroke: black;
+      stroke-width: 1px;
+    }
+
+    .cost-marker{
+      fill: gray;
+      stroke: black;
+      stroke-width: 2px;
+      r: 16px;
+    }
+
+    .cost-text{
+      font-family: 'Teko', sans-serif;
+      font-size: 24px;
+      text-anchor: middle;
+      alignment-baseline:middle;
+      fill: white;
+
+      stroke: rgba(0, 0, 0, 0.7);
+      stroke-width: 2px;
+
     }
 
   }
@@ -45,16 +80,6 @@ game {
 
   svg .region.teal:hover {
     fill: fadeout(teal, 50%);
-  }
-
-  svg .connector {
-    stroke: #e3e3e3;
-    stroke-width: 15px;
-  }
-
-  svg .cost{
-    stroke: #000000;
-    fill: #ec6363;
   }
 
 }
