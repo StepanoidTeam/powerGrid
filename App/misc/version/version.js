@@ -3,15 +3,17 @@
 var componentController = function (versionService) {
 	const ctrl = this;
 
-	ctrl.value = 'loading...';
+	ctrl.version = 'loading...';
+	ctrl.publishedDt = '-';
 
 	versionService.getApiVersion()
 	.then(function (value) {
-		ctrl.value = value;
+		ctrl.version = value.version;
+		ctrl.publishedDt = value.publishedDt;
+		console.log(value);
 	}, function (error) {
-		ctrl.value = 'FAILED TO LOAD VERSION';
+		ctrl.version = 'FAILED TO LOAD VERSION';
 		console.error(error);
-
 	});
 
 
