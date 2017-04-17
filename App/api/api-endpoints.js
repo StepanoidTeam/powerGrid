@@ -24,8 +24,7 @@ angular.module('app')
 		}
 
 		function apiResponse(httpResponse) {
-			//var isSuccess  = httpResponse.data.isSuccess;
-			const isSuccess = httpResponse.status === 200;//ambigous   && httpResponse.data.status === ok
+			const isSuccess = httpResponse.status === 200;//todo: ambigous   && httpResponse.data.status === ok
 
 			/*
 			 All Possible response statuses:
@@ -57,21 +56,16 @@ angular.module('app')
 
 
 		/* USER */
-		svc.isLoggedSubject = new Rx.Subject();
 
 		svc.login = function (userModel) {
 			return apiRequest('POST', 'USER/Login', userModel)
 				.then(tokenService.mapToken)
-				.then(tokenService.saveToken)
-				.then(console.info)
-				.then(() => svc.isLoggedSubject.next(true))
-
+				.then(tokenService.saveToken);
 		};
 
 		svc.logout = function () {
 			return apiRequest('POST', 'USER/logout')
-				.then(tokenService.deleteToken)
-				.then(() => svc.isLoggedSubject.next(false));
+				.then(tokenService.deleteToken);
 		};
 
 		//GET /api/USER/Status

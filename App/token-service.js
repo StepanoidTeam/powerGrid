@@ -19,5 +19,6 @@
 
 	svc.deleteToken = function () {
 		$cookies.remove(tokenCookieKey);
+		return Promise.resolve();
 	};
 });

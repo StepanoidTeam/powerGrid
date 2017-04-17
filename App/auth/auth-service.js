@@ -1,29 +1,41 @@
 ﻿'use strict';
 
 angular.module('auth', [])
-	.service('authService', function ($q, $location, apiEndpoints,errorHandler) {
+	.service('authService', function ($q, $location, apiEndpoints, errorHandler) {
 		const svc = this;
 
+		const isLoggedSubject = new Rx.Subject();
+		svc.isLogged = isLoggedSubject.distinctUntilChanged();
+
+		const playerSubject = new Rx.Subject();
+		svc.player = playerSubject.distinctUntilChanged((a, b) => {
+			return a && b && a.Id === b.Id;
+		});
+
+
 		svc.login = function (userData) {
-			return apiEndpoints.login(userData).catch(function (error) {
-				errorHandler(error);
-				return svc.logout();
-			});
+			return apiEndpoints.login(userData)
+				.then(() => isLoggedSubject.next(true))
+				.catch(function (error) {
+					errorHandler(error);
+					return svc.logout();
+				});
 		};
 
-		svc.logout = apiEndpoints.logout;
+		svc.logout = function () {
+			apiEndpoints.logout().then(() => isLoggedSubject.next(false));
+			return Promise.resolve();
+		};
+
 
 		svc.register = function (username, password) {
 
 		};
 
 
-		svc.playerSubject = new Rx.Subject();
-		svc.isLoggedSubject = apiEndpoints.isLoggedSubject.distinctUntilChanged();
-
 		svc.currentPlayer = null;
 
-		svc.playerSubject.subscribe(player => {
+		svc.player.subscribe(player => {
 			svc.currentPlayer = player;
 		});
 
@@ -31,9 +43,11 @@ angular.module('auth', [])
 		svc.getPlayerStatus = function () {
 			return apiEndpoints.getPlayerStatus()
 				.then(function (response) {
-					svc.playerSubject.next(response.data);
+					playerSubject.next(response.data);
+					isLoggedSubject.next(true);
 				}, function (error) {
-					svc.playerSubject.next(null);
+					playerSubject.next(null);
+					isLoggedSubject.next(false);
 					errorHandler(error);
 					svc.logout();
 					$location.path('init');
@@ -41,22 +55,22 @@ angular.module('auth', [])
 		};
 
 		/////looks shitty
-		svc.isLoggedSubject.subscribe(function (isLogged) {
+		svc.isLogged.subscribe(function (isLogged) {
 			if (isLogged) {
 				svc.getPlayerStatus();
 			} else {
-				svc.playerSubject.next(null);
+				playerSubject.next(null);
 			}
 		});
 
 
 		//debug
-		svc.playerSubject.distinctUntilChanged(player => player && player.Id).subscribe(player => {
-			console.log('player status changed', player);
+		svc.player.subscribe(player => {
+			console.log('player', player);
 		});
 
-		svc.isLoggedSubject.subscribe((data) => {
-			console.log('is logged status changed', data);
+		svc.isLogged.subscribe((data) => {
+			console.log('isLogged', data);
 		});
 
 
