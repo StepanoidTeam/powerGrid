@@ -28,8 +28,8 @@ angular.module('app')
 		}).map(wsData => wsData.Data);
 
 
-		svc.sendMessage = function (message, to) {
-			return apiWsEndpoints.chatSendMessage(message, to);
+		svc.sendMessage = function (message, channelId) {
+			return apiWsEndpoints.chatSendMessage(message, channelId);
 		};
 
 		svc.toggleChat = function (value) {

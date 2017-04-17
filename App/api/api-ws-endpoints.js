@@ -29,13 +29,12 @@ angular.module('app')
 
 		/* CHAT */
 
-		svc.chatSendMessage = function (message, subscriberId) {
+		svc.chatSendMessage = function (message, channelId) {
 			//todo: remove inroom
 			//todo: rename toUserId to receiver or channelId/subscriberID
 			const wsData = {
 				Message: message,
-				To: subscriberId || null,
-				InRoomChannel: false
+				Channel: channelId || null,
 			};
 
 			return wsRequest('CHAT', wsData);
