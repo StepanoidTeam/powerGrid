@@ -19,6 +19,8 @@ angular.module('app', [
         controller: function (chatService) {
             const ctrl = this;
 
+
+            //todo: bad, move closer to chat
             ctrl.toggleChat = chatService.toggleChat;
 
             ctrl.chatIsOpen = false;
