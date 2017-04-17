@@ -4,13 +4,12 @@ var componentController = function (versionService) {
 	const ctrl = this;
 
 	ctrl.version = 'loading...';
-	ctrl.publishedDt = '-';
+	ctrl.buildDt = '-';
 
 	versionService.getApiVersion()
 	.then(function (value) {
 		ctrl.version = value.version;
-		ctrl.publishedDt = value.publishedDt;
-		console.log(value);
+		ctrl.buildDt = value.buildDt;
 	}, function (error) {
 		ctrl.version = 'FAILED TO LOAD VERSION';
 		console.error(error);
