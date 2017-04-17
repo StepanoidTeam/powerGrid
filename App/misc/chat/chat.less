@@ -1,10 +1,22 @@
 chat {
+  position: relative;
+
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.2);
   font-family: "Open Sans", "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, Verdana, sans-serif;
+
+  width: 50vw;
+  min-width: @global-min-width/2;
+  max-width: @global-min-width;
+
+  transition: 300ms left ease-in-out;
+
+  left: 0px;
+  &:not(.is-open) {
+    left: -50vw;
+  }
 
   .message-container{
     flex: 1 1 auto;

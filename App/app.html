@@ -1,25 +1,23 @@
-<holder top bottom left
-        class="side-panel"
-        ng-class="{'is-open': $ctrl.chatIsOpen && !$ctrl.chatIsDisabled }">
-    <chat></chat>
+<holder top bottom left>
+	<chat ng-class="{'is-open': $ctrl.chatIsOpen && !$ctrl.chatIsDisabled }"></chat>
 </holder>
 
 
 <holder left bottom>
-    <pg-button
-            ng-hide="$ctrl.chatIsOpen || $ctrl.chatIsDisabled"
-            on-click="$ctrl.toggleChat(true)"
-            icon="'chat'"
-    ></pg-button>
+	<pg-button
+		ng-hide="$ctrl.chatIsOpen || $ctrl.chatIsDisabled"
+		on-click="$ctrl.toggleChat(true)"
+		icon="'chat'"
+	></pg-button>
 </holder>
 
 <ng-view></ng-view>
 
 <holder right top>
-    <current-user></current-user>
+	<current-user></current-user>
 </holder>
 
 
 <holder right bottom>
-    <version></version>
+	<version></version>
 </holder>
