@@ -34,6 +34,15 @@ var componentController = function ($scope, $location, gameService) {
 		return {CoordX: x, CoordY: y};
 	};
 
+
+	ctrl.resources = [
+		{Name: 'coal', Count: 3},
+		{Name: 'atom', Count: 17},
+		{Name: 'gas', Count: 6},
+		{Name: 'oil', Count: 4},
+		{Name: 'trash', Count: 25}
+	];
+
 };
 
 angular.module('app')

@@ -1,0 +1,48 @@
+
+.resource-panel{
+
+  ul{
+    display: flex;
+    li{
+      display: flex;
+      flex-direction: column;
+      list-style: none;
+      align-items: center;
+    }
+  }
+
+}
+
+
+
+.resource {
+  @icon-size: 64px;
+
+  background-size: @icon-size @icon-size;
+
+  width: @icon-size;
+  height: @icon-size;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.8);
+
+  &.coal {
+    background-image: url('../Assets/images/icons/coal.png');
+  }
+  &.atom {
+    background-image: url('../Assets/images/icons/atom.png');
+  }
+  &.gas {
+    background-image: url('../Assets/images/icons/gas.png');
+  }
+  &.oil {
+    background-image: url('../Assets/images/icons/oil.png');
+  }
+  &.trash {
+    background-image: url('../Assets/images/icons/trash.png');
+  }
+}

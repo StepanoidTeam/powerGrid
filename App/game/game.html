@@ -47,16 +47,20 @@
 </svg>
 
 
-<div class="panel" hidden>
-	<h2>cities</h2>
+<holder right top bottom>
+	<div class="panel resource-panel">
+		<h2>resources</h2>
 
-	<div class="list-panel">
-		<ul>
-			<li ng-repeat="city in $ctrl.cities">
-				{{city.Name}} {{city.CoordX}} {{city.CoordY}}
-			</li>
-		</ul>
+		<div class="list-panel">
+			<ul>
+				<li ng-repeat="res in $ctrl.resources">
+					{{res.Name}}
+					<div class="resource"  ng-class="res.Name">
+						{{res.Count}}
+					</div>
+				</li>
+			</ul>
+		</div>
 	</div>
+</holder>
 
-
-</div>
