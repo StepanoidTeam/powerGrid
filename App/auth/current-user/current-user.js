@@ -15,7 +15,7 @@ var componentController = function ($q, $location, authService) {
     };
 
     ctrl.$onInit = function () {
-        authService.playerSubject.subscribe(player => {
+        authService.player.subscribe(player => {
             if (player) {
                 ctrl.userName = player.Name;
                 isAuth = true;

@@ -40,20 +40,13 @@ angular.module('app')
 		svc.$onInit = function () {
 			svc.isDisabled.next(true);
 
-			authService.isLoggedSubject.subscribe(isLogged => {
+			authService.isLogged.subscribe(isLogged => {
 				svc.isDisabled.next(!isLogged);
 
 				if (!isLogged) {
 					svc.chatMessages.length = 0;
 				}
 			});
-
-
-			authService.playerSubject.filter(player => player).subscribe(player => {
-				svc.sendMessage(`${ player.Name } logined`);
-			});
-
-
 		};
 
 		svc.$onInit();
