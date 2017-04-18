@@ -3,17 +3,21 @@
 angular.module('app')
 	.service('apiWsEndpoints', function ($q, $http, tokenService, apiConfig) {
 		const svc = this;
+
+		function wsEventMapper(wsEvent) {
+			const dataRaw = wsEvent.data;
+			//todo: dirty hack - remove
+			return JSON.parse(dataRaw || "{}");
+		}
+
 		//init
 		const webSocket = new WebSocket(apiConfig.wsUrl);
-		svc.wsSource = Rx.Observable
-			.fromEvent(webSocket, 'message')//'open' 'close' 'error'
-			.map(wsEvent => {
-				const dataRaw = wsEvent.data;
-				return JSON.parse(dataRaw || "{}");//todo: dirty hack - remove
-			});
+		//'open' 'close' 'error'
+		svc.wsMessage = Rx.Observable.fromEvent(webSocket, 'message').map(wsEventMapper);
+		//svc.wsOpen = Rx.Observable.fromEvent(webSocket, 'open').map(wsEventMapper);
 
 
-		svc.wsSource.subscribe((data) => {
+		svc.wsMessage.subscribe((data) => {
 			//console.log('wss',data);
 		});
 

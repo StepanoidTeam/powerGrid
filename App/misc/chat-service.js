@@ -5,7 +5,7 @@ angular.module('app')
 		svc.isDisabled = new Rx.Subject();
 		svc.isOpen = new Rx.Subject();
 
-		svc.chatMessages = apiWsEndpoints.wsSource.filter(
+		svc.chatMessages = apiWsEndpoints.wsMessage.filter(
 			wsData => {
 				return wsData.Date !== undefined
 			}
@@ -27,7 +27,7 @@ angular.module('app')
 			apiWsEndpoints.handshake();
 		});
 
-		svc.systemMessages = apiWsEndpoints.wsSource.filter(wsData => {
+		svc.systemMessages = apiWsEndpoints.wsMessage.filter(wsData => {
 			return wsData.Data !== undefined;
 		}).map(wsData => wsData.Data);
 
