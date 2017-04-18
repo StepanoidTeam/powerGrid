@@ -22,10 +22,12 @@
 	const mockMessage = {authToken: '65af5923-a9c7-4207-a446-3970ddfc9b5b'};
 
 	const socket = new WebSocket(config.wsUrl);
+	console.info('waiting for ws connection...');
 
 	socket.onopen = function() {
 		mockMessage.type = "USERSTATUS";
 		socket.send(JSON.stringify(mockMessage));
+		console.info('ws connected. handshake sent');
 	};
 
 
@@ -39,7 +41,7 @@
 
 	// обработчик входящих сообщений
 	socket.onmessage = function (event) {
-		console.log(event);
+		//console.log(event);
 		const incomingMessage = event.data;
 		showMessage(incomingMessage);
 	};
