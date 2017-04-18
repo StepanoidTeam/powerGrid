@@ -3,7 +3,6 @@
 var componentController = function () {
 	var ctrl = this;
 
-
 	ctrl.iconChecked = ctrl.iconChecked || 'check_box';
 	ctrl.iconUnchecked = ctrl.iconUnchecked || 'check_box_outline_blank';
 };

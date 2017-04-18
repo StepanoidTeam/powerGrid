@@ -4,9 +4,11 @@ angular.module('auth', [])
 	.service('authService', function ($q, $location, apiEndpoints, errorHandler) {
 		const svc = this;
 
+		//todo: use behaviorSubj
 		const isLoggedSubject = new Rx.Subject();
 		svc.isLogged = isLoggedSubject.distinctUntilChanged();
 
+		//todo: use behaviorSubj
 		const playerSubject = new Rx.Subject();
 		svc.player = playerSubject.distinctUntilChanged((a, b) => {
 			return a && b && a.Id === b.Id;
