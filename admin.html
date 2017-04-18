@@ -23,10 +23,11 @@
 
 	const socket = new WebSocket(config.wsUrl);
 
-	document.onload = function () {
+	socket.onopen = function() {
 		mockMessage.type = "USERSTATUS";
 		socket.send(JSON.stringify(mockMessage));
 	};
+
 
 	// отправить сообщение из формы publish
 	document.forms.publish.onsubmit = function () {
