@@ -23,13 +23,17 @@ angular.module('app')
 		};
 
 
+		authService.player.subscribe(p => {
+			apiWsEndpoints.handshake();
+		});
+
 		svc.systemMessages = apiWsEndpoints.wsSource.filter(wsData => {
 			return wsData.Data !== undefined;
 		}).map(wsData => wsData.Data);
 
 
 		svc.sendMessage = function (message, channelId) {
-			return apiWsEndpoints.chatSendMessage(message, channelId);
+			return apiWsEndpoints.sendChatMessage(message, channelId);
 		};
 
 		svc.toggleChat = function (value) {

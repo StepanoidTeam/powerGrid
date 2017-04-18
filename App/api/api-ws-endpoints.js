@@ -18,7 +18,7 @@ angular.module('app')
 		});
 
 
-		function wsRequest(wsMethod, wsData) {
+		function wsRequest(wsMethod, wsData = {}) {
 
 			wsData.AuthToken = tokenService.getToken();
 			wsData.Type = wsMethod;
@@ -29,7 +29,12 @@ angular.module('app')
 
 		/* CHAT */
 
-		svc.chatSendMessage = function (message, channelId) {
+		svc.handshake = function () {
+			console.log('handshake');
+			wsRequest('USERSTATUS');
+		};
+
+		svc.sendChatMessage = function (message, channelId) {
 			//todo: remove inroom
 			//todo: rename toUserId to receiver or channelId/subscriberID
 			const wsData = {
@@ -37,6 +42,6 @@ angular.module('app')
 				Channel: channelId || null,
 			};
 
-			return wsRequest('CHAT', wsData);
+			wsRequest('CHAT', wsData);
 		};
 	});
