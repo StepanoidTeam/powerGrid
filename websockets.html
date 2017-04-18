@@ -19,13 +19,19 @@
 		wsUrl: 'ws://pg-api.azurewebsites.net/api',
 	};
 
-	const mockMessage = {authToken: '65af5923-a9c7-4207-a446-3970ddfc9b5b', type: "CHAT"};
+	const mockMessage = {authToken: '65af5923-a9c7-4207-a446-3970ddfc9b5b'};
 
 	const socket = new WebSocket(config.wsUrl);
+
+	document.onload = function () {
+		mockMessage.type = "USERSTATUS";
+		socket.send(JSON.stringify(mockMessage));
+	};
 
 	// отправить сообщение из формы publish
 	document.forms.publish.onsubmit = function () {
 		mockMessage.Message = this.message.value;
+		mockMessage.type = "CHAT";
 		socket.send(JSON.stringify(mockMessage));
 		return false;
 	};
