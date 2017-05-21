@@ -1,9 +1,10 @@
 <span class="user-info">
 	<i class="material-icons">face</i>
 	<span ng-bind="$ctrl.user.Name"></span>
+	<span ng-bind="$ctrl.user.Id"></span>
 </span>
 <checkbox accent
-			 is-checked="$ctrl.testCheck"
+			 is-checked="$ctrl.user.ReadyMark"
 			 icon-checked="thumb_up"
 			 icon-unchecked="thumb_down"
 			 is-disabled="!$ctrl.onReady"
