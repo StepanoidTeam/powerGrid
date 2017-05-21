@@ -23,6 +23,8 @@ angular.module('app')
 				{"Id": "teal", "Points": "0,300 450,300 515,460 700,420 665,745 500,700 400,700 220,680 50,470"},
 				{"Id": "yellow", "Points": ""},
 				{"Id": "brown", "Points": ""},
+				{"Id": "red", "Points": ""},
+				{"Id": "green", "Points": ""},
 				//...
 			]);
 		};
