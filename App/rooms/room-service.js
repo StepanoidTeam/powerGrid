@@ -13,7 +13,7 @@ angular.module('rooms', [])
 			return svc.getRoomList().then(function (rooms) {
 				const currentRoom = rooms.find((r) => r['Id'] === roomId);
 				if (currentRoom) {
-					svc.roomUsers.next(currentRoom.UserDetails);
+					svc.roomUsers.next(currentRoom.Users);
 					return currentRoom;
 				}
 				else {
@@ -51,7 +51,7 @@ angular.module('rooms', [])
 		});
 
 
-		svc.toggleReadyObservable.map(msg => msg.UserDetails).subscribe(users => {
+		svc.toggleReadyObservable.map(msg => msg.Users).subscribe(users => {
 			//todo: update users
 			users.forEach(user => {
 				const currentUser = svc.roomUsers.value.find(u => u.Id === user.Id);
