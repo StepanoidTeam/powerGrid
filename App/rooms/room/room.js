@@ -1,6 +1,6 @@
 'use strict';
 
-var componentController = function ($controller, $location, roomService, authService, errorHandler) {
+var componentController = function ($scope, $controller, $location, roomService, authService, errorHandler) {
 	const ctrl = this;
 
 	$controller('authCheck', {});
@@ -32,12 +32,26 @@ var componentController = function ($controller, $location, roomService, authSer
 			.catch(errorHandler);
 	};
 
+
+	ctrl.users = [];
+
 	ctrl.initRoom = function (roomId) {
 		roomService.getRoom(roomId).then(function (room) {
 			ctrl.room = room;
 		}, function (error) {
 			console.warn(error);
 			$location.path('/rooms');
+		});
+
+		roomService.toggleReadyObservable.subscribe(function () {
+			$scope.$applyAsync();
+		});
+
+		roomService.roomUsers.subscribe(users=>{
+			console.log(users);
+			ctrl.users.length=  0;
+			ctrl.users.push(...users);
+			$scope.$applyAsync();
 		});
 
 	};

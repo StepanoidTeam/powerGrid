@@ -12,7 +12,7 @@
 					  on-kick="$ctrl.kickUser(user.Id)"
 					  on-ready="$ctrl.toggleReady(currentUser.ReadyMark)"
 		></room-user>
-		<room-user ng-repeat="user in $ctrl.room.UserDetails"
+		<room-user ng-repeat="user in $ctrl.users"
 					  class="list-item"
 					  user="user"
 		></room-user>
