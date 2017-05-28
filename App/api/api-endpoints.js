@@ -221,6 +221,10 @@ angular.module('app')
 		};
 
 
+		svc.getGameStatus = function (params) {
+			return apiRequest('GET', 'GAME/Status',params);
+		};
+
 
 		window.apiSvc = svc;
 	});

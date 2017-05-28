@@ -2,8 +2,39 @@ angular.module('app')
 	.service('gameService', function (apiEndpoints) {
 		const svc = this;
 
-		svc.getMaps = apiEndpoints.getGameMaps;
+		svc.getGameStatus = function () {
 
+			return Promise.resolve({
+				"EntityType": "GameBoard",
+				"Stage": 1,
+				"PlayerTurn": "u#6ed29551",
+				"PlayersTurnOrder": [
+					"u#6ed29551"
+				],
+				"Buildings": [
+					{
+						"userId": "u#6ed29551",
+						"cities": []
+					}
+				],
+				"Phase": "BureaucracyPhase"
+			});
+
+
+			let params = {
+				"status": true,
+				"stage": true,
+				"playerTurn": true,
+				"playersTurnOrder": true,
+				"buildings": true,
+				"phase": true
+			};
+
+			return apiEndpoints.getGameStatus(params);
+		};
+
+
+		svc.getMaps = apiEndpoints.getGameMaps;
 
 		svc.getMap = function (mapId) {
 			return apiEndpoints.getGameMapById(mapId);
