@@ -1,7 +1,9 @@
 'use strict';
 
-var componentController = function ($scope, $location, gameService) {
+var componentController = function ($scope,$controller, $location, gameService) {
 	const ctrl = this;
+
+	$controller('authCheck', {});
 
 	ctrl.$onInit = function () {
 
