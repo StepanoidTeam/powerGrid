@@ -6,7 +6,7 @@
                   ng-bind="message.SenderName"></span>
             <div class="message-text-block">
                 <span class="message-text" ng-bind="message.Message"></span>
-                <span class="message-time">{{message.Time}}</span>
+                <span class="message-time">{{message.Date | date: 'shortTime'}}</span>
             </div>
         </li>
     </ul>
