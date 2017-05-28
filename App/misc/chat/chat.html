@@ -2,11 +2,13 @@
     <ul class="message-list">
         <li class="message" ng-repeat="message in $ctrl.chatMessages" ng-class="{ 'self':message.isSelf }">
             <span class="message-sender"
-                  ng-style="{ color: message.SenderColor }"
-                  ng-bind="message.SenderName"></span>
+                  ng-style="{ color: message.SenderColor }">
+					{{message.SenderName}}
+					<span class="message-time">{{message.Date | date: 'shortTime'}}</span>
+				</span>
             <div class="message-text-block">
                 <span class="message-text" ng-bind="message.Message"></span>
-                <span class="message-time">{{message.Date | date: 'shortTime'}}</span>
+
             </div>
         </li>
     </ul>
