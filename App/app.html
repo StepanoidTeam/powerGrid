@@ -1,8 +1,3 @@
-<holder top bottom left>
-	<chat ng-class="{'is-open': $ctrl.chatIsOpen && !$ctrl.chatIsDisabled }"></chat>
-</holder>
-
-
 <holder left bottom>
 	<pg-button
 		ng-hide="$ctrl.chatIsOpen || $ctrl.chatIsDisabled"
@@ -17,6 +12,9 @@
 	<current-user></current-user>
 </holder>
 
+<holder top bottom left>
+	<chat ng-class="{'is-open': $ctrl.chatIsOpen && !$ctrl.chatIsDisabled }"></chat>
+</holder>
 
 <holder right bottom>
 	<version></version>
