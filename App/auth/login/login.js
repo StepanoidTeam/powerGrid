@@ -3,7 +3,15 @@
 var componentController = function ($location, authService, apiWsEndpoints) {
 	const ctrl = this;
 
-	ctrl.userData = { username: 'bob', password: '123' };
+	function getRandomInt(max) {
+		return Math.floor(Math.random() * max);
+	}
+
+
+	var playerNamesStub = ['bob', 'igor', 'admin4eg', 'john doe', 'gnome', 'qwerty', 'some rand user***']
+	var randUserName = playerNamesStub[getRandomInt(playerNamesStub.length)] + getRandomInt(100);
+
+	ctrl.userData = {username: randUserName, password: '123'};
 
 	ctrl.usernameChanged = function (value) {
 		ctrl.userData.username = value;
