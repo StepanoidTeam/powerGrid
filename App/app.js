@@ -6,6 +6,7 @@ angular.module('app', [
     'routing',
     'rooms',
     'auth',
+	'asyncFilter',
 	//'game',
 ])
 
