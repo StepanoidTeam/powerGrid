@@ -7,7 +7,6 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 
 
 	function messageMapper(message) {
-		message.Date = new Date(message.Date+'Z');
 		message.SenderColor = getSenderColor(message.SenderId);
 		message.isSelf = message.SenderId === (authService.currentPlayer && authService.currentPlayer.Id);
 		return message;
