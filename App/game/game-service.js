@@ -9,7 +9,10 @@ angular.module('app')
 				"Stage": 1,
 				"PlayerTurn": "u#6ed29551",
 				"PlayersTurnOrder": [
-					"u#6ed29551"
+					"u#6ed29551",
+					"u#6ed29552",
+					"u#6ed29553",
+					"u#6ed29554",
 				],
 				"Buildings": [
 					{
@@ -32,6 +35,7 @@ angular.module('app')
 
 			return apiEndpoints.getGameStatus(params);
 		};
+
 
 
 		svc.getMaps = apiEndpoints.getGameMaps;
