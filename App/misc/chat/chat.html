@@ -1,13 +1,13 @@
 <div class="message-container">
     <ul class="message-list">
-        <li class="message" ng-repeat="message in $ctrl.chatMessages" ng-class="{ 'self':message.isSelf }">
+        <li class="message" ng-repeat="msg in $ctrl.chatMessages" ng-class="{ 'self':msg.isSelf }">
             <span class="message-sender"
-                  ng-style="{ color: message.SenderColor }">
-					{{message.SenderName}}
-					<span class="message-time">{{message.Date | date: 'shortTime'}}</span>
+                  ng-style="{ color: msg.SenderColor }">
+					{{msg.SenderName}}
+					<span class="message-time">{{msg.Date | date: 'shortTime'}}</span>
 				</span>
             <div class="message-text-block">
-                <span class="message-text" ng-bind="message.Message"></span>
+                <span class="message-text" ng-bind="msg.Message"></span>
 
             </div>
         </li>
