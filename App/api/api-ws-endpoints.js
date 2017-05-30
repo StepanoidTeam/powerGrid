@@ -18,7 +18,7 @@ angular.module('app')
 
 
 		svc.wsMessage.subscribe((data) => {
-			//console.log('wss',data);
+			console.log('wss',data);
 		});
 
 
@@ -34,8 +34,8 @@ angular.module('app')
 		/* CHAT */
 
 		svc.handshake = function () {
-			console.log('handshake');
 			wsRequest('USERSTATUS');
+			console.log('handshake');
 		};
 
 		svc.sendChatMessage = function (message, channelId) {
