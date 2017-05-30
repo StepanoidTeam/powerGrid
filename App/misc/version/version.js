@@ -7,21 +7,22 @@ var componentController = function (versionService) {
 	ctrl.buildDt = '-';
 
 	versionService.getApiVersion()
-	.then(function (value) {
-		ctrl.version = value.version;
-		ctrl.buildDt = value.buildDt;
-	}, function (error) {
-		ctrl.version = 'FAILED TO LOAD VERSION';
-		console.error(error);
-	});
+		.then(function (value) {
+			ctrl.version = value.version;
+			ctrl.buildDt = value.buildDt;
+
+			document.body.dataset.online = true;
+		}, function (error) {
+			ctrl.version = 'FAILED TO LOAD VERSION';
+			console.error(error);
+		});
 
 
 };
 
 angular.module('app')
 	.component('version', {
-		bindings: {
-		},
+		bindings: {},
 		templateUrl: 'app/misc/version/version.html',
 		controller: componentController
 	});

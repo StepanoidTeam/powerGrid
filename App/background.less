@@ -9,9 +9,18 @@
 }
 
 body {
-  background-color: @global-background-color;
   background-image: url("../assets/images/bg.png");
   //animation: bg-anim 15s linear infinite;
 
+  transition: background-color 300ms ease-in-out;
   min-width: @global-min-width;
+
+  background-color: @global-background-offline-color;
+
+  &[data-online] {
+    background-color: @global-background-online-color;
+  }
 }
+
+
+
