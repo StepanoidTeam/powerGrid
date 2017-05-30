@@ -8,7 +8,7 @@ var componentController = function ($location, authService, apiWsEndpoints) {
 	}
 
 
-	var playerNamesStub = ['bob', 'igor', 'admin4eg', 'john doe', 'gnome', 'qwerty', 'some rand user***']
+	var playerNamesStub = ['bob', 'igor', 'admin4eg', 'johnDoe', 'gnome', 'qwerty', 'uzerok']
 	var randUserName = playerNamesStub[getRandomInt(playerNamesStub.length)] + getRandomInt(100);
 
 	ctrl.userData = {username: randUserName, password: '123'};
