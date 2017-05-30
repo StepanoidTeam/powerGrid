@@ -1,15 +1,16 @@
 angular.module('app')
-	.service('chatService', function (apiEndpoints, apiWsEndpoints, authService) {
+	.service('chatService', function (apiEndpoints, apiWsEndpoints, authService, apiUser) {
 		const svc = this;
 
 		svc.isDisabled = new Rx.Subject();
 		svc.isOpen = new Rx.Subject();
 
-		svc.chatMessages = apiWsEndpoints.wsMessage.filter(
-			wsData => {
-				return wsData.Date !== undefined
-			}
-		);
+
+		//todo: move to chat api
+
+
+		svc.onChatMessage = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'ChatMessage');
+
 
 		svc.getLastMessages = function () {
 			return apiEndpoints.getChatChannels()
@@ -27,9 +28,23 @@ angular.module('app')
 			apiWsEndpoints.handshake();
 		});
 
-		svc.systemMessages = apiWsEndpoints.wsMessage.filter(wsData => {
-			return wsData.Data !== undefined;
-		}).map(wsData => wsData.Data);
+
+		svc.onSystemMessage = Rx.Observable.merge(
+			//login users
+			apiUser.onLogin.map(msg => ({
+				Message: `${ msg.Name } logged in`,
+				SenderId: msg.Id,
+				SenderName: msg.Name,
+				Date: new Date(),
+			})),
+			//logout messages
+			apiUser.onLogout.map(msg => ({
+				Message: `${ msg.Name } logged out`,
+				SenderId: msg.Id,
+				SenderName: msg.Name,
+				Date: new Date(),
+			}))
+		);
 
 
 		svc.sendMessage = function (message, channelId) {
@@ -47,9 +62,9 @@ angular.module('app')
 			authService.isLogged.subscribe(isLogged => {
 				svc.isDisabled.next(!isLogged);
 
-				if (!isLogged) {
-					svc.chatMessages.length = 0;
-				}
+				// if (!isLogged) {
+				// 	svc.chatMessages.length = 0;
+				// }
 			});
 		};
 

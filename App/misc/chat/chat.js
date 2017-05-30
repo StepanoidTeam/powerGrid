@@ -5,15 +5,18 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 
 	ctrl.chatMessages = [];
 
+	function getSenderColor(senderId) {
+		return '#' + senderId.substr(0, 6);
+	}
 
-	function messageMapper(message) {
+	function chatMessageMapper(message) {
 		message.SenderColor = getSenderColor(message.SenderId);
 		message.isSelf = message.SenderId === (authService.currentPlayer && authService.currentPlayer.Id);
 		return message;
 	}
 
 	function updateChatMessages(message) {
-		ctrl.chatMessages.push(messageMapper(message));
+		ctrl.chatMessages.push(message);
 		$scope.$applyAsync();
 
 		$timeout(function () {
@@ -22,21 +25,15 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 		}, 0, false);
 	}
 
-	function updateChatSystem(message) {
-		console.info('sys', message);
-	}
+	chatService.onChatMessage.map(chatMessageMapper).subscribe(updateChatMessages);
 
-	chatService.chatMessages.subscribe(updateChatMessages);
+	chatService.onSystemMessage.map(chatMessageMapper).subscribe(updateChatMessages);
 
-	chatService.systemMessages.subscribe(updateChatSystem);
 
-	function getSenderColor(senderId) {
-		return '#' + senderId.substr(0, 6);
-	}
 
 	ctrl.toggleChat = chatService.toggleChat;
 
-	ctrl.chatMessage = 'type message here';
+	ctrl.chatMessage = 'type msg here';
 
 	ctrl.messageChanged = function (value) {
 		ctrl.chatMessage = value;
@@ -48,9 +45,11 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 	};
 
 
+
+
 	authService.isLogged.filter(value => value === true).subscribe(function () {
 		chatService.getLastMessages()
-			.then(messages => messages.map(messageMapper))
+			.then(messages => messages.map(chatMessageMapper))
 			.then(messages => {
 				ctrl.chatMessages.push(...messages);
 			});
