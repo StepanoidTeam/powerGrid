@@ -1,7 +1,7 @@
 .message {
   list-style-type: none;
   font-size: 0.8em;
-  color:black;
+  color: black;
 
   position: relative;
   display: flex;
@@ -20,17 +20,17 @@
 
   //todo: add sys message
 
-  &.info{
+  &.info {
     background-color: #ddedf7;
     border-image-source: url('../Assets/images/bubble-system-info.png');
   }
 
-  &.error{
+  &.error {
     background-color: #ffd8dc;
     border-image-source: url('../Assets/images/bubble-system-error.png');
   }
 
-  &.self{
+  &.self {
     align-self: flex-end;
     margin-right: 20px;
 
@@ -38,27 +38,25 @@
     border-image-source: url('../Assets/images/bubble-msg-self.png');
   }
 
-
   border-image-width: 9px 17px;
   border-image-outset: 9px 17px 9px 17px;
   border-image-slice: 9 17 9 17;
 
   border-image-repeat: round;
 
-
   .message-sender {
     font-size: 0.9em;
     color: #e56555;
   }
 
-  .message-text-block{
+  .message-text-block {
     display: flex;
     justify-content: space-between;
     align-content: space-between;
   }
 
-  .message-text{
-
+  .message-text {
+    white-space: pre-wrap;
   }
 
   .message-time {
