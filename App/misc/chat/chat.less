@@ -18,12 +18,11 @@ chat {
     left: -50vw;
   }
 
-  .message-container{
+  .message-container {
     flex: 1 1 auto;
 
     overflow: hidden;
     overflow-y: auto;
-
 
     .scroll-bar(
       @bg-color: darken(@global-panel-bg,10%);
@@ -37,14 +36,14 @@ chat {
     flex-direction: column;
     align-items: flex-start;
 
-
   }
 
   .message-box {
-    flex: 0 0 auto;
+    flex: 0 0 50px;
     display: flex;
 
-    pg-input {
+    pg-input,
+    pg-textarea {
       flex: 1 1 auto;
       margin: 4px;
     }

@@ -18,7 +18,9 @@
     <pg-button type="'reset'" icon="'arrow_back'"
                on-click="$ctrl.toggleChat(false)"
     ></pg-button>
-    <pg-input value="$ctrl.chatMessage" on-change="$ctrl.messageChanged(value)"></pg-input>
+    <pg-textarea value="$ctrl.chatMessage"
+				  on-change="$ctrl.messageChanged(value)"
+				  ng-keypress="$ctrl.keyPressed($event)"
+	 ></pg-textarea>
     <pg-button type="'submit'" icon="'send'"></pg-button>
 </form>
-

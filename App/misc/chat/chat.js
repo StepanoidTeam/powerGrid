@@ -30,7 +30,6 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 	chatService.onSystemMessage.map(chatMessageMapper).subscribe(updateChatMessages);
 
 
-
 	ctrl.toggleChat = chatService.toggleChat;
 
 	ctrl.chatMessage = 'type msg here';
@@ -39,12 +38,24 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 		ctrl.chatMessage = value;
 	};
 
+
+	ctrl.keyPressed = function (event) {
+		if (event.keyCode === 13) {
+			ctrl.sendMessage(ctrl.chatMessage);
+			event.preventDefault();
+		}
+
+		if (event.keyCode === 10 && event.ctrlKey === true) {
+			ctrl.chatMessage += '\n';
+			event.preventDefault();
+		}
+	};
+
+
 	ctrl.sendMessage = function (value) {
 		chatService.sendMessage(value);
 		ctrl.chatMessage = '';
 	};
-
-
 
 
 	authService.isLogged.filter(value => value === true).subscribe(function () {
