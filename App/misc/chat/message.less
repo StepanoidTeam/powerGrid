@@ -14,28 +14,42 @@
 
   border-style: solid;
 
+  .message-sender {
+    color: black;
+  }
+
   //other user
   background-color: white;
-  border-image-source: url('../Assets/images/bubble-msg.png');
+  border-image-source: url('../Assets/images/chat/bubble-msg1.png');
 
   //todo: add sys message
 
   &.info {
     background-color: #ddedf7;
-    border-image-source: url('../Assets/images/bubble-system-info.png');
+    border-image-source: url('../Assets/images/chat/bubble-system-info.png');
   }
 
   &.error {
     background-color: #ffd8dc;
-    border-image-source: url('../Assets/images/bubble-system-error.png');
+    border-image-source: url('../Assets/images/chat/bubble-system-error.png');
   }
 
   &.self {
     align-self: flex-end;
     margin-right: 20px;
 
-    background-color: #e2f3e3;;
-    border-image-source: url('../Assets/images/bubble-msg-self.png');
+    background-color: #3a7fee;
+    border-image-source: url('../Assets/images/chat/bubble-msg-self1.png');
+
+
+    .message-sender {
+      color: white;
+    }
+
+    .message-text {
+      color: white;
+    }
+
   }
 
   border-image-width: 9px 17px;
@@ -45,8 +59,8 @@
   border-image-repeat: round;
 
   .message-sender {
-    font-size: 0.9em;
-    color: #e56555;
+    font-size: 1em;
+    opacity: 0.7;
   }
 
   .message-text-block {
@@ -57,6 +71,7 @@
 
   .message-text {
     white-space: pre-wrap;
+    font-size: 1.1em;
   }
 
   .message-time {
@@ -64,7 +79,7 @@
     text-align: right;
     padding-left: 5px;
 
-    font-size: 0.8em;
-    color: rgba(0, 0, 0, 0.38);
+    font-size: 0.9em;
+    color: rgba(0, 0, 0, 0.87);
   }
 }
