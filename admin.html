@@ -31,7 +31,7 @@
 	console.info('waiting for ws connection...');
 
 	socket.onopen = function () {
-		mockMessage.type = "USERSTATUS";
+		mockMessage.type = "AUTHSTATUS";
 		socket.send(JSON.stringify(mockMessage));
 		console.info('ws connected. handshake sent');
 	};
@@ -40,7 +40,7 @@
 	// отправить сообщение из формы publish
 	document.forms.publish.onsubmit = function () {
 		mockMessage.Message = this.message.value;
-		mockMessage.type = "CHANNEL";
+		mockMessage.type = "CHANNELSEND";
 		socket.send(JSON.stringify(mockMessage));
 		return false;
 	};

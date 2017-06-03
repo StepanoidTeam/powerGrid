@@ -9,7 +9,7 @@ angular.module('app')
 
 		svc.open = async () => {
 			await webSocket.open();
-			webSocket.send('USERSTATUS');
+			webSocket.send('AUTHSTATUS');
 			console.log('🤝handshake🤝');
 		};
 
@@ -30,6 +30,6 @@ angular.module('app')
 				Channel: channelId || null,
 			};
 
-			webSocket.send('CHANNEL', wsData);
+			webSocket.send('CHANNELSEND', wsData);
 		};
 	});
