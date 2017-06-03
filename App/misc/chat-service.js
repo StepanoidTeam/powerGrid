@@ -24,24 +24,19 @@ angular.module('app')
 		};
 
 
-		authService.player.subscribe(p => {
-			apiWsEndpoints.handshake();
-		});
-
-
 		svc.onSystemMessage = Rx.Observable.merge(
 			//login users
 			apiUser.onLogin.map(msg => ({
 				Message: `${ msg.Name } logged in`,
 				SenderId: msg.Id,
-				SenderName: msg.Name,
+				SenderName: 'system',
 				Date: new Date(),
 			})),
 			//logout messages
 			apiUser.onLogout.map(msg => ({
 				Message: `${ msg.Name } logged out`,
 				SenderId: msg.Id,
-				SenderName: msg.Name,
+				SenderName: 'system',
 				Date: new Date(),
 			}))
 		);
