@@ -24,7 +24,8 @@ var componentController = function ($location, authService) {
 
 	ctrl.login = function () {
 		authService.login(ctrl.userData).then(function () {
-			$location.path('/rooms');
+			//todo: make common redirect approach
+			$location.path('/ROOM');
 		});
 	};
 

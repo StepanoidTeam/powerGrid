@@ -29,7 +29,8 @@ var componentController = function ($scope, $controller, $location, authService,
 		const roomName = 'room' + Date.now();
 		roomService.createRoom(roomName).then(function (data) {
 			//creation ok
-			$location.path('/rooms/' + data['Id']);
+			//todo: make common redirect approach
+			$location.path('/ROOM/' + data['Id']);
 		}).catch(errorHandler)
 			.then(ctrl.updateRooms);
 	};
@@ -37,7 +38,8 @@ var componentController = function ($scope, $controller, $location, authService,
 	ctrl.joinRoom = function (roomId) {
 		roomService.joinRoom(roomId).then(function (data) {
 			//creation ok
-			$location.path('/rooms/' + data['Id']);
+			//todo: make common redirect approach
+			$location.path('/ROOM/' + data['Id']);
 		}).catch(errorHandler)
 			.then(ctrl.updateRooms);
 	};
@@ -47,7 +49,7 @@ var componentController = function ($scope, $controller, $location, authService,
 	ctrl.updateRooms();
 };
 
-angular.module('rooms')
+angular.module('ROOM')
 	.component('roomList', {
 		bindings: {
 			rooms: '<'

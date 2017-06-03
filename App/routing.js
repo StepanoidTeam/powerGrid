@@ -10,8 +10,8 @@
             .when('/', {redirectTo: '/init'})
             .when('/init', {template: '<init></init>'})
             .when('/login', {template: '<login></login>'})
-            .when('/rooms', {template: '<room-list></room-list>'})
-            .when('/rooms/:id', {
+            .when('/ROOM/List', {template: '<room-list></room-list>'})
+            .when('/ROOM/:id', {
                 template: '<room room-id="$resolve.roomId"></room>',
                 resolve: {
                     roomId: function ($route) {

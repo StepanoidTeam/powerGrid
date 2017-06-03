@@ -80,59 +80,60 @@ angular.module('app')
 		};
 
 
-		/* ROOMS */
+		/* ROOM */
 
-		//GET /api/Rooms
+		//GET /api/Room/List
 		svc.getRooms = function () {
-			return apiRequest('GET', 'ROOMS');
+			//todo: is it used?
+			return apiRequest('GET', 'ROOM/List');
 		};
 
-		//GET /api/Rooms
-		//Rooms list
+		//GET /api/ROOM
+		//ROOM list
 		svc.getRoomList = function (params) {
-			return apiRequest('POST', 'ROOMS/list', params);
+			return apiRequest('POST', 'ROOM/List', params);
 		};
 
-		//POST /api/Rooms/Create/{name}
+		//POST /api/ROOM/Create/{name}
 		svc.createRoom = function (params) {
-			return apiRequest('POST', 'ROOMS/create', params);
+			return apiRequest('POST', 'ROOM/create', params);
 		};
 
-		//POST /api/Rooms/List
+		//POST /api/ROOM/List
 
-		//POST /api/Rooms/Join
+		//POST /api/ROOM/Join
 		//Join player into specific room
 		//roomId
 		svc.joinRoom = function (params) {
-			return apiRequest('POST', 'ROOMS/join', params);
+			return apiRequest('POST', 'ROOM/join', params);
 		};
 
-		//POST /api/Rooms/Leave
+		//POST /api/ROOM/Leave
 		//Leave from current room
 		svc.leaveRoom = function () {
-			return apiRequest('POST', 'ROOMS/leave');
+			return apiRequest('POST', 'ROOM/leave');
 		};
 
-		//POST /api/Rooms/Kick
+		//POST /api/ROOM/Kick
 		//Kick another player from the room if current user have enough permissions
 		svc.kickUser = function (params) {
-			return apiRequest('POST', 'ROOMS/kick', params);
+			return apiRequest('POST', 'ROOM/kick', params);
 		};
 
 
-		//POST /api/Rooms/ToggleReady
+		//POST /api/ROOM/ToggleReady
 		/* { "state": true } */
 		//Set if player ready to start or not
 		svc.toggleReadyRoom = function (params) {
-			return apiRequest('POST', 'ROOMS/ToggleReady', params);
+			return apiRequest('POST', 'ROOM/ToggleReady', params);
 		};
 
-		//GET /api/Rooms/StartGame
+		//GET /api/ROOM/StartGame
 		//Initiate game
 
 		svc.startGameRoom = function () {
 			//todo: change to POST on serv and here
-			return apiRequest('GET', 'ROOMS/StartGame');
+			return apiRequest('GET', 'ROOM/StartGame');
 		};
 
 

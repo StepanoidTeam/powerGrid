@@ -19,7 +19,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 
 	ctrl.leaveRoom = function () {
-		roomService.leaveRoom().then(() => $location.path('/rooms'));
+		roomService.leaveRoom().then(() => $location.path('/ROOM/List'));
 	};
 
 
@@ -51,7 +51,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 			ctrl.room = room;
 		}, function (error) {
 			console.warn(error);
-			$location.path('/rooms');
+			$location.path('/ROOM/List');
 		});
 
 
@@ -73,7 +73,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 };
 
-angular.module('rooms')
+angular.module('ROOM')
 	.component('room', {
 		bindings: {
 			roomId: '<'

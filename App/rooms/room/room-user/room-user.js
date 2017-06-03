@@ -4,7 +4,7 @@ var componentController = function () {
 	const ctrl = this;
 };
 
-angular.module('rooms')
+angular.module('ROOM')
 	.component('roomUser', {
 		bindings: {
 			user: '<',

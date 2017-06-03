@@ -4,7 +4,7 @@
 angular.module('app', [
     'ngCookies',
     'routing',
-    'rooms',
+    'ROOM',
     'auth',
 	'asyncFilter',
 	//'game',
