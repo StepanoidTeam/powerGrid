@@ -145,7 +145,7 @@ angular.module('app')
 		//POST /api/Chat/GetMessages
 		svc.getChatMessages = function (channelId) {
 			const params = {
-				"id": channelId,
+				"channelId": channelId,
 				"start": (new Date(new Date() - 1000 * 60 * 60)).toISOString(),
 				"end": (new Date()).toISOString()
 			};
@@ -222,7 +222,7 @@ angular.module('app')
 
 
 		svc.getGameStatus = function (params) {
-			return apiRequest('GET', 'GAME/Status',params);
+			return apiRequest('POST', 'GAME/Status',params);
 		};
 
 
