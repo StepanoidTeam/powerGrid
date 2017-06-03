@@ -2,7 +2,6 @@
 
 var componentController = function () {
 	const ctrl = this;
-
 };
 
 angular.module('rooms')
@@ -10,8 +9,8 @@ angular.module('rooms')
 		bindings: {
 			user: '<',
 
-			hideKick:'<',
-			enableReady:'<',
+			hideKick: '<',
+			enableReady: '<',
 
 			onKick: '&?',
 			onReady: '&?',

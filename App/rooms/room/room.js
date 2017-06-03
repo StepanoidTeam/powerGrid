@@ -33,7 +33,6 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 	ctrl.users = new Rx.BehaviorSubject([]);
 
-
 	ctrl.otherUsers = Rx.Observable.combineLatest(
 		ctrl.users, ctrl.player,
 		(users, player) => users.filter(u => u.Id !== player.Id));
@@ -43,7 +42,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 		(users, player) => users.find(u => u.Id === player.Id));
 
 
-	ctrl.currentUser.subscribe(()=>{
+	ctrl.currentUser.subscribe(() => {
 		$scope.$applyAsync();
 	});
 
