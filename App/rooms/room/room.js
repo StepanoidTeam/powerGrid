@@ -3,9 +3,7 @@
 var componentController = function ($scope, $controller, $location, roomService, authService, errorHandler) {
 	const ctrl = this;
 
-	$controller('authCheck', {});
-
-	ctrl.currentUser = authService.currentPlayer;
+	ctrl.player = authService.player;
 
 	ctrl.toggleReady = function (isReady) {
 		roomService.toggleReady(isReady).then(data => {
@@ -33,7 +31,21 @@ var componentController = function ($scope, $controller, $location, roomService,
 	};
 
 
-	ctrl.users = [];
+	ctrl.users = new Rx.BehaviorSubject([]);
+
+
+	ctrl.otherUsers = Rx.Observable.combineLatest(
+		ctrl.users, ctrl.player,
+		(users, player) => users.filter(u => u.Id !== player.Id));
+
+	ctrl.currentUser = Rx.Observable.combineLatest(
+		ctrl.users, ctrl.player,
+		(users, player) => users.find(u => u.Id === player.Id));
+
+
+	ctrl.currentUser.subscribe(()=>{
+		$scope.$applyAsync();
+	});
 
 	ctrl.initRoom = function (roomId) {
 		roomService.getRoom(roomId).then(function (room) {
@@ -43,14 +55,13 @@ var componentController = function ($scope, $controller, $location, roomService,
 			$location.path('/rooms');
 		});
 
-		roomService.toggleReadyObservable.subscribe(function () {
+
+		roomService.wsToggleReady.subscribe(function () {
 			$scope.$applyAsync();
 		});
 
-		roomService.roomUsers.subscribe(users=>{
-			console.log(users);
-			ctrl.users.length=  0;
-			ctrl.users.push(...users);
+		roomService.roomUsers.subscribe(users => {
+			ctrl.users.next(users);
 			$scope.$applyAsync();
 		});
 

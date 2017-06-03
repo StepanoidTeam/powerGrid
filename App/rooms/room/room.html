@@ -7,15 +7,19 @@
 		{{$ctrl.room.UserCount}}
 	</h2>
 	<div class="user-list">
+
+		<!--on-kick="$ctrl.kickUser(user.Id)"-->
 		<room-user class="list-item is-selected"
-					  user="$ctrl.currentUser"
-					  on-kick="$ctrl.kickUser(user.Id)"
-					  on-ready="$ctrl.toggleReady(currentUser.ReadyMark)"
+					  user="$ctrl.currentUser | async "
+
+					  on-ready="$ctrl.toggleReady(user.ReadyMark)"
 		></room-user>
-		<room-user ng-repeat="user in $ctrl.users"
+
+		<room-user ng-repeat="user in $ctrl.otherUsers | async"
 					  class="list-item"
 					  user="user"
 		></room-user>
+
 	</div>
 	<pg-button icon="'airport_shuttle'" value="'start game'"
 				  on-click="$ctrl.startGameRoom()"></pg-button>
