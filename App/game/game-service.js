@@ -1,11 +1,15 @@
 angular.module('app')
-	.service('gameService', function (apiEndpoints) {
+	.service('gameService', function (apiEndpoints, apiWsEndpoints) {
 		const svc = this;
+
+
+		svc.gameBoardWsEvents = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'GameBoard');
+
 
 		svc.getGameStatus = function () {
 			let params = {
 				"stage": true,
-				"playerTurn": true,//CurrentPlayerTurn
+				"playerTurn": true,//todo: rename to CurrentPlayerTurn
 				"playersTurnOrder": true,
 				"buildings": true,
 				"phase": true,
@@ -22,7 +26,6 @@ angular.module('app')
 
 			return apiEndpoints.getGameStatus(params);
 		};
-
 
 
 		svc.getMaps = apiEndpoints.getGameMaps;
