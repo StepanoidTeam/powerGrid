@@ -2,23 +2,35 @@
 
 var componentController = function (gameService) {
 	const ctrl = this;
-	ctrl.players = [];
-	ctrl.currentPlayer = '';
+	ctrl.PlayersTurnOrder = [];
+	ctrl.PlayerBoards = [];
+
+	ctrl.currentPlayerId = '';
+
+	function updateArray(arr1, arr2) {
+		arr1.splice(0);
+		arr1.push(...arr2);
+	}
+
+	ctrl.getPlayer = function (playerId) {
+		return ctrl.PlayerBoards.find(x => x.Id === playerId);
+	};
 
 	ctrl.$onInit = function () {
 		gameService.getGameStatus().then(status => {
 			console.log(status);
 
-			ctrl.currentPlayer = status.PlayerTurn;
-			ctrl.players.splice(0);//delete prevs
-			ctrl.players.push(...status.PlayersTurnOrder);
+			ctrl.currentPlayerId = status.CurrentPlayerTurn;
+
+			updateArray(ctrl.PlayersTurnOrder, status.PlayersTurnOrder);
+			updateArray(ctrl.PlayerBoards, status.PlayerBoards);
 		});
 	};
 
 	ctrl.nextTurn = function () {
-		let nextPlayerIndex = ctrl.players.indexOf(ctrl.currentPlayer) + 1;
+		let nextPlayerIndex = ctrl.PlayersTurnOrder.indexOf(ctrl.currentPlayerId) + 1;
 
-		ctrl.currentPlayer = ctrl.players[nextPlayerIndex < ctrl.players.length ? nextPlayerIndex : 0];
+		ctrl.currentPlayerId = ctrl.PlayersTurnOrder[nextPlayerIndex < ctrl.PlayersTurnOrder.length ? nextPlayerIndex : 0];
 	}
 
 };

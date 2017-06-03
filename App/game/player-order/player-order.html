@@ -1,9 +1,13 @@
 <div class="panel">
-	<div ng-repeat="player in $ctrl.players"
-		  class="player {{'player-' + ($index + 1) }}"
-		  ng-class="{'current': player == $ctrl.currentPlayer}"
-		title="{{player}}"></div>
+	<div class="player-container" ng-repeat="playerId in $ctrl.PlayersTurnOrder">
+		<div class="player {{'player-' + ($index + 1) }}"
+			  ng-class="{'current': playerId == $ctrl.currentPlayerId}"
+			  title="{{playerId}}"></div>
+		<span ng-bind="$ctrl.getPlayer(playerId).Name"></span>
+		<span ng-bind="$ctrl.getPlayer(playerId).Money"></span>
+	</div>
+
 </div>
-<pre>{{$ctrl.currentPlayer}}</pre>
+<pre>{{$ctrl.currentPlayerId}}</pre>
 <button ng-click="$ctrl.nextTurn()">next</button>
 
