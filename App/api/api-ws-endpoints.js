@@ -10,7 +10,7 @@ angular.module('app')
 		svc.open = async () => {
 			await webSocket.open();
 			webSocket.send('USERSTATUS');
-			console.log('handshake');
+			console.log('🤝handshake🤝');
 		};
 
 		svc.close = () => webSocket.close();
@@ -20,7 +20,7 @@ angular.module('app')
 			console.log('wss', data);
 		});
 
-		/* CHAT */
+		/* CHAT - CHANNEL */
 
 		svc.sendChatMessage = function (message, channelId) {
 			//todo: remove inroom
@@ -30,6 +30,6 @@ angular.module('app')
 				Channel: channelId || null,
 			};
 
-			webSocket.send('CHAT', wsData);
+			webSocket.send('CHANNEL', wsData);
 		};
 	});

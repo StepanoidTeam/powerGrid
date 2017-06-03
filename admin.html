@@ -40,7 +40,7 @@
 	// отправить сообщение из формы publish
 	document.forms.publish.onsubmit = function () {
 		mockMessage.Message = this.message.value;
-		mockMessage.type = "CHAT";
+		mockMessage.type = "CHANNEL";
 		socket.send(JSON.stringify(mockMessage));
 		return false;
 	};

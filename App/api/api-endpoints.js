@@ -138,7 +138,7 @@ angular.module('app')
 
 		//GET /api/Chat/Channels
 		svc.getChatChannels = function () {
-			return apiRequest('GET', 'CHAT/Channels');
+			return apiRequest('GET', 'CHANNEL/List');
 		};
 
 		//POST /api/Chat/GetMessages
@@ -149,7 +149,7 @@ angular.module('app')
 				"end": (new Date()).toISOString()
 			};
 
-			return apiRequest('POST', 'CHAT/GetMessages', params);
+			return apiRequest('POST', 'CHANNEL/GetMessages', params);
 		};
 
 
