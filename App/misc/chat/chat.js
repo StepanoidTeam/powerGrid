@@ -30,9 +30,15 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 	chatService.onSystemMessage.map(chatMessageMapper).subscribe(updateChatMessages);
 
 
+	//cleanup chat history on logout
+	authService.isLogged
+		.filter(isLogged => isLogged === false)
+		.subscribe(() => ctrl.chatMessages.splice(0));
+
+
 	ctrl.toggleChat = chatService.toggleChat;
 
-	ctrl.chatMessage = 'type msg here';
+	ctrl.chatMessage = `first message here ${ new Date().toISOString()}`;
 
 	ctrl.messageChanged = function (value) {
 		ctrl.chatMessage = value;
