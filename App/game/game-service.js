@@ -3,34 +3,21 @@ angular.module('app')
 		const svc = this;
 
 		svc.getGameStatus = function () {
-
-			return Promise.resolve({
-				"EntityType": "GameBoard",
-				"Stage": 1,
-				"PlayerTurn": "u#6ed29551",
-				"PlayersTurnOrder": [
-					"u#6ed29551",
-					"u#6ed29552",
-					"u#6ed29553",
-					"u#6ed29554",
-				],
-				"Buildings": [
-					{
-						"userId": "u#6ed29551",
-						"cities": []
-					}
-				],
-				"Phase": "BureaucracyPhase"
-			});
-
-
 			let params = {
-				"status": true,
 				"stage": true,
-				"playerTurn": true,
+				"playerTurn": true,//CurrentPlayerTurn
 				"playersTurnOrder": true,
 				"buildings": true,
-				"phase": true
+				"phase": true,
+				"playerBoards": true,
+				"playerBoardOptions": {
+					"id": true,
+					"money": true,
+					"name": true,
+					"color": true,
+					"buildingsQty": true,
+					"bestStation": true
+				}
 			};
 
 			return apiEndpoints.getGameStatus(params);
