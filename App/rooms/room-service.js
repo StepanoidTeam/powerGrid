@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('rooms', [])
-	.service('roomService', function ($location, apiEndpoints, apiWsEndpoints, authService) {
+	.service('roomService', function ($location, apiEndpoints, apiWsEndpoints, authService, gameService) {
 		const svc = this;
 
 		svc.roomUsers = new Rx.BehaviorSubject([]);
@@ -19,7 +19,6 @@ angular.module('rooms', [])
 			}
 		});
 
-
 		svc.roomWsEvents = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'GameRoom');
 
 		svc.roomCreated = svc.roomWsEvents.filter(event => event.BroadcastReason === '/api/ROOMS/create')
@@ -35,14 +34,34 @@ angular.module('rooms', [])
 			return {Id: event.Id};
 		});
 
-		svc.wsToggleReady = svc.roomWsEvents.filter(msg => msg.BroadcastReason === '/api/ROOMS/ToggleReady').map(msg => msg.Users);
 
+		svc.wsToggleReady = svc.roomWsEvents
+		//todo: uncomment after server fix
+		// .filter(msg => msg.BroadcastReason === '/api/ROOMS/ToggleReady')
+			.filter(msg => msg.Users !== undefined)//todo: remove hack
+			.map(msg => msg.Users);
+
+
+		//todo: refac?
 		svc.wsToggleReady.subscribe(users => {
 			users.forEach(user => {
-				svc.roomUsers.value.find(u => u.Id === user.Id)
-					.forEach(u => u.ReadyMark = user.readyMark);
+				const currentUser = svc.roomUsers.value.find(u => u.Id === user.Id);
+				currentUser.ReadyMark = user.ReadyMark;
 			});
 		});
+
+		//todo: should be removed from here, to game service, when server migrates and roomUsers moved to GameSvc too
+		gameService.gameBoardWsEvents.map(msg => msg.PlayerBoards)
+			.subscribe(boards => {
+
+				boards.forEach(board => {
+					const currentUser = svc.roomUsers.value.find(u => u.Id === board.Id);
+					currentUser.Color = board.Color;
+				});
+
+
+			});
+
 
 		//todo: client-side API mock
 		svc.getRoom = function (roomId) {
@@ -81,7 +100,6 @@ angular.module('rooms', [])
 
 
 		svc.startGameRoom = apiEndpoints.startGameRoom;
-
 
 
 		svc.onRoomsUpdated = function () {
