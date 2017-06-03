@@ -1,24 +1,28 @@
 ﻿angular.module('app')
-.service('tokenService', function ($cookies) {
-	const svc = this;
+	.service('tokenService', function ($cookies) {
+		const svc = this;
 
-	var tokenCookieKey = 'AuthToken';
+		const tokenCookieKey = 'AuthToken';
 
-	svc.getToken = function () {
-		return $cookies.getObject(tokenCookieKey);
-	};
+		svc.tokenExists = function () {
+			return svc.getToken() !== undefined;
+		};
 
-	svc.mapToken = function (rawToken) {
-		return rawToken[tokenCookieKey];
-	};
+		svc.getToken = function () {
+			return $cookies.getObject(tokenCookieKey);
+		};
 
-	svc.saveToken = function (token) {
-		$cookies.putObject(tokenCookieKey, token);
-		return token;
-	};
+		svc.mapToken = function (rawToken) {
+			return rawToken[tokenCookieKey];
+		};
 
-	svc.deleteToken = function () {
-		$cookies.remove(tokenCookieKey);
-		return Promise.resolve();
-	};
-});
+		svc.saveToken = function (token) {
+			$cookies.putObject(tokenCookieKey, token);
+			return token;
+		};
+
+		svc.deleteToken = function () {
+			$cookies.remove(tokenCookieKey);
+			return Promise.resolve();
+		};
+	});
