@@ -2,6 +2,12 @@
 
 <head>
 	<title>websockets test</title>
+	<style>
+		.message {
+			border: 1px solid lightgray;
+			padding: 10px;
+		}
+	</style>
 </head>
 
 <body>
@@ -24,7 +30,7 @@
 	const socket = new WebSocket(config.wsUrl);
 	console.info('waiting for ws connection...');
 
-	socket.onopen = function() {
+	socket.onopen = function () {
 		mockMessage.type = "USERSTATUS";
 		socket.send(JSON.stringify(mockMessage));
 		console.info('ws connected. handshake sent');
@@ -50,6 +56,7 @@
 	function showMessage(message) {
 		console.log(message);
 		const messageElem = document.createElement('div');
+		messageElem.classList.add('message');
 		messageElem.appendChild(document.createTextNode(message));
 		document.getElementById('subscribe').appendChild(messageElem);
 	}
