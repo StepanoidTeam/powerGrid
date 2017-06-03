@@ -54,20 +54,20 @@ angular.module('app')
 		};
 
 
-		/* USER */
+		/* AUTH */
 
 		svc.login = function (userModel) {
-			return apiRequest('POST', 'USER/Login', userModel)
+			return apiRequest('POST', 'AUTH/Login', userModel)
 				.then(tokenService.mapToken)
 				.then(tokenService.saveToken);
 		};
 
 		svc.logout = function () {
-			return apiRequest('POST', 'USER/logout')
-				.then(tokenService.deleteToken);
+			return apiRequest('POST', 'AUTH/logout')
+				.finally(tokenService.deleteToken);
 		};
 
-		//GET /api/USER/Status
+		//GET /api/AUTH/Status
 		svc.getPlayerStatus = function () {
 			const params = {
 				"gameRoomId": true,
@@ -76,7 +76,7 @@ angular.module('app')
 				"name": true
 			};
 
-			return apiRequest('POST', 'USER/Status', params);
+			return apiRequest('POST', 'AUTH/Status', params);
 		};
 
 
