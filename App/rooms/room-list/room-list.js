@@ -1,16 +1,29 @@
 'use strict';
 
-var componentController = function ($controller, $location, authService, roomService, errorHandler) {
+var componentController = function ($scope, $controller, $location, authService, roomService, errorHandler) {
 	const ctrl = this;
 
-	$controller('authCheck', {});
-	$controller('isInRoomCheck', {});
+	ctrl.rooms = [];
 
 	ctrl.updateRooms = function () {
 		roomService.getRoomList().then(function (rooms) {
 			ctrl.rooms = rooms.filter(room => !room.IsInGame);
 		}).catch(errorHandler);
 	};
+
+
+	roomService.roomCreated.subscribe(room => {
+		ctrl.rooms.push(room);
+		$scope.$applyAsync();
+	});
+
+	roomService.roomRemoved.subscribe(room => {
+		let removedRoomIndex = ctrl.rooms.findIndex(r => r.Id === room.Id);
+		if (removedRoomIndex < 0)return;
+
+		ctrl.rooms.splice(removedRoomIndex, 1);
+		$scope.$applyAsync();
+	});
 
 	ctrl.createRoom = function () {
 		const roomName = 'room' + Date.now();
