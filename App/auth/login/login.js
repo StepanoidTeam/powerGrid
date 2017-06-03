@@ -1,15 +1,16 @@
 'use strict';
 
-var componentController = function ($location, authService, apiWsEndpoints) {
+var componentController = function ($location, authService) {
 	const ctrl = this;
 
 	function getRandomInt(max) {
 		return Math.floor(Math.random() * max);
 	}
 
+	//authService.getPlayerStatus();
 
-	var playerNamesStub = ['bob', 'igor', 'admin4eg', 'johnDoe', 'gnome', 'qwerty', 'uzerok']
-	var randUserName = playerNamesStub[getRandomInt(playerNamesStub.length)] + getRandomInt(100);
+	const playerNamesStub = ['bob', 'igor', 'Odmin4eg', 'johnDoe', 'gnome', 'qwerty', 'uzerok']
+	const randUserName = playerNamesStub[getRandomInt(playerNamesStub.length)] + getRandomInt(100);
 
 	ctrl.userData = {username: randUserName, password: '123'};
 

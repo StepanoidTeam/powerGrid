@@ -6,9 +6,7 @@ var componentController = function ($location, versionService) {
 	ctrl.$onInit = function () {
 		versionService.getApiVersion().then(function () {
 
-
-
-			//todo: check plyaer:
+			//todo: check player:
 			// is logged - to rooms
 			// is in room - to room
 			// is in game - to game
@@ -16,8 +14,6 @@ var componentController = function ($location, versionService) {
 			// else - login
 
 			$location.path('/login');
-
-
 
 		}, function () {
 			$location.path('/error');
