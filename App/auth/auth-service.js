@@ -1,18 +1,27 @@
 ﻿'use strict';
 
 angular.module('auth', [])
-	.service('authService', function ($q, $location, apiEndpoints, errorHandler) {
+	.service('authService', function ($location,tokenService, apiEndpoints, apiWsEndpoints,  errorHandler) {
 		const svc = this;
 
 		//todo: use behaviorSubj
-		const isLoggedSubject = new Rx.Subject();
+		const isLoggedSubject = new Rx.BehaviorSubject(false);
 		svc.isLogged = isLoggedSubject.distinctUntilChanged();
 
 		//todo: use behaviorSubj
-		const playerSubject = new Rx.Subject();
+		const playerSubject = new Rx.BehaviorSubject(null);
 		svc.player = playerSubject.distinctUntilChanged((a, b) => {
 			return a && b && a.Id === b.Id;
 		});
+
+
+		svc.player.filter(player => player === null).subscribe(
+			() => $location.path('/login')
+		);
+
+		svc.player.filter(player => player !== null).subscribe(
+			() => $location.path('/rooms')
+		);
 
 
 		svc.login = function (userData) {
@@ -26,8 +35,14 @@ angular.module('auth', [])
 
 		svc.logout = function () {
 			apiEndpoints.logout().then(() => isLoggedSubject.next(false));
+
+			apiWsEndpoints.close();
 			return Promise.resolve();
 		};
+
+
+		svc.isLogged.filter(isLogged => isLogged)
+			.subscribe(() => apiWsEndpoints.open());
 
 
 		svc.register = function (username, password) {
@@ -52,7 +67,7 @@ angular.module('auth', [])
 					isLoggedSubject.next(false);
 					errorHandler(error);
 					svc.logout();
-					$location.path('init');
+					$location.path('/login');
 				});
 		};
 
@@ -77,5 +92,11 @@ angular.module('auth', [])
 
 
 		svc.$onInit = function () {
+			let exists = tokenService.tokenExists();
+			if (exists) {
+				svc.getPlayerStatus();
+			}
 		};
+
+		svc.$onInit();
 	});

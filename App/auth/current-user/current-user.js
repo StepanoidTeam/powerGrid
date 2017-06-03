@@ -1,6 +1,6 @@
 'use strict';
 
-var componentController = function ($q, $location, authService) {
+var componentController = function ($location, authService) {
     const ctrl = this;
 
     let isAuth = false;
@@ -10,7 +10,7 @@ var componentController = function ($q, $location, authService) {
 
     ctrl.logout = function () {
         authService.logout().then(() => {
-            $location.path('/init');
+            $location.path('/login');
         })
     };
 
