@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('app')
-	.service('apiEndpoints', function ($q, $http, tokenService, apiConfig) {
+	.service('apiEndpoints', function ($http, tokenService, apiConfig) {
 		const svc = this;
 		//init
 		const apiUrl = apiConfig.apiUrl;
@@ -41,11 +41,10 @@ angular.module('app')
 			 NotAllowActionInThisPhase
 			 */
 
-
 			if (isSuccess) {
-				return $q.when(httpResponse.data.data);
+				return Promise.resolve(httpResponse.data.data);
 			} else {
-				return $q.reject(httpResponse.data);
+				return Promise.reject(httpResponse.data);
 			}
 		}
 
@@ -154,7 +153,6 @@ angular.module('app')
 		};
 
 
-
 		//GAME
 		//GET /api/Maps
 		svc.getGameMaps = function () {
@@ -222,7 +220,7 @@ angular.module('app')
 
 
 		svc.getGameStatus = function (params) {
-			return apiRequest('POST', 'GAME/Status',params);
+			return apiRequest('POST', 'GAME/Status', params);
 		};
 
 
