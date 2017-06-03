@@ -1,42 +1,26 @@
 'use strict';
 
 angular.module('app')
-	.service('apiWsEndpoints', function ($q, $http, tokenService, apiConfig) {
+	.service('apiWsEndpoints', function (webSocket) {
 		const svc = this;
 
-		function wsEventMapper(wsEvent) {
-			const dataRaw = wsEvent.data;
-			//todo: dirty hack - remove
-			return JSON.parse(dataRaw || "{}");
-		}
 
-		//init
-		const webSocket = new WebSocket(apiConfig.wsUrl);
-		//'open' 'close' 'error'
-		svc.wsMessage = Rx.Observable.fromEvent(webSocket, 'message').map(wsEventMapper);
-		//svc.wsOpen = Rx.Observable.fromEvent(webSocket, 'open').map(wsEventMapper);
+		svc.wsMessage = webSocket.wsMessage;
+
+		svc.open = async () => {
+			await webSocket.open();
+			webSocket.send('USERSTATUS');
+			console.log('handshake');
+		};
+
+		svc.close = () => webSocket.close();
 
 
 		svc.wsMessage.subscribe((data) => {
-			console.log('wss',data);
+			console.log('wss', data);
 		});
 
-
-		function wsRequest(wsMethod, wsData = {}) {
-
-			wsData.AuthToken = tokenService.getToken();
-			wsData.Type = wsMethod;
-
-			const requestString = JSON.stringify(wsData);
-			webSocket.send(requestString);
-		}
-
 		/* CHAT */
-
-		svc.handshake = function () {
-			wsRequest('USERSTATUS');
-			console.log('handshake');
-		};
 
 		svc.sendChatMessage = function (message, channelId) {
 			//todo: remove inroom
@@ -46,6 +30,6 @@ angular.module('app')
 				Channel: channelId || null,
 			};
 
-			wsRequest('CHAT', wsData);
+			webSocket.send('CHAT', wsData);
 		};
 	});
