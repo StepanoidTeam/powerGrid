@@ -3,8 +3,6 @@
 var componentController = function ($scope,$controller, $location, gameService) {
 	const ctrl = this;
 
-	$controller('authCheck', {});
-
 	ctrl.$onInit = function () {
 
 		/*gameService.getMaps()
