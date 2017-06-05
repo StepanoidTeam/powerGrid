@@ -2,6 +2,16 @@
 
 angular.module('app')
 	.constant('wsFilter', {
+
+		Type: {
+			User: msg => msg.EntityType === 'User',
+			ChatMessage: msg => msg.EntityType === 'ChatMessage',
+			GameRoom: msg => msg.EntityType === 'GameRoom',
+			GameBoard: msg => msg.EntityType === 'GameBoard',
+		},
+
+		//todo: restructure?
+
 		Room: {
 			Create: msg => msg.BroadcastReason === '/api/room/create',
 			Join: msg => msg.BroadcastReason === '/api/room/join',

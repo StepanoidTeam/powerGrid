@@ -20,7 +20,7 @@ angular.module('ROOM', [])
 			}
 		});
 
-		svc.roomWsEvents = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'GameRoom');
+		svc.roomWsEvents = apiWsEndpoints.wsMessage.filter(wsFilter.Type.GameRoom);
 
 		svc.roomCreated = svc.roomWsEvents.filter(wsFilter.Room.Create)
 			.map(event => {
@@ -51,7 +51,7 @@ angular.module('ROOM', [])
 		});
 
 
-		svc.gameBoardWsEvents = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'GameBoard');
+		svc.gameBoardWsEvents = apiWsEndpoints.wsMessage.filter(wsFilter.Type.GameBoard);
 		svc.wsToggleReady = svc.gameBoardWsEvents
 			.filter(wsFilter.Game.ToggleReady)
 			.map(msg => msg.PlayerBoards);

@@ -1,5 +1,5 @@
 angular.module('app')
-	.service('chatService', function (apiEndpoints, apiWsEndpoints, authService, apiUser) {
+	.service('chatService', function (apiEndpoints, apiWsEndpoints, wsFilter, authService, apiUser) {
 		const svc = this;
 
 		svc.isDisabled = new Rx.Subject();
@@ -9,7 +9,7 @@ angular.module('app')
 		//todo: move to chat api
 
 
-		svc.onChatMessage = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'ChatMessage');
+		svc.onChatMessage = apiWsEndpoints.wsMessage.filter(wsFilter.Type.ChatMessage);
 
 
 		svc.getLastMessages = function () {

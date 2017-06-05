@@ -1,10 +1,8 @@
 angular.module('app')
-	.service('gameService', function (apiEndpoints, apiWsEndpoints) {
+	.service('gameService', function (apiEndpoints, apiWsEndpoints, wsFilter) {
 		const svc = this;
 
-
-		svc.gameBoardWsEvents = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'GameBoard');
-
+		svc.gameBoardWsEvents = apiWsEndpoints.wsMessage.filter(wsFilter.Type.GameBoard);
 
 		svc.getGameStatus = function () {
 			let params = {
