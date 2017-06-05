@@ -5,8 +5,8 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 	ctrl.player = authService.player;
 
-	ctrl.toggleReady = function (isReady) {
-		roomService.toggleReady(isReady).then(data => {
+	ctrl.toggleReady = function (IsDone) {
+		roomService.toggleReady(IsDone).then(data => {
 
 		});
 	};
@@ -42,11 +42,10 @@ var componentController = function ($scope, $controller, $location, roomService,
 		(users, player) => users.find(u => u.Id === player.Id));
 
 
-	ctrl.currentUser.subscribe(() => {
-		$scope.$applyAsync();
-	});
+	ctrl.currentUser.subscribe(() => $scope.$applyAsync());
 
 	ctrl.initRoom = function (roomId) {
+
 		roomService.getRoom(roomId).then(function (room) {
 			ctrl.room = room;
 		}, function (error) {
@@ -55,9 +54,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 		});
 
 
-		roomService.wsToggleReady.subscribe(function () {
-			$scope.$applyAsync();
-		});
+		roomService.wsToggleReady.subscribe(() => $scope.$applyAsync());
 
 		roomService.roomUsers.subscribe(users => {
 			ctrl.users.next(users);

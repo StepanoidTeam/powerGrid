@@ -10,14 +10,14 @@ angular.module('app')
 		svc.open = async () => {
 			await webSocket.open();
 			webSocket.send('AUTHSTATUS');
-			console.log('🤝handshake🤝');
+			console.log('🤝ws handshake sent🤝');
 		};
 
 		svc.close = () => webSocket.close();
 
 
 		svc.wsMessage.subscribe((data) => {
-			console.log('wss', data);
+			console.log('📢wss', data);
 		});
 
 		/* CHAT - CHANNEL */

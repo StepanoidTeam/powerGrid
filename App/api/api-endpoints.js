@@ -67,11 +67,11 @@ angular.module('app')
 				.finally(tokenService.deleteToken);
 		};
 
-		//GET /api/AUTH/Status
 		svc.getPlayerStatus = function () {
 			const params = {
 				"gameRoomId": true,
-				"readyMark": true,
+				"lastActivityTime": true,
+				"isOnline": true,
 				"id": true,
 				"name": true
 			};
@@ -82,53 +82,43 @@ angular.module('app')
 
 		/* ROOM */
 
-		//GET /api/Room/List
 		svc.getRooms = function () {
 			//todo: is it used?
 			return apiRequest('GET', 'ROOM/List');
 		};
 
-		//GET /api/ROOM
 		//ROOM list
 		svc.getRoomList = function (params) {
 			return apiRequest('POST', 'ROOM/List', params);
 		};
 
-		//POST /api/ROOM/Create/{name}
 		svc.createRoom = function (params) {
 			return apiRequest('POST', 'ROOM/create', params);
 		};
 
-		//POST /api/ROOM/List
-
-		//POST /api/ROOM/Join
 		//Join player into specific room
 		//roomId
 		svc.joinRoom = function (params) {
 			return apiRequest('POST', 'ROOM/join', params);
 		};
 
-		//POST /api/ROOM/Leave
 		//Leave from current room
 		svc.leaveRoom = function () {
 			return apiRequest('POST', 'ROOM/leave');
 		};
 
-		//POST /api/ROOM/Kick
 		//Kick another player from the room if current user have enough permissions
 		svc.kickUser = function (params) {
 			return apiRequest('POST', 'ROOM/kick', params);
 		};
 
 
-		//POST /api/ROOM/ToggleReady
 		/* { "state": true } */
 		//Set if player ready to start or not
 		svc.toggleReadyRoom = function (params) {
-			return apiRequest('POST', 'ROOM/ToggleReady', params);
+			return apiRequest('POST', 'GAME/ToggleReady', params);
 		};
 
-		//GET /api/ROOM/StartGame
 		//Initiate game
 
 		svc.startGameRoom = function () {
@@ -137,12 +127,10 @@ angular.module('app')
 		};
 
 
-		//GET /api/Chat/Channels
 		svc.getChatChannels = function () {
 			return apiRequest('GET', 'CHANNEL/List');
 		};
 
-		//POST /api/Chat/GetMessages
 		svc.getChatMessages = function (channelId) {
 			const params = {
 				"channelId": channelId,
@@ -155,12 +143,10 @@ angular.module('app')
 
 
 		//GAME
-		//GET /api/Maps
 		svc.getGameMaps = function () {
 			return apiRequest('GET', 'MAPS');
 		};
 
-		//POST /api/Maps/Map
 		svc.getGameMapById = function (mapId) {
 			const params = {
 				"mapId": mapId,

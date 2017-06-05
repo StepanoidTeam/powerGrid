@@ -17,7 +17,7 @@ var componentController = function ($scope, $controller, $location, authService,
 		$scope.$applyAsync();
 	});
 
-	roomService.roomRemoved.subscribe(room => {
+	roomService.roomClosed.subscribe(room => {
 		let removedRoomIndex = ctrl.rooms.findIndex(r => r.Id === room.Id);
 		if (removedRoomIndex < 0)return;
 
