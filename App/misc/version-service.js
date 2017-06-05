@@ -4,9 +4,7 @@ angular.module('app')
 
 		svc.getApiVersion = function () {
 			return apiEndpoints.getVersion().catch((error) => {
-				console.error(error);
-				$location.path('/error', error);
-				throw error;
+				return Promise.reject(error);
 			});
 		};
 

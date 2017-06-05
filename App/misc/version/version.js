@@ -1,6 +1,6 @@
 'use strict';
 
-var componentController = function (versionService) {
+var componentController = function ($location, versionService) {
 	const ctrl = this;
 
 	ctrl.version = 'loading...';
@@ -12,9 +12,11 @@ var componentController = function (versionService) {
 			ctrl.buildDt = value.buildDt;
 
 			document.body.dataset.online = true;
-		}, function (error) {
+		})
+		.catch(function (error) {
 			ctrl.version = 'FAILED TO LOAD VERSION';
-			console.error(error);
+			ctrl.buildDt = '✖️';
+			$location.path('/error');
 		});
 
 
