@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('ROOM', [])
-	.service('roomService', function ($location, apiEndpoints, apiWsEndpoints, authService, gameService) {
+	.service('roomService', function ($location, apiEndpoints, apiWsEndpoints, authService, gameService, wsFilter) {
 		const svc = this;
 
 		svc.roomUsers = new Rx.BehaviorSubject([]);
@@ -22,38 +22,52 @@ angular.module('ROOM', [])
 
 		svc.roomWsEvents = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'GameRoom');
 
-		svc.roomCreated = svc.roomWsEvents.filter(event => event.BroadcastReason === 'api/Room/create')
+		svc.roomCreated = svc.roomWsEvents.filter(wsFilter.Room.Create)
 			.map(event => {
 				return {Id: event.Id, Name: event.Name};
 			});
 
-		svc.roomRemoved = svc.roomWsEvents.filter(event => event.BroadcastReason === 'api/Room/leave').map(event => {
-			return {Id: event.Id};
+		svc.roomClosed = svc.roomWsEvents.filter(wsFilter.Room.Closed)
+			.map(event => {
+				return {Id: event.Id, Name: event.Name};
+			});
+
+
+		svc.roomUsersLeft = svc.roomWsEvents.filter(wsFilter.Room.Leave).map(event => event.Users);
+		svc.roomUsersJoined = svc.roomWsEvents.filter(wsFilter.Room.Join).map(event => event.Users);
+
+
+		svc.roomUsersJoined.subscribe(usersJoined => {
+			let usersRemain = svc.roomUsers.value;
+			usersRemain.push(...usersJoined);
+			svc.roomUsers.next(usersRemain);
 		});
 
-		svc.roomJoined = svc.roomWsEvents.filter(event => event.BroadcastReason === 'api/Room/join').map(event => {
-			return {Id: event.Id};
+		svc.roomUsersLeft.subscribe(usersLeft => {
+			//todo: looks shitty
+			let usersRemain = svc.roomUsers.value;
+			usersLeft.forEach(u => usersRemain.splice(usersRemain.findIndex(x => x.Id === u.Id), 1));
+			svc.roomUsers.next(usersRemain);
 		});
 
 
-		svc.wsToggleReady = svc.roomWsEvents
-		//todo: uncomment after server fix
-			.filter(msg => msg.BroadcastReason === 'api/Room/ToggleReady')
-			//.filter(msg => msg.Users !== undefined)//todo: remove hack
-			.map(msg => msg.Users);
+		svc.gameBoardWsEvents = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'GameBoard');
+		svc.wsToggleReady = svc.gameBoardWsEvents
+			.filter(wsFilter.Game.ToggleReady)
+			.map(msg => msg.PlayerBoards);
 
 
 		//todo: refac?
 		svc.wsToggleReady.subscribe(users => {
 			users.forEach(user => {
 				const currentUser = svc.roomUsers.value.find(u => u.Id === user.Id);
-				currentUser.ReadyMark = user.ReadyMark;
+				currentUser.IsDone = user.IsDone;
 			});
 		});
 
 		//todo: should be removed from here, to game service, when server migrates and roomUsers moved to GameSvc too
 		gameService.gameBoardWsEvents
-			.filter(msg => msg.BroadcastReason === 'api/Room/ChangeColor')
+			.filter(wsFilter.Game.ChangeColor)
 			.map(msg => msg.PlayerBoards)
 			.subscribe(boards => {
 
@@ -66,7 +80,7 @@ angular.module('ROOM', [])
 			});
 
 
-		//todo: client-side API mock
+//todo: client-side API mock
 		svc.getRoom = function (roomId) {
 			//return apiEndpoints.getRoom(roomId); //todo: nesuwestvuet!!1
 			return svc.getRoomList().then(function (rooms) {
@@ -97,8 +111,8 @@ angular.module('ROOM', [])
 			return apiEndpoints.kickUser({username: userId});
 		};
 
-		svc.toggleReady = function (isReady) {
-			return apiEndpoints.toggleReadyRoom({state: isReady});
+		svc.toggleReady = function (IsDone) {
+			return apiEndpoints.toggleReadyRoom({state: IsDone});
 		};
 
 
@@ -110,4 +124,5 @@ angular.module('ROOM', [])
 			//apiWsEndpoints
 		};
 
-	});
+	})
+;
