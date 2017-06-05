@@ -17,14 +17,13 @@ angular.module('app')
 
 
 		svc.wsMessage.subscribe((data) => {
+			//debug
 			console.log('📢wss', data);
 		});
 
 		/* CHAT - CHANNEL */
 
 		svc.sendChatMessage = function (message, channelId) {
-			//todo: remove inroom
-			//todo: rename toUserId to receiver or channelId/subscriberID
 			const wsData = {
 				Message: message,
 				Channel: channelId || null,

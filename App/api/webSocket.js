@@ -17,11 +17,6 @@ angular.module('app')
 			return JSON.parse(dataRaw || "{}");
 		}
 
-		svc.close = function () {
-			console.log('👿holostoe zakrytie socketa👿');
-		};
-
-
 		let wsSend = new Rx.Subject();
 		//init
 		svc.open = function () {
@@ -58,11 +53,5 @@ angular.module('app')
 
 			wsSend.next(wsData);
 		};
-
-
-		svc.reopen = async function () {
-			await svc.close();
-			await svc.open();
-		}
 	});
 
