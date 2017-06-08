@@ -79,6 +79,13 @@ angular.module('app')
 			return apiRequest('POST', 'AUTH/Status', params);
 		};
 
+		/* ??? */
+
+		svc.addBot = function () {
+			//todo: move to room controller on server
+			return apiRequest('GET', 'ADMIN/AddBot');
+		};
+
 
 		/* ROOM */
 

@@ -115,6 +115,10 @@ angular.module('ROOM', [])
 			return apiEndpoints.toggleReadyRoom({state: IsDone});
 		};
 
+		svc.addBot = function () {
+			return apiEndpoints.addBot();
+		};
+
 
 		svc.startGameRoom = apiEndpoints.startGameRoom;
 

@@ -12,6 +12,8 @@ var componentController = function ($scope, $controller, $location, roomService,
 	};
 
 
+	ctrl.addBot = () => roomService.addBot();
+
 	ctrl.kickUser = function (userId) {
 		roomService.kickUser(userId)
 			.then(() => ctrl.initRoom(ctrl.roomId));
