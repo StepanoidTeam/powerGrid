@@ -7,18 +7,20 @@ angular.module('app')
 		svc.getGameStatus = function () {
 			let params = {
 				"stage": true,
-				"playerTurn": true,//todo: rename to CurrentPlayerTurn
+				"playerTurn": true,
 				"playersTurnOrder": true,
 				"buildings": true,
 				"phase": true,
 				"playerBoards": true,
+				//"filterByUserId": "string",
 				"playerBoardOptions": {
 					"id": true,
 					"money": true,
 					"name": true,
 					"color": true,
 					"buildingsQty": true,
-					"bestStation": true
+					"bestStation": true,
+					"isDone": true
 				}
 			};
 
