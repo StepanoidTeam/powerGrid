@@ -30,16 +30,15 @@ var componentController = function ($scope, $controller, $location, authService,
 		roomService.createRoom(roomName).then(function (data) {
 			//creation ok
 			//todo: make common redirect approach
-			$location.path('/ROOM/' + data['Id']);
+			$location.path('/ROOM/current');
 		}).catch(errorHandler)
 			.then(ctrl.updateRooms);
 	};
 
 	ctrl.joinRoom = function (roomId) {
-		roomService.joinRoom(roomId).then(function (data) {
-			//creation ok
+		roomService.joinRoom(roomId).then(function () {
 			//todo: make common redirect approach
-			$location.path('/ROOM/' + data['Id']);
+			$location.path('/ROOM/current');
 		}).catch(errorHandler)
 			.then(ctrl.updateRooms);
 	};

@@ -11,7 +11,7 @@
 		<!--on-kick="$ctrl.kickUser(user.Id)"-->
 		<room-user class="list-item is-selected"
 					  user="$ctrl.currentUser | async "
-
+					  on-color-change="$ctrl.changeColor(user)"
 					  on-ready="$ctrl.toggleReady(user.IsDone)"
 		></room-user>
 

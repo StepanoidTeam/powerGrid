@@ -5,8 +5,10 @@ var componentController = function () {
 
 
 	ctrl.getAvatarIcon = function (user = {Id: ''}) {
-		return user.Id.indexOf('bot')<0 ? 'face' : 'android';
+		return user.Id.indexOf('bot') < 0 ? 'face' : 'android';
 	};
+
+	ctrl.changeColor = () => ctrl.onColorChange(ctrl.user);
 
 };
 
@@ -20,6 +22,7 @@ angular.module('ROOM')
 
 			onKick: '&?',
 			onReady: '&?',
+			onColorChange: '&?',
 		},
 		templateUrl: 'app/rooms/room/room-user/room-user.html',
 		controller: componentController

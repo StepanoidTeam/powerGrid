@@ -1,6 +1,6 @@
 'use strict';
 
-var componentController = function ($scope, $controller, $location, roomService,gameService, authService, errorHandler) {
+var componentController = function ($scope, $controller, $location, roomService, gameService, authService, errorHandler) {
 	const ctrl = this;
 
 	ctrl.player = authService.player;
@@ -12,11 +12,15 @@ var componentController = function ($scope, $controller, $location, roomService,
 	};
 
 
+	ctrl.changeColor = function (user) {
+		roomService.changeColor();
+	};
+
 	ctrl.addBot = () => roomService.addBot().catch(errorHandler);
 
 	ctrl.kickUser = function (userId) {
 		roomService.kickUser(userId)
-			.then(() => ctrl.initRoom(ctrl.roomId));
+			.then(() => ctrl.initRoom());
 	};
 
 
@@ -47,9 +51,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 	ctrl.currentUser.subscribe(() => $scope.$applyAsync());
 
 
-
-
-	ctrl.initRoom = function (roomId) {
+	ctrl.initRoom = function () {
 
 		roomService.getRoom().then(playerBoards => {
 			//todo: remove then/catch?
@@ -60,6 +62,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 		});
 
 		roomService.wsToggleReady.subscribe(() => $scope.$applyAsync());
+		roomService.wsColorChange.subscribe(() => $scope.$applyAsync());
 
 		roomService.roomUsers.subscribe(users => {
 			ctrl.users.next(users);
@@ -70,16 +73,13 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 
 	ctrl.$onInit = function () {
-		ctrl.initRoom(ctrl.roomId);
+		ctrl.initRoom();
 	}
 
 };
 
 angular.module('ROOM')
 	.component('room', {
-		bindings: {
-			roomId: '<'
-		},
 		templateUrl: 'app/rooms/room/room.html',
 		controller: componentController
 	});

@@ -1,5 +1,6 @@
 <span class="user-info">
 	<i class="avatar material-icons av-{{$ctrl.user.Color}}"
+		ng-click="$ctrl.changeColor()"
 	ng-bind="$ctrl.getAvatarIcon($ctrl.user)">
 	</i>
 	<span ng-bind="$ctrl.user.Name"></span>

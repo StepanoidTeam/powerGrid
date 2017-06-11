@@ -10,7 +10,7 @@ angular.module('ROOM', [])
 		authService.player.subscribe(player => {
 			if (player) {
 				if (player.GameRoomId !== null) {
-					$location.path('/ROOM/' + player.GameRoomId);
+					$location.path('/ROOM/current');
 				} else {
 					$location.path('/ROOM/List');
 				}
@@ -66,18 +66,17 @@ angular.module('ROOM', [])
 		});
 
 		//todo: should be removed from here, to game service, when server migrates and roomUsers moved to GameSvc too
-		gameService.gameBoardWsEvents
+
+		svc.wsColorChange = gameService.gameBoardWsEvents
 			.filter(wsFilter.Game.ChangeColor)
-			.map(msg => msg.PlayerBoards)
-			.subscribe(boards => {
+			.map(msg => msg.PlayerBoards);
 
-				boards.forEach(board => {
-					const currentUser = svc.roomUsers.value.find(u => u.Id === board.Id);
-					currentUser.Color = board.Color;
-				});
-
-
+		svc.wsColorChange.subscribe(boards => {
+			boards.forEach(board => {
+				const currentUser = svc.roomUsers.value.find(u => u.Id === board.Id);
+				currentUser.Color = board.Color;
 			});
+		});
 
 		//todo: should be removed, use gamesvc get game status directly
 		svc.getRoom = function () {
@@ -107,6 +106,10 @@ angular.module('ROOM', [])
 		svc.toggleReady = function (IsDone) {
 			return apiEndpoints.toggleReadyRoom({state: IsDone});
 		};
+
+		svc.changeColor = function (user) {
+			return apiEndpoints.changeColor();
+		}
 
 		svc.addBot = function () {
 			return apiEndpoints.addBot({
