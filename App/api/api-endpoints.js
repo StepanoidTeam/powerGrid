@@ -18,13 +18,11 @@ angular.module('app')
 				data: data || {},
 				headers: headers
 			}).then(apiResponse, apiResponse);
-
-
-			//todo: maybe do unauth redirect here?
 		}
 
 		function apiResponse(httpResponse) {
-			const isSuccess = httpResponse.status === 200;//todo: ambigous   && httpResponse.data.status === ok
+			const isSuccess = httpResponse.status === 200;
+			//todo: ambigous && httpResponse.data.status === ok
 
 			/*
 			 All Possible response statuses:
@@ -49,10 +47,7 @@ angular.module('app')
 		}
 
 
-		svc.getVersion = function () {
-			return apiRequest('GET', 'VERSION');
-		};
-
+		svc.getVersion = () => apiRequest('GET', 'VERSION');
 
 		/* AUTH */
 
@@ -82,54 +77,31 @@ angular.module('app')
 
 		/* ROOM */
 
-		svc.getRooms = function () {
-			//todo: is it used?
-			return apiRequest('GET', 'ROOM/List');
-		};
+		//todo: is it used?
+		svc.getRooms = () => apiRequest('GET', 'ROOM/List');
 
-		//ROOM list
-		svc.getRoomList = function (params) {
-			return apiRequest('POST', 'ROOM/List', params);
-		};
+		svc.getRoomList = (params) => apiRequest('POST', 'ROOM/List', params);
 
-		svc.createRoom = function (params) {
-			return apiRequest('POST', 'ROOM/create', params);
-		};
+		svc.createRoom = (params) => apiRequest('POST', 'ROOM/create', params);
 
-		//Join player into specific room
-		//roomId
-		svc.joinRoom = function (params) {
-			return apiRequest('POST', 'ROOM/join', params);
-		};
+		svc.joinRoom = (params) => apiRequest('POST', 'ROOM/join', params);
 
-		//Leave from current room
-		svc.leaveRoom = function () {
-			return apiRequest('POST', 'ROOM/leave');
-		};
+		svc.leaveRoom = () => apiRequest('POST', 'ROOM/leave');
 
 		//Kick another player from the room if current user have enough permissions
-		svc.kickUser = function (params) {
-			return apiRequest('POST', 'ROOM/kick', params);
-		};
-
+		svc.kickUser = (params) => apiRequest('POST', 'ROOM/kick', params);
 
 		/* { "state": true } */
 		//Set if player ready to start or not
-		svc.toggleReadyRoom = function (params) {
-			return apiRequest('POST', 'GAME/ToggleReady', params);
-		};
+		svc.toggleReadyRoom = (params) => apiRequest('POST', 'GAME/ToggleReady', params);
+
 
 		//Initiate game
 
-		svc.startGame = function () {
-			//todo: change to POST on serv and here
-			return apiRequest('GET', 'GAME/Start');
-		};
+		//todo: change to POST on serv and here
+		svc.startGame = () => apiRequest('GET', 'GAME/Start');
 
-
-		svc.getChatChannels = function () {
-			return apiRequest('GET', 'CHANNEL/List');
-		};
+		svc.getChatChannels = () => apiRequest('GET', 'CHANNEL/List');
 
 		svc.getChatMessages = function (channelId) {
 			const params = {
@@ -143,9 +115,7 @@ angular.module('app')
 
 
 		//GAME
-		svc.getGameMaps = function () {
-			return apiRequest('GET', 'MAPS');
-		};
+		svc.getGameMaps = () => apiRequest('GET', 'MAPS');
 
 		svc.getGameMapById = function (mapId) {
 			const params = {
@@ -198,26 +168,15 @@ angular.module('app')
 					}
 				}
 			};
-
-
 			//regex: (.+),(.+) : (\d+),(\d+)
-
 			return apiRequest('POST', 'MAPS/Map', params);
 		};
 
 
-		svc.getGameStatus = function (params) {
-			return apiRequest('POST', 'GAME/Status', params);
-		};
+		svc.getGameStatus = (params) => apiRequest('POST', 'GAME/Status', params);
 
+		svc.changeColor = () => apiRequest('POST', 'GAME/ChangeColor');
 
-		svc.changeColor = function () {
-			return apiRequest('POST', 'GAME/ChangeColor');
-		};
+		svc.addBot = (params) => apiRequest('POST', 'ROOM/AddBot', params);
 
-		svc.addBot = function (params) {
-			return apiRequest('POST', 'ROOM/AddBot', params);
-		};
-
-		window.apiSvc = svc;
 	});
