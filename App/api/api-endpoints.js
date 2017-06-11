@@ -210,8 +210,8 @@ angular.module('app')
 			return apiRequest('POST', 'GAME/Status', params);
 		};
 
-		svc.addBot = function (params) {
-			return apiRequest('POST', 'GAME/AddBot', params);
+		 svc.addBot = function (params) {
+			return apiRequest('POST', 'ROOM/AddBot', params);
 		};
 
 		window.apiSvc = svc;

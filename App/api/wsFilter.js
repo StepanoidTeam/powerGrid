@@ -16,7 +16,7 @@ angular.module('app')
 		Room: {
 			Create: msg => msg.BroadcastReason === '/api/room/create',
 			//todo: ha4ek added to handle bots - remove after server refac
-			Join: msg => ['/api/room/join', '/api/game/addbot'].includes(msg.BroadcastReason),
+			Join: msg => ['/api/room/join', '/api/room/addbot'].includes(msg.BroadcastReason),
 
 			Leave: msg => msg.BroadcastReason === '/api/room/leave',
 			Closed: msg => msg.BroadcastReason === '/api/room/roomclosed',
