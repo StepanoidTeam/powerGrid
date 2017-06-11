@@ -12,9 +12,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 	};
 
 
-	ctrl.changeColor = function (user) {
-		roomService.changeColor();
-	};
+	ctrl.changeColor = (user) => roomService.changeColor();
 
 	ctrl.addBot = () => roomService.addBot().catch(errorHandler);
 
@@ -29,13 +27,9 @@ var componentController = function ($scope, $controller, $location, roomService,
 	};
 
 
-	ctrl.startGame = function () {
-		roomService.startGame()
-			.then((data) => console.info(data))
-			//.then(() => $location.path('/game/'))
-			.catch(errorHandler);
-	};
+	ctrl.startGame = () => roomService.startGame().catch(errorHandler);
 
+	gameService.wsGameStart.subscribe(() => $location.path('/game'));
 
 	ctrl.users = new Rx.BehaviorSubject([]);
 
@@ -49,6 +43,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 
 	ctrl.currentUser.subscribe(() => $scope.$applyAsync());
+	roomService.roomUsersJoined.subscribe(() => $scope.$applyAsync());
 
 
 	ctrl.initRoom = function () {
@@ -71,10 +66,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 	};
 
-
-	ctrl.$onInit = function () {
-		ctrl.initRoom();
-	}
+	ctrl.$onInit = () => ctrl.initRoom();
 
 };
 

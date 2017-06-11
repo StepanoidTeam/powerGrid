@@ -28,6 +28,8 @@ angular.module('app')
 		};
 
 
+		svc.wsGameStart = apiWsEndpoints.wsMessage.filter(wsFilter.Game.Start);
+
 		svc.getMaps = apiEndpoints.getGameMaps;
 
 		svc.getMap = function (mapId) {

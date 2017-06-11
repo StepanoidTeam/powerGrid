@@ -21,7 +21,7 @@ angular.module('app')
 		},
 		Game: {
 			//todo: ha4ek for inconsistency server API
-			Start: msg => ['/api/game/start', 'startgameaction'].includes(msg.BroadcastReason),
+			Start: msg => msg.BroadcastReason === 'startgameaction',
 			ToggleReady: msg => msg.BroadcastReason === '/api/game/toggleready',
 			ChangeColor: msg => msg.BroadcastReason === '/api/game/changecolor',
 		},
