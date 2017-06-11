@@ -15,15 +15,13 @@ angular.module('app')
 
 		Room: {
 			Create: msg => msg.BroadcastReason === '/api/room/create',
-			//todo: ha4ek added to handle bots - remove after server refac
-			Join: msg => ['/api/room/join', '/api/room/addbot'].includes(msg.BroadcastReason),
-
+			Join: msg => msg.BroadcastReason = '/api/room/join',
 			Leave: msg => msg.BroadcastReason === '/api/room/leave',
 			Closed: msg => msg.BroadcastReason === '/api/room/roomclosed',
 		},
 		Game: {
 			//todo: ha4ek for inconsistency server API
-			Start: msg => ['/api/game/start','startgameaction'].includes(msg.BroadcastReason),
+			Start: msg => ['/api/game/start', 'startgameaction'].includes(msg.BroadcastReason),
 			ToggleReady: msg => msg.BroadcastReason === '/api/game/toggleready',
 			ChangeColor: msg => msg.BroadcastReason === '/api/game/changecolor',
 		},
