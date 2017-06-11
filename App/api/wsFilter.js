@@ -8,22 +8,24 @@ angular.module('app')
 			ChatMessage: msg => msg.EntityType === 'ChatMessage',
 			GameRoom: msg => msg.EntityType === 'GameRoom',
 			GameBoard: msg => msg.EntityType === 'GameBoard',
+			Action: msg => msg.EntityType === 'ActionResponse',
 		},
 
 		//todo: restructure?
 
 		Room: {
 			Create: msg => msg.BroadcastReason === '/api/room/create',
-			Join: msg => msg.BroadcastReason === '/api/room/join',
+			//todo: ha4ek added to handle bots - remove after server refac
+			Join: msg => ['/api/room/join', '/api/game/addbot'].includes(msg.BroadcastReason),
 
 			Leave: msg => msg.BroadcastReason === '/api/room/leave',
 			Closed: msg => msg.BroadcastReason === '/api/room/roomclosed',
-
-			StartGame: msg => msg.BroadcastReason === '/api/room/startgame',
 		},
 		Game: {
-			ToggleReady: msg => msg.BroadcastReason === 'api/game/toggleready',//todo: no slash from server
-			ChangeColor: msg => msg.BroadcastReason === 'api/game/changecolor',//todo: no slash from server
+			//todo: ha4ek for inconsistency server API
+			Start: msg => ['/api/game/start','startgameaction'].includes(msg.BroadcastReason),
+			ToggleReady: msg => msg.BroadcastReason === '/api/game/toggleready',
+			ChangeColor: msg => msg.BroadcastReason === '/api/game/changecolor',
 		},
 		Auth: {
 			Login: msg => msg.BroadcastReason === '/api/auth/login',
