@@ -54,9 +54,6 @@ angular.module('app')
 			]);
 		};
 
-
-		svc.getConnectors = function () {
-			return fetch('Assets/connectors.json', {method: 'GET'}).then(response => response.json());
-		};
+		svc.getConnectors = () => svc.getMap('default').then(map => map.Connectors);
 
 	});
