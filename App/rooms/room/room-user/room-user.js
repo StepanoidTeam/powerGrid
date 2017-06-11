@@ -2,6 +2,12 @@
 
 var componentController = function () {
 	const ctrl = this;
+
+
+	ctrl.getAvatarIcon = function (user = {Id: ''}) {
+		return user.Id.indexOf('bot')<0 ? 'face' : 'android';
+	};
+
 };
 
 angular.module('ROOM')

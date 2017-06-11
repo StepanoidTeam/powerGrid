@@ -1,7 +1,8 @@
 <span class="user-info">
-	<i class="avatar material-icons av-{{$ctrl.user.Color}}">face</i>
+	<i class="avatar material-icons av-{{$ctrl.user.Color}}"
+	ng-bind="$ctrl.getAvatarIcon($ctrl.user)">
+	</i>
 	<span ng-bind="$ctrl.user.Name"></span>
-	<span ng-bind="$ctrl.user.Id"></span>
 </span>
 <checkbox accent
 			 is-checked="$ctrl.user.IsDone"
