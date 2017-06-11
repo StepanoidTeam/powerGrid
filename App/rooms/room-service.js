@@ -37,7 +37,7 @@ angular.module('ROOM', [])
 		svc.roomUsersJoined = svc.roomWsEvents.filter(wsFilter.Room.Join).map(event => event.Users);
 
 
-		svc.roomUsersJoined.subscribe(usersJoined => {
+		svc.roomUsersJoined.subscribe((usersJoined = []) => {
 			let usersRemain = svc.roomUsers.value;
 			usersRemain.push(...usersJoined);
 			svc.roomUsers.next(usersRemain);
@@ -74,7 +74,8 @@ angular.module('ROOM', [])
 		svc.wsColorChange.subscribe(boards => {
 			boards.forEach(board => {
 				const currentUser = svc.roomUsers.value.find(u => u.Id === board.Id);
-				currentUser.Color = board.Color;
+				//todo: refac rx approach?
+				if (currentUser) currentUser.Color = board.Color;
 			});
 		});
 
