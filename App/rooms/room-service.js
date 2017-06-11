@@ -43,7 +43,7 @@ angular.module('ROOM', [])
 			svc.roomUsers.next(usersRemain);
 		});
 
-		svc.roomUsersLeft.subscribe(usersLeft => {
+		svc.roomUsersLeft.subscribe((usersLeft = []) => {
 			//todo: looks shitty
 			let usersRemain = svc.roomUsers.value;
 			usersLeft.forEach(u => usersRemain.splice(usersRemain.findIndex(x => x.Id === u.Id), 1));
@@ -79,19 +79,12 @@ angular.module('ROOM', [])
 
 			});
 
+		//todo: should be removed, use gamesvc get game status directly
+		svc.getRoom = function () {
+			return gameService.getGameStatus().then(function (gameStatus) {
+				svc.roomUsers.next(gameStatus.PlayerBoards);
+				return gameStatus.PlayerBoards;
 
-//todo: client-side API mock
-		svc.getRoom = function (roomId) {
-			//return apiEndpoints.getRoom(roomId); //todo: nesuwestvuet!!1
-			return svc.getRoomList().then(function (rooms) {
-				const currentRoom = rooms.find((r) => r['Id'] === roomId);
-				if (currentRoom) {
-					svc.roomUsers.next(currentRoom.Users);
-					return currentRoom;
-				}
-				else {
-					return Promise.reject({message: 'no room found', roomId: roomId});
-				}
 			});
 		};
 
@@ -116,11 +109,13 @@ angular.module('ROOM', [])
 		};
 
 		svc.addBot = function () {
-			return apiEndpoints.addBot();
+			return apiEndpoints.addBot({
+				period: 0
+			});
 		};
 
 
-		svc.startGameRoom = apiEndpoints.startGameRoom;
+		svc.startGame = apiEndpoints.startGame;
 
 
 		svc.onRoomsUpdated = function () {
