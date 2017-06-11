@@ -79,13 +79,6 @@ angular.module('app')
 			return apiRequest('POST', 'AUTH/Status', params);
 		};
 
-		/* ??? */
-
-		svc.addBot = function () {
-			//todo: move to room controller on server
-			return apiRequest('GET', 'ADMIN/AddBot');
-		};
-
 
 		/* ROOM */
 
@@ -128,9 +121,9 @@ angular.module('app')
 
 		//Initiate game
 
-		svc.startGameRoom = function () {
+		svc.startGame = function () {
 			//todo: change to POST on serv and here
-			return apiRequest('GET', 'ROOM/StartGame');
+			return apiRequest('GET', 'GAME/Start');
 		};
 
 
@@ -217,6 +210,9 @@ angular.module('app')
 			return apiRequest('POST', 'GAME/Status', params);
 		};
 
+		svc.addBot = function (params) {
+			return apiRequest('POST', 'GAME/AddBot', params);
+		};
 
 		window.apiSvc = svc;
 	});
