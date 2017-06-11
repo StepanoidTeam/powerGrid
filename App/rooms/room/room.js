@@ -1,6 +1,6 @@
 'use strict';
 
-var componentController = function ($scope, $controller, $location, roomService, authService, errorHandler) {
+var componentController = function ($scope, $controller, $location, roomService,gameService, authService, errorHandler) {
 	const ctrl = this;
 
 	ctrl.player = authService.player;
@@ -12,7 +12,7 @@ var componentController = function ($scope, $controller, $location, roomService,
 	};
 
 
-	ctrl.addBot = () => roomService.addBot();
+	ctrl.addBot = () => roomService.addBot().catch(errorHandler);
 
 	ctrl.kickUser = function (userId) {
 		roomService.kickUser(userId)
@@ -25,10 +25,10 @@ var componentController = function ($scope, $controller, $location, roomService,
 	};
 
 
-	ctrl.startGameRoom = function () {
-		roomService.startGameRoom()
+	ctrl.startGame = function () {
+		roomService.startGame()
 			.then((data) => console.info(data))
-			.then(() => $location.path('/game/'))
+			//.then(() => $location.path('/game/'))
 			.catch(errorHandler);
 	};
 
@@ -46,15 +46,18 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 	ctrl.currentUser.subscribe(() => $scope.$applyAsync());
 
+
+
+
 	ctrl.initRoom = function (roomId) {
 
-		roomService.getRoom(roomId).then(function (room) {
-			ctrl.room = room;
-		}, function (error) {
+		roomService.getRoom().then(playerBoards => {
+			//todo: remove then/catch?
+			console.log(playerBoards);
+		}).catch(function (error) {
 			console.warn(error);
 			$location.path('/ROOM/List');
 		});
-
 
 		roomService.wsToggleReady.subscribe(() => $scope.$applyAsync());
 
