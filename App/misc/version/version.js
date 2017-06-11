@@ -11,6 +11,8 @@ var componentController = function ($location, versionService) {
 			ctrl.version = value.version;
 			ctrl.buildDt = value.buildDt;
 
+			ctrl.lastModified = new Date(document.lastModified);
+
 			document.body.dataset.online = true;
 		})
 		.catch(function (error) {

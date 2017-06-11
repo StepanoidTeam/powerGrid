@@ -1,2 +1,4 @@
-<div ng-bind="$ctrl.version"></div>
-<div ng-bind="$ctrl.buildDt | date: 'medium'"></div>
+<div>api ver: {{$ctrl.version}}</div>
+<div> api: {{$ctrl.buildDt | date: 'medium'}}</div>
+<div> web: {{$ctrl.lastModified | date: 'medium'}}</div>
+
