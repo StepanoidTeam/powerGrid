@@ -1,6 +1,6 @@
 'use strict';
 
-var componentController = function ($scope, $timeout, chatService, authService) {
+var componentController = function ($scope, $timeout, chatService, authService, notificationService) {
 	const ctrl = this;
 
 	ctrl.chatMessages = [];
@@ -28,6 +28,8 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 	chatService.onChatMessage.map(chatMessageMapper).subscribe(updateChatMessages);
 
 	chatService.onSystemMessage.map(chatMessageMapper).subscribe(updateChatMessages);
+
+	chatService.onChatMessage.subscribe(msg => notificationService.showNotification(msg.SenderName, msg.Message, msg.SenderId));
 
 
 	//cleanup chat history on logout
