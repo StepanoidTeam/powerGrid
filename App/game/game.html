@@ -23,7 +23,9 @@
 			  class="city-marker"
 			  ng-attr-cx="{{city.CoordX}}" ng-attr-cy="{{city.CoordY}}"
 			  ng-attr-fill="{{city.RegionKey}}"
+			  ng-click="$ctrl.buildCity(city.Id)"
 	></circle>
+
 	<text ng-repeat="city in $ctrl.cities"
 			class="city-name"
 			ng-attr-x="{{city.CoordX}}" ng-attr-y="{{city.CoordY}}">

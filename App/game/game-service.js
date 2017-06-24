@@ -41,6 +41,13 @@ angular.module('app')
 			return svc.getMap('default').then(map => map.Cities);
 		};
 
+
+		svc.buildCity = function (cityId) {
+			console.log('trying to build',cityId);
+			return apiEndpoints.buildCity({cityId});
+		};
+
+
 		svc.getRegions = function () {
 			//todo: regions will be there
 			//return svc.getMap('default').then(map => map.Regions);

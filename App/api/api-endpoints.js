@@ -179,4 +179,7 @@ angular.module('app')
 
 		svc.addBot = (params) => apiRequest('POST', 'ROOM/AddBot', params);
 
+		svc.buildCity = (params) => apiRequest('POST', 'Game/BuildPhase/BuildCity',params);
+
+
 	});
