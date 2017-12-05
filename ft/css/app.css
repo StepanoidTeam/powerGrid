@@ -1,0 +1,11 @@
+.message {
+			border: 1px solid lightgray;
+			padding: 10px;
+		}
+        .pd-l-10 {
+            padding: 10px;
+        }
+	body *
+	{
+		font-size: 20pt;
+	}

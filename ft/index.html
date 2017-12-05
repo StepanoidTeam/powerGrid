@@ -1,0 +1,51 @@
+﻿<html lang="en">
+
+<head>
+    <title></title>
+    <link rel="stylesheet" href="css/app.css" title="">
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript">
+
+        //document.forms.transaction.onsubmit = function () {
+        //    ajax('transaction/save', { AuthToken: CurrentUser().AuthToken }, 'POST', onSaved, onError);
+        //    return false;
+        //};
+
+        function onSaved() {
+
+        }
+
+        function onPageLoaded() {
+            var user = app.context.CurrentUser;
+            document.getElementById("username").innerText = user.Name;
+            document.getElementById("userid").innerText = user.Id;
+        }
+
+        function logout() {
+            if (confirm("You will not be able log in back if you will not have an Internet, are you want to log out anyway?")) {
+                app.logout()
+                //location.href = config.routes.Login;
+            } 
+            return false;
+        }
+
+    </script>
+
+</head>
+
+<body>
+    <span id="logs"></span>
+    <form name="transaction">
+        <div>
+            UserId: <span name="userid" id="userid"></span>            
+            Username: <span name="username" id="username"></span>
+            <span style="float:right;">
+                <button type="button" onclick="logout(this)">Logout</button>
+            </span>
+        </div>
+    </form>
+
+    
+</body>
+
+</html>
