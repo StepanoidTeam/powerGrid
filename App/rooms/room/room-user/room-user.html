@@ -1,10 +1,12 @@
 <span class="user-info">
-	<i class="avatar material-icons">face</i>
+	<i class="avatar material-icons av-{{$ctrl.user.Color}}"
+		ng-click="$ctrl.changeColor()"
+	ng-bind="$ctrl.getAvatarIcon($ctrl.user)">
+	</i>
 	<span ng-bind="$ctrl.user.Name"></span>
-	<span ng-bind="$ctrl.user.Id"></span>
 </span>
 <checkbox accent
-			 is-checked="$ctrl.user.ReadyMark"
+			 is-checked="$ctrl.user.IsDone"
 			 icon-checked="thumb_up"
 			 icon-unchecked="thumb_down"
 			 is-disabled="!$ctrl.onReady"
@@ -13,3 +15,4 @@
 <pg-button flat icon="'highlight_off'" value="''"
 			  ng-show="$ctrl.onKick"
 			  on-click="$ctrl.onKick(user.Id)"></pg-button>
+

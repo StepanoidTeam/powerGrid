@@ -17,7 +17,7 @@ var componentController = function ($scope, $controller, $location, authService,
 		$scope.$applyAsync();
 	});
 
-	roomService.roomRemoved.subscribe(room => {
+	roomService.roomClosed.subscribe(room => {
 		let removedRoomIndex = ctrl.rooms.findIndex(r => r.Id === room.Id);
 		if (removedRoomIndex < 0)return;
 
@@ -29,15 +29,16 @@ var componentController = function ($scope, $controller, $location, authService,
 		const roomName = 'room' + Date.now();
 		roomService.createRoom(roomName).then(function (data) {
 			//creation ok
-			$location.path('/rooms/' + data['Id']);
+			//todo: make common redirect approach
+			$location.path('/ROOM/current');
 		}).catch(errorHandler)
 			.then(ctrl.updateRooms);
 	};
 
 	ctrl.joinRoom = function (roomId) {
-		roomService.joinRoom(roomId).then(function (data) {
-			//creation ok
-			$location.path('/rooms/' + data['Id']);
+		roomService.joinRoom(roomId).then(function () {
+			//todo: make common redirect approach
+			$location.path('/ROOM/current');
 		}).catch(errorHandler)
 			.then(ctrl.updateRooms);
 	};
@@ -47,7 +48,7 @@ var componentController = function ($scope, $controller, $location, authService,
 	ctrl.updateRooms();
 };
 
-angular.module('rooms')
+angular.module('ROOM')
 	.component('roomList', {
 		bindings: {
 			rooms: '<'

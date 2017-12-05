@@ -17,6 +17,7 @@ var componentController = function (gameService) {
 	};
 
 	ctrl.$onInit = function () {
+		//todo: no need this, use socket info
 		gameService.getGameStatus().then(status => {
 			console.log(status);
 

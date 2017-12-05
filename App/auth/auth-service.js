@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 angular.module('auth', [])
-	.service('authService', function ($location,tokenService, apiEndpoints, apiWsEndpoints,  errorHandler) {
+	.service('authService', function ($location,tokenService, apiEndpoints, apiWsEndpoints,  errorHandler, versionService) {
 		const svc = this;
 
 		//todo: use behaviorSubj
@@ -15,12 +15,22 @@ angular.module('auth', [])
 		});
 
 
+
+		Rx.Observable.combineLatest(
+			svc.isLogged, versionService.apiOk,
+			(users, player) => users.find(u => u.Id === player.Id));
+
+
+
+
+
 		svc.player.filter(player => player === null).subscribe(
+			//todo: handle this another way
 			() => $location.path('/login')
 		);
 
 		svc.player.filter(player => player !== null).subscribe(
-			() => $location.path('/rooms')
+			() => $location.path('/ROOM/List')
 		);
 
 
@@ -67,6 +77,8 @@ angular.module('auth', [])
 					isLoggedSubject.next(false);
 					errorHandler(error);
 					svc.logout();
+
+					//todo: handle this another way
 					$location.path('/login');
 				});
 		};
@@ -83,11 +95,11 @@ angular.module('auth', [])
 
 		//debug
 		svc.player.subscribe(player => {
-			console.log('player', player);
+			console.log('👾player', player);
 		});
 
 		svc.isLogged.subscribe((data) => {
-			console.log('isLogged', data);
+			console.log('🔑isLogged', data);
 		});
 
 

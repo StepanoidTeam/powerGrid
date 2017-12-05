@@ -9,27 +9,26 @@ angular.module('app')
 
 		svc.open = async () => {
 			await webSocket.open();
-			webSocket.send('USERSTATUS');
-			console.log('handshake');
+			webSocket.send('AUTHSTATUS');
+			console.log('🤝ws handshake sent🤝');
 		};
 
 		svc.close = () => webSocket.close();
 
 
 		svc.wsMessage.subscribe((data) => {
-			console.log('wss', data);
+			//debug
+			console.log('📢wss', data);
 		});
 
-		/* CHAT */
+		/* CHAT - CHANNEL */
 
 		svc.sendChatMessage = function (message, channelId) {
-			//todo: remove inroom
-			//todo: rename toUserId to receiver or channelId/subscriberID
 			const wsData = {
 				Message: message,
 				Channel: channelId || null,
 			};
 
-			webSocket.send('CHAT', wsData);
+			webSocket.send('CHANNELSEND', wsData);
 		};
 	});

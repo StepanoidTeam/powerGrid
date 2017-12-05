@@ -1,6 +1,6 @@
 'use strict';
 
-var componentController = function ($scope, $timeout, chatService, authService) {
+var componentController = function ($scope, $timeout, chatService, authService, notificationService, pageStateService) {
 	const ctrl = this;
 
 	ctrl.chatMessages = [];
@@ -28,6 +28,14 @@ var componentController = function ($scope, $timeout, chatService, authService) 
 	chatService.onChatMessage.map(chatMessageMapper).subscribe(updateChatMessages);
 
 	chatService.onSystemMessage.map(chatMessageMapper).subscribe(updateChatMessages);
+
+	//show notifications only when page is hidden
+	let chatMessageWhenHidden = pageStateService.rxIsVisible
+		.switchMap(isVisible => isVisible ? Rx.Observable.never() : chatService.onChatMessage);
+
+
+	chatMessageWhenHidden.subscribe(msg => notificationService.showNotification(msg.SenderName, msg.Message, msg.SenderId));
+	chatMessageWhenHidden.subscribe(() => console.log(document.hidden));
 
 
 	//cleanup chat history on logout

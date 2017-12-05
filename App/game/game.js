@@ -34,6 +34,10 @@ var componentController = function ($scope,$controller, $location, gameService) 
 		return {CoordX: x, CoordY: y};
 	};
 
+	ctrl.buildCity = function (cityId) {
+		gameService.buildCity(cityId);
+	};
+
 
 	ctrl.resources = [
 		{Name: 'coal', Count: 3},

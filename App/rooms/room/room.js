@@ -1,35 +1,35 @@
 'use strict';
 
-var componentController = function ($scope, $controller, $location, roomService, authService, errorHandler) {
+var componentController = function ($scope, $controller, $location, roomService, gameService, authService, errorHandler) {
 	const ctrl = this;
 
 	ctrl.player = authService.player;
 
-	ctrl.toggleReady = function (isReady) {
-		roomService.toggleReady(isReady).then(data => {
+	ctrl.toggleReady = function (IsDone) {
+		roomService.toggleReady(IsDone).then(data => {
 
 		});
 	};
 
 
+	ctrl.changeColor = (user) => roomService.changeColor();
+
+	ctrl.addBot = () => roomService.addBot().catch(errorHandler);
+
 	ctrl.kickUser = function (userId) {
 		roomService.kickUser(userId)
-			.then(() => ctrl.initRoom(ctrl.roomId));
+			.then(() => ctrl.initRoom());
 	};
 
 
 	ctrl.leaveRoom = function () {
-		roomService.leaveRoom().then(() => $location.path('/rooms'));
+		roomService.leaveRoom().then(() => $location.path('/ROOM/List'));
 	};
 
 
-	ctrl.startGameRoom = function () {
-		roomService.startGameRoom()
-			.then((data) => console.info(data))
-			.then(() => $location.path('/game/'))
-			.catch(errorHandler);
-	};
+	ctrl.startGame = () => roomService.startGame().catch(errorHandler);
 
+	gameService.wsGameStart.subscribe(() => $location.path('/game'));
 
 	ctrl.users = new Rx.BehaviorSubject([]);
 
@@ -42,22 +42,22 @@ var componentController = function ($scope, $controller, $location, roomService,
 		(users, player) => users.find(u => u.Id === player.Id));
 
 
-	ctrl.currentUser.subscribe(() => {
-		$scope.$applyAsync();
-	});
+	ctrl.currentUser.subscribe(() => $scope.$applyAsync());
+	roomService.roomUsersJoined.subscribe(() => $scope.$applyAsync());
 
-	ctrl.initRoom = function (roomId) {
-		roomService.getRoom(roomId).then(function (room) {
-			ctrl.room = room;
-		}, function (error) {
+
+	ctrl.initRoom = function () {
+
+		roomService.getRoom().then(playerBoards => {
+			//todo: remove then/catch?
+			console.log(playerBoards);
+		}).catch(function (error) {
 			console.warn(error);
-			$location.path('/rooms');
+			$location.path('/ROOM/List');
 		});
 
-
-		roomService.wsToggleReady.subscribe(function () {
-			$scope.$applyAsync();
-		});
+		roomService.wsToggleReady.subscribe(() => $scope.$applyAsync());
+		roomService.wsColorChange.subscribe(() => $scope.$applyAsync());
 
 		roomService.roomUsers.subscribe(users => {
 			ctrl.users.next(users);
@@ -66,18 +66,12 @@ var componentController = function ($scope, $controller, $location, roomService,
 
 	};
 
-
-	ctrl.$onInit = function () {
-		ctrl.initRoom(ctrl.roomId);
-	}
+	ctrl.$onInit = () => ctrl.initRoom();
 
 };
 
-angular.module('rooms')
+angular.module('ROOM')
 	.component('room', {
-		bindings: {
-			roomId: '<'
-		},
 		templateUrl: 'app/rooms/room/room.html',
 		controller: componentController
 	});

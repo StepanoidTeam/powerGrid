@@ -13,10 +13,11 @@ var componentController = function ($location, versionService) {
 
 			// else - login
 
+			//todo: handle this another way
 			$location.path('/login');
 
 		}, function () {
-			$location.path('/error');
+			//$location.path('/error');
 		});
 	};
 };

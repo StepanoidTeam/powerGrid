@@ -4,15 +4,15 @@
 					  ng-click="$ctrl.leaveRoom()"></pg-button>
 		{{$ctrl.room.Name}}
 		<i class="material-icons">group</i>
-		{{$ctrl.room.UserCount}}
+		{{($ctrl.users | async).length }}
 	</h2>
 	<div class="user-list">
 
 		<!--on-kick="$ctrl.kickUser(user.Id)"-->
 		<room-user class="list-item is-selected"
 					  user="$ctrl.currentUser | async "
-
-					  on-ready="$ctrl.toggleReady(user.ReadyMark)"
+					  on-color-change="$ctrl.changeColor(user)"
+					  on-ready="$ctrl.toggleReady(user.IsDone)"
 		></room-user>
 
 		<room-user ng-repeat="user in $ctrl.otherUsers | async"
@@ -21,6 +21,10 @@
 		></room-user>
 
 	</div>
-	<pg-button icon="'airport_shuttle'" value="'start game'"
-				  on-click="$ctrl.startGameRoom()"></pg-button>
+
+	<pg-button value="'add bot'" icon="'android'"
+				  on-click="$ctrl.addBot()"></pg-button>
+
+	<pg-button value="'start game'" icon="'airport_shuttle'"
+				  on-click="$ctrl.startGame()"></pg-button>
 </div>

@@ -1,32 +1,34 @@
 angular.module('app')
-	.service('gameService', function (apiEndpoints, apiWsEndpoints) {
+	.service('gameService', function (apiEndpoints, apiWsEndpoints, wsFilter) {
 		const svc = this;
 
-
-		svc.gameBoardWsEvents = apiWsEndpoints.wsMessage.filter(msg => msg.EntityType === 'GameBoard');
-
+		svc.gameBoardWsEvents = apiWsEndpoints.wsMessage.filter(wsFilter.Type.GameBoard);
 
 		svc.getGameStatus = function () {
 			let params = {
 				"stage": true,
-				"playerTurn": true,//todo: rename to CurrentPlayerTurn
+				"playerTurn": true,
 				"playersTurnOrder": true,
 				"buildings": true,
 				"phase": true,
 				"playerBoards": true,
+				//"filterByUserId": "string",
 				"playerBoardOptions": {
 					"id": true,
 					"money": true,
 					"name": true,
 					"color": true,
 					"buildingsQty": true,
-					"bestStation": true
+					"bestStation": true,
+					"isDone": true
 				}
 			};
 
 			return apiEndpoints.getGameStatus(params);
 		};
 
+
+		svc.wsGameStart = apiWsEndpoints.wsMessage.filter(wsFilter.Game.Start);
 
 		svc.getMaps = apiEndpoints.getGameMaps;
 
@@ -38,6 +40,13 @@ angular.module('app')
 		svc.getCities = function () {
 			return svc.getMap('default').then(map => map.Cities);
 		};
+
+
+		svc.buildCity = function (cityId) {
+			console.log('trying to build',cityId);
+			return apiEndpoints.buildCity({cityId});
+		};
+
 
 		svc.getRegions = function () {
 			//todo: regions will be there
@@ -54,9 +63,6 @@ angular.module('app')
 			]);
 		};
 
-
-		svc.getConnectors = function () {
-			return fetch('Assets/connectors.json', {method: 'GET'}).then(response => response.json());
-		};
+		svc.getConnectors = () => svc.getMap('default').then(map => map.Connectors);
 
 	});

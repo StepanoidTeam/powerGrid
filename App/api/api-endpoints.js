@@ -18,13 +18,11 @@ angular.module('app')
 				data: data || {},
 				headers: headers
 			}).then(apiResponse, apiResponse);
-
-
-			//todo: maybe do unauth redirect here?
 		}
 
 		function apiResponse(httpResponse) {
-			const isSuccess = httpResponse.status === 200;//todo: ambigous   && httpResponse.data.status === ok
+			const isSuccess = httpResponse.status === 200;
+			//todo: ambigous && httpResponse.data.status === ok
 
 			/*
 			 All Possible response statuses:
@@ -49,99 +47,62 @@ angular.module('app')
 		}
 
 
-		svc.getVersion = function () {
-			return apiRequest('GET', 'VERSION');
-		};
+		svc.getVersion = () => apiRequest('GET', 'VERSION');
 
-
-		/* USER */
+		/* AUTH */
 
 		svc.login = function (userModel) {
-			return apiRequest('POST', 'USER/Login', userModel)
+			return apiRequest('POST', 'AUTH/Login', userModel)
 				.then(tokenService.mapToken)
 				.then(tokenService.saveToken);
 		};
 
 		svc.logout = function () {
-			return apiRequest('POST', 'USER/logout')
-				.then(tokenService.deleteToken);
+			return apiRequest('POST', 'AUTH/logout')
+				.finally(tokenService.deleteToken);
 		};
 
-		//GET /api/USER/Status
 		svc.getPlayerStatus = function () {
 			const params = {
 				"gameRoomId": true,
-				"readyMark": true,
+				"lastActivityTime": true,
+				"isOnline": true,
 				"id": true,
 				"name": true
 			};
 
-			return apiRequest('POST', 'USER/Status', params);
+			return apiRequest('POST', 'AUTH/Status', params);
 		};
 
 
-		/* ROOMS */
+		/* ROOM */
 
-		//GET /api/Rooms
-		svc.getRooms = function () {
-			return apiRequest('GET', 'ROOMS');
-		};
+		//todo: is it used?
+		svc.getRooms = () => apiRequest('GET', 'ROOM/List');
 
-		//GET /api/Rooms
-		//Rooms list
-		svc.getRoomList = function (params) {
-			return apiRequest('POST', 'ROOMS/list', params);
-		};
+		svc.getRoomList = (params) => apiRequest('POST', 'ROOM/List', params);
 
-		//POST /api/Rooms/Create/{name}
-		svc.createRoom = function (params) {
-			return apiRequest('POST', 'ROOMS/create', params);
-		};
+		svc.createRoom = (params) => apiRequest('POST', 'ROOM/create', params);
 
-		//POST /api/Rooms/List
+		svc.joinRoom = (params) => apiRequest('POST', 'ROOM/join', params);
 
-		//POST /api/Rooms/Join
-		//Join player into specific room
-		//roomId
-		svc.joinRoom = function (params) {
-			return apiRequest('POST', 'ROOMS/join', params);
-		};
+		svc.leaveRoom = () => apiRequest('POST', 'ROOM/leave');
 
-		//POST /api/Rooms/Leave
-		//Leave from current room
-		svc.leaveRoom = function () {
-			return apiRequest('POST', 'ROOMS/leave');
-		};
-
-		//POST /api/Rooms/Kick
 		//Kick another player from the room if current user have enough permissions
-		svc.kickUser = function (params) {
-			return apiRequest('POST', 'ROOMS/kick', params);
-		};
+		svc.kickUser = (params) => apiRequest('POST', 'ROOM/kick', params);
 
-
-		//POST /api/Rooms/ToggleReady
 		/* { "state": true } */
 		//Set if player ready to start or not
-		svc.toggleReadyRoom = function (params) {
-			return apiRequest('POST', 'ROOMS/ToggleReady', params);
-		};
+		svc.toggleReadyRoom = (params) => apiRequest('POST', 'GAME/ToggleReady', params);
 
-		//GET /api/Rooms/StartGame
+
 		//Initiate game
 
-		svc.startGameRoom = function () {
-			//todo: change to POST on serv and here
-			return apiRequest('GET', 'ROOMS/StartGame');
-		};
+		//todo: change to POST on serv and here
+		svc.startGame = () => apiRequest('GET', 'GAME/Start');
 
+		svc.getChatChannels = () => apiRequest('GET', 'CHANNEL/List');
 
-		//GET /api/Chat/Channels
-		svc.getChatChannels = function () {
-			return apiRequest('GET', 'CHAT/Channels');
-		};
-
-		//POST /api/Chat/GetMessages
 		svc.getChatMessages = function (channelId) {
 			const params = {
 				"channelId": channelId,
@@ -149,17 +110,13 @@ angular.module('app')
 				"end": (new Date()).toISOString()
 			};
 
-			return apiRequest('POST', 'CHAT/GetMessages', params);
+			return apiRequest('POST', 'CHANNEL/GetMessages', params);
 		};
 
 
 		//GAME
-		//GET /api/Maps
-		svc.getGameMaps = function () {
-			return apiRequest('GET', 'MAPS');
-		};
+		svc.getGameMaps = () => apiRequest('GET', 'MAPS');
 
-		//POST /api/Maps/Map
 		svc.getGameMapById = function (mapId) {
 			const params = {
 				"mapId": mapId,
@@ -211,18 +168,18 @@ angular.module('app')
 					}
 				}
 			};
-
-
 			//regex: (.+),(.+) : (\d+),(\d+)
-
 			return apiRequest('POST', 'MAPS/Map', params);
 		};
 
 
-		svc.getGameStatus = function (params) {
-			return apiRequest('POST', 'GAME/Status', params);
-		};
+		svc.getGameStatus = (params) => apiRequest('POST', 'GAME/Status', params);
+
+		svc.changeColor = () => apiRequest('POST', 'GAME/ChangeColor');
+
+		svc.addBot = (params) => apiRequest('POST', 'ROOM/AddBot', params);
+
+		svc.buildCity = (params) => apiRequest('POST', 'Game/BuildPhase/BuildCity',params);
 
 
-		window.apiSvc = svc;
 	});
