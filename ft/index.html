@@ -22,17 +22,17 @@
                 app.logout()
                 //location.href = config.routes.Login;
             }
-            return false;
+            return			  false;
         }
 
-	   function onAdded()
+	   function refreshGrid()
 	   {
 		  $("#transactionGrid").jsGrid("loadData");
 	   }
 
 	   function addTransaction(item)
 	   {
-		  app.ajax('trans/addorupdate', item, 'POST', onAdded);
+		  app.ajax('trans/addorupdate', item, 'POST', refreshGrid);
 		  return false;
 	   }
 
@@ -43,6 +43,7 @@
 
 
 		function onPageLoaded() {
+		   $("#filterByUserId").val(app.context.Settings.filterByUserId);
 		   var user = app.context.CurrentUser;
 		   document.getElementById("username").innerText = user.Name;
 		   document.getElementById("userid").innerText = user.Id;
@@ -56,7 +57,7 @@
 			  for (var userKey in app.context.CurrentRoom.Users)
 			  {
 				 var user = app.context.CurrentRoom.Users[userKey];
-				 $("#room-users").append("<li>" + user.Name + " (" + user.Id + ")</li>");
+				 $("#room-users").append("<li onclick='onUserClick(this)' systemId='"+user.Id+"'>" + user.Name + " (" + user.Id + ")</li>");
 			  }
 		   });
 
@@ -77,9 +78,9 @@
 
 					var deferred = $.Deferred();
 		
-					var showForCurrentUserOnly = false;
+					var filterByUserId = $("#filterByUserId").val();
 					
-					app.ajax("trans/list", { FilterByUserId: showForCurrentUserOnly ? user.Id : null, PageIndex: filter.pageIndex-1, PageSize: filter.pageSize, }, "POST",
+					app.ajax("trans/list", { FilterByUserId: filterByUserId, PageIndex: filter.pageIndex-1, PageSize: filter.pageSize, }, "POST",
 					   function (response) {
 						  var result = response.data.data;
 						  //data: db.clients.slice(startIndex, startIndex + filter.pageSize),
@@ -232,8 +233,21 @@
 		};
 
 		$(function () {
-
+	
 	   });
+
+   function onFilterByUserIdChanged()
+   {
+	   app.context.Settings.filterByUserId = $("#filterByUserId").val();
+	   app.saveSettings();
+	   refreshGrid();
+   }
+
+   function onUserClick(item)
+   {
+	  $("#filterByUserId").val($(item).attr("systemId")).blur();
+   }
+
 
     </script>
 </head>
@@ -278,6 +292,9 @@
             <span style="float:right;">
                <button type="button" onclick="logout(this)">Logout</button>
             </span>
+		 <div>
+	     Filter by User Id: <input id="filterByUserId" name="filterByUserId" type="text" onblur="onFilterByUserIdChanged()">
+	     </div>
       </div>
 
 	  <div style="width:80%;display: inline-block;height:100%;"><div id="transactionGrid" ></div></div>

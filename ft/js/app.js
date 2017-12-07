@@ -44,6 +44,9 @@ var app = {
 
     context:
     {
+        Settings: {
+            filterByUserId: ""
+        },
         CurrentUser: null,
         CurrentRoom: null
     },
@@ -154,8 +157,8 @@ var app = {
 
         //add logs component
         $('body').prepend('<div id="app-log" style="position:absolute;width:100%;height:10%;z-index:100;color:red;background-color: gainsboro;display:none;"></div>');
-		
-		//add global loading component
+
+        //add global loading component
         var loading = document.createElement('div');
         document.body.insertBefore(loading, document.body.firstChild);
         loading.setAttribute('id', 'loading');
@@ -173,8 +176,11 @@ var app = {
             location.href = config.routes.Login;
     },
 
-    initContext: function ()
-    {
+    initContext: function () {
+        var settings = app.getFromLocalStorage('current-settings');
+        if (settings != null)
+            app.context.Settings = settings;
+
         var user = app.getFromLocalStorage('current-user');
         app.context.CurrentUser = user;
         var room = app.getFromLocalStorage('current-room');
@@ -182,6 +188,11 @@ var app = {
             app.context.CurrentRoom = app.EmptyRoom;
         else
             app.context.CurrentRoom = room;
+    },
+
+    saveSettings: function ()
+    {
+        window.localStorage.setItem('current-settings', JSON.stringify(app.context.Settings));
     },
 
     onLoginDone: function (data) {
