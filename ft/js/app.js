@@ -5,8 +5,8 @@
 const config = {
     //wsUrl: 'ws://localhost:5000',
     wsUrl: 'ws://pg-api.azurewebsites.net/api',
-    //httpUrl: 'http://pg-api.azurewebsites.net/api/',
-    httpUrl: 'http://localhost:5000/api/',
+    httpUrl: 'http://pg-api.azurewebsites.net/api/',
+    //httpUrl: 'http://localhost:5000/api/',
     title: "Friends Trip v.0.1",
     routes: {
         Login: "login.html",
