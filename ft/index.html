@@ -2,50 +2,295 @@
 
 <head>
     <title></title>
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="external/jsgrid-1.5.3/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="external/jsgrid-1.5.3/jsgrid-theme.min.css" />
+    <script type="text/javascript" src="external/jsgrid-1.5.3/jsgrid.min.js"></script>
+
     <link rel="stylesheet" href="css/app.css" title="">
     <script type="text/javascript" src="js/app.js"></script>
+    
     <script type="text/javascript">
+
+	    function logout() {
+            if (confirm("You will not be able log in back if you will not have an Internet, are you want to log out anyway?")) {
+                app.logout()
+                //location.href = config.routes.Login;
+            }
+            return false;
+        }
+
+	   function onAdded()
+	   {
+		  $("#transactionGrid").jsGrid("loadData");
+	   }
+
+	   function addTransaction(item)
+	   {
+		  app.ajax('trans/addorupdate', item, 'POST', onAdded);
+		  return false;
+	   }
 
         //document.forms.transaction.onsubmit = function () {
         //    ajax('transaction/save', { AuthToken: CurrentUser().AuthToken }, 'POST', onSaved, onError);
         //    return false;
         //};
 
-        function onSaved() {
 
-        }
+		function onPageLoaded() {
+		   var user = app.context.CurrentUser;
+		   document.getElementById("username").innerText = user.Name;
+		   document.getElementById("userid").innerText = user.Id;
 
-        function onPageLoaded() {
-            var user = app.context.CurrentUser;
-            document.getElementById("username").innerText = user.Name;
-            document.getElementById("userid").innerText = user.Id;
-        }
+		   app.loadCurrentRoom(function ()
+		   {
+			  console.log("load room done");
+			  $("#roomid").text(app.context.CurrentRoom.Id);
+			  $("#roomname").text(app.context.CurrentRoom.Name);
+			  $("#room-users").html("");
+			  for (var userKey in app.context.CurrentRoom.Users)
+			  {
+				 var user = app.context.CurrentRoom.Users[userKey];
+				 $("#room-users").append("<li>" + user.Name + " (" + user.Id + ")</li>");
+			  }
+		   });
 
-        function logout() {
-            if (confirm("You will not be able log in back if you will not have an Internet, are you want to log out anyway?")) {
-                app.logout()
-                //location.href = config.routes.Login;
-            } 
-            return false;
-        }
+		   $("#transactionGrid").jsGrid({
+			  height: "100%",
+			  width: "100%",
+			  editing: false,
+			  autoload: true,
+			  paging: true,
+			  pageLoading: true,
+			  pageSize: 10,
+			  pageIndex: 1,
+			  pageButtonCount: 10,
+			  deletable: false,
+
+			  controller: {
+				 loadData: function (filter) {
+					var startIndex = (filter.pageIndex-1) * filter.pageSize;
+
+					var deferred = $.Deferred();
+		
+					var showForCurrentUserOnly = false;
+					
+					app.ajax("trans/list", { FilterByUserId: showForCurrentUserOnly ? user.Id : null, PageIndex: filter.pageIndex-1, PageSize: filter.pageSize, }, "POST",
+					   function (response) {
+						  var result = response.data.data;
+						  //data: db.clients.slice(startIndex, startIndex + filter.pageSize),
+						  //  itemsCount: db.clients.length
+						  //return{
+							 //data: result.data,
+							 //itemsCount: result.totalCount
+						  //};
+						  $.map(result.data, function (val, i) {
+							 var oweText = "";
+							 for (var userKey in val.owe)
+							 {
+								var user = val.owe[userKey];
+								oweText += "<div class='pd-b-20'>" + user.user + ": " + user.amount +"</div>";
+							 }
+							 val.oweText = oweText;
+						  });
+						  deferred.resolve({
+							 data: result.data,
+							 itemsCount: result.totalCount
+						  });
+					   });
+
+					return deferred.promise();
+				 }
+			  },
+			  
+			  //deleteConfirm: function (item) {
+				 //return "The item \"" + item.Id + "\" will be removed. Are you sure?";
+			  //},
+
+			  //rowClick: function (args) {
+				 //showDetailsDialog("Edit", args.item);
+			  //},
+
+			  fields: [
+				 { name: "id", type: "text", width: 150, visible: false, title: "Id" },
+				 { name: "payer", type: "text", width: 100, title: "Payer" },
+				 { name: "fullAmount", type: "number", width: 50, title: "Amount" },
+				 { name: "time", type: "text", width: 100, title: "Time"},
+				 { name: "oweText", type: "text", width: 150, title: "Owe" },
+				 { name: "description", type: "text", width: 150, title: "Description" },
+				 {
+					type: "control",
+					modeSwitchButton: false,
+					editButton: false,
+					headerTemplate: function () {
+					   return $("<button>").attr("type", "button").text("Add")
+						  .on("click", function () {
+							 showDetailsDialog("Add", {});
+						  });
+					}
+				 }
+			  ]
+		   });
+
+		   $("#pager").on("change", function () {
+			  var page = parseInt($(this).val(), 10);
+			  $("#transactionGrid").jsGrid("openPage", page);
+		   });
+
+		   $("#detailsDialog").dialog({
+			  autoOpen: false,
+			  width: 700,
+			  close: function () {
+				 $("#detailsForm").validate().resetForm();
+				 $("#detailsForm").find(".error").removeClass("error");
+			  }
+		   });
+
+		   $("#detailsForm").validate({
+			  rules: {
+				 //description: "required",
+				 fullAmount: { required: true },
+				 //address: { required: true, minlength: 10 },
+				 //country: "required"
+			  },
+			  messages: {
+				// name: "Please enter name",
+				 fullAmount: "Please enter valid amount",
+				 //address: "Please enter address (more than 10 chars)",
+				 //country: "Please select country"
+			  },
+			  submitHandler: function (event) {
+				 formSubmitHandler(event);
+			  }
+		   });
+
+		   var formSubmitHandler = $.noop;
+
+		   var showDetailsDialog = function (dialogType, client) {
+			  $("#description").val(client.Description);
+			  $("#fullAmount").val(client.FullAmount);
+			  $("#splitEqually").prop("checked", false);
+			  $("#splitOnYou").prop("checked", false);
+			  $("#add-transaction-users").html("");
+			  for (var userKey in app.context.CurrentRoom.Users) {
+				 var user = app.context.CurrentRoom.Users[userKey];
+				 $("#add-transaction-users").append("<div>" + user.Name + ": " + "<input type='number' min='0' id='add-trans-user-" + user.Id + "' systemId='" + user.Id+"' />" + "</div>");
+			  }
+
+			  formSubmitHandler = function (event) {
+				 saveClient(client, dialogType === "Add");
+				 event.preventDefault();
+				 return false;
+			  };
+
+			  $("#detailsDialog").dialog("option", "title", dialogType + " Transaction")
+				 .dialog("open");
+		   };
+		}
+		var saveClient = function (item, isNew) {
+		   //var test = parseFloat($("#fullAmount").val()).moneyRound();
+		   //$.extend(client, {
+		   //Descripton: $("#name").val(),
+		   //FullAmount: parseFloat($("#fullAmount").val()).moneyRound(),
+		   ////Country: parseInt($("#country").val(), 10),
+		   ////Married: $("#married").is(":checked")
+		   //});
+
+		   //$("#transactionGrid").jsGrid(isNew ? "insertItem" : "updateItem", client);
+
+		   var usersInfo = [];
+		   $("#add-transaction-users input").each(function (ind, el) {
+			  var amt = parseFloat($(el).val()).moneyRound();
+			  if (isNaN(amt))
+				 amt = 0;
+			  usersInfo.push({
+				 UserId: $(el).attr("systemId"),
+				 Amount: amt
+			  });
+		   });
+		   //save on server
+		   var item =
+			  {
+				 Description: $("#description").val(),
+				 Amount: parseFloat($("#fullAmount").val()).moneyRound(),
+				 IsSplitAmountEqually: $("#splitEqually").is(":checked"),
+				 IsCurrentUserInSplitListToo: $("#splitOnYou").is(":checked"),
+				 OweUsers: usersInfo
+			  };
+
+		   //Dt
+		   //Id
+
+		   $("#detailsDialog").dialog("close");
+
+		   addTransaction(item);
+		   return false;
+		};
+
+		$(function () {
+
+	   });
 
     </script>
-
 </head>
 
 <body>
     <span id="logs"></span>
-    <form name="transaction">
-        <div>
-            UserId: <span name="userid" id="userid"></span>            
+    <div style="height:100%;">
+
+	   <div id="detailsDialog">
+	   <form id="detailsForm" novalidate="novalidate">
+	      <div class="details-form-field">
+	         <label for="fullAmount">Amount:</label>
+	         <input id="fullAmount" name="fullAmount" type="number" min="0"> 
+	      </div>
+	      <div class="details-form-field" style="width: 70%;">
+	         <label for="description">Description:</label>
+	         <input id="description" name="description" type="text">
+	      </div>
+		  <div class="details-form-field">
+			 <label for="splitEqually">Split equally</label>
+			 <input id="splitEqually" name="splitEqually" type="checkbox">
+		  </div>
+		  <div class="details-form-field">
+			 <label for="splitOnYou">Split on you too?</label>
+			 <input id="splitOnYou" name="splitOnYou" type="checkbox">
+		  </div>
+	      <div class="details-form-field">
+	         <label>Users:</label>
+	         <div id="add-transaction-users">
+
+			</div>
+	      </div>
+		  <div class="details-form-field">
+			 <button type="button" id="save" onclick="saveClient();">Save</button>
+		  </div>
+	   </form>
+	  </div>
+
+      <div style="padding-bottom: 40px;">
+            UserId: <span name="userid" id="userid"></span>
             Username: <span name="username" id="username"></span>
             <span style="float:right;">
-                <button type="button" onclick="logout(this)">Logout</button>
+               <button type="button" onclick="logout(this)">Logout</button>
             </span>
-        </div>
-    </form>
+      </div>
 
-    
+	  <div style="width:80%;display: inline-block;height:100%;"><div id="transactionGrid" ></div></div>
+	  <div id="roomInfo" style="width:18%;display: inline-block;float:right;padding: 1%;">
+		  Room Id: <span name="roomid" id="roomid"></span>
+		  Name: <span name="roomname" id="roomname"></span>
+		  <div>
+			 <ul id="room-users">
+			 </ul>
+		  </div>
+	  </div>
+   </div>
 </body>
 
 </html>

@@ -1,11 +1,28 @@
-.message {
+﻿.message {
 			border: 1px solid lightgray;
 			padding: 10px;
 		}
         .pd-l-10 {
             padding: 10px;
         }
+.pd-b-20 {
+  padding-bottom: 20px;
+}
+
 	body *
 	{
 		font-size: 20pt;
 	}
+.details-form-field {
+  padding: 10px 0px;
+}
+
+.error
+{
+  color:red;
+}
+
+.jsgrid-delete-button
+{
+  display:none;
+}
