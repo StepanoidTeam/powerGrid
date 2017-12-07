@@ -22,12 +22,14 @@
                 app.logout()
                 //location.href = config.routes.Login;
             }
-            return			  false;
+            return			 false;
         }
 
-	   function refreshGrid()
+	   function refreshGrid ()
 	   {
-		  $("#transactionGrid").jsGrid("loadData");
+		  var online = navigator.onLine; 
+		  if(online)
+			$("#transactionGrid").jsGrid("loadData");
 	   }
 
 	   function addTransaction(item)
@@ -119,10 +121,10 @@
 			  fields: [
 				 { name: "id", type: "text", width: 150, visible: false, title: "Id" },
 				 { name: "payer", type: "text", width: 100, title: "Payer" },
-				 { name: "fullAmount", type: "number", width: 50, title: "Amount" },
+				 { name: "fullAmount", type: "number", width: 80, title: "Amount" },
 				 { name: "time", type: "text", width: 100, title: "Time"},
 				 { name: "oweText", type: "text", width: 150, title: "Owe" },
-				 { name: "description", type: "text", width: 150, title: "Description" },
+				 { name: "description", type: "text", width: 100, title: "Description" },
 				 {
 					type: "control",
 					modeSwitchButton: false,
