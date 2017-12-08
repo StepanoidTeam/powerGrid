@@ -220,6 +220,9 @@
 		   };
 		}
 		var saveClient = function (item, isNew) {
+			if ($("#transactionId").val()!='' && !confirm("It's old trnsaction, are you sure you want to change it?")) {
+                return false;
+            }
 		   //var test = parseFloat($("#fullAmount").val()).moneyRound();
 		   //$.extend(client, {
 		   //Descripton: $("#name").val(),
