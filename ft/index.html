@@ -43,6 +43,15 @@
         //    return false;
         //};
 
+	   function getCheckedUsers()
+	   {
+			var users = [];
+			$("#add-transaction-users input[type='checkbox']").filter(":checked").each(function (ind, el) {
+			   var inp = $(el).closest('div').find('input[type="number"]');
+	           users.push(inp);
+			});		
+			return users;
+	   }
 
 		function onPageLoaded() {
 		   $("#filterByUserId").val(app.context.Settings.filterByUserId);
@@ -50,7 +59,7 @@
 		   document.getElementById("username").innerText = user.Name;
 		   document.getElementById("userid").innerText = user.Id;
 
-		   app.loadCurrentRoom(function ()
+	 	   app.loadCurrentRoom(function ()
 		   {
 			  console.log("load room done");
 			  $("#roomid").text(app.context.CurrentRoom.Id);
@@ -114,9 +123,9 @@
 				 //return "The item \"" + item.Id + "\" will be removed. Are you sure?";
 			  //},
 
-			  //rowClick: function (args) {
-				 //showDetailsDialog("Edit", args.item);
-			  //},
+			  rowClick: function (args) {
+				 showDetailsDialog("Edit", args.item);
+			  },
 
 			  fields: [
 				 { name: "id", type: "text", width: 150, visible: false, title: "Id" },
@@ -173,15 +182,30 @@
 
 		   var formSubmitHandler = $.noop;
 
-		   var showDetailsDialog = function (dialogType, client) {
-			  $("#description").val(client.Description);
-			  $("#fullAmount").val(client.FullAmount);
+		   var showDetailsDialog = function (dialogType, item) {
+			  $("#transactionId").val(item.id);
+			  $("#description").val(item.description);
+			  $("#fullAmount").val(item.fullAmount);
 			  $("#splitEqually").prop("checked", false);
 			  $("#splitOnYou").prop("checked", false);
 			  $("#add-transaction-users").html("");
 			  for (var userKey in app.context.CurrentRoom.Users) {
+				 var curUserId = app.context.CurrentUser.Id;
 				 var user = app.context.CurrentRoom.Users[userKey];
-				 $("#add-transaction-users").append("<div>" + user.Name + ": " + "<input type='number' min='0' id='add-trans-user-" + user.Id + "' systemId='" + user.Id+"' />" + "</div>");
+				  
+				 var checked = (curUserId == user.Id? '':"checked='checked'");
+	             var enabled = (curUserId == user.Id? "disabled='disabled'":"");
+	             var val = 0;
+				 if(dialogType=='Edit')
+				 {				  
+					 var found = jQuery.grep(item.owe, function( n, i ) {  return ( n.user==user.Name );})
+					 if(found.length == 1)
+						val = found[0].amount;
+				 }
+				 $("#add-transaction-users")
+				  .append("<div><input type='checkbox' "+ checked +" onclick='userActiveChanged(this, \""+user.Id
+				  +"\");'>" + user.Name + ": " + "<input type='number' "+ enabled +" min='0' id='add-trans-user-" + user.Id +
+				  "' systemId='" + user.Id+"' onblur='onUserAmtChanged(this);' value='"+val+"' />" + "</div>");
 			  }
 
 			  formSubmitHandler = function (event) {
@@ -206,7 +230,7 @@
 		   //$("#transactionGrid").jsGrid(isNew ? "insertItem" : "updateItem", client);
 
 		   var usersInfo = [];
-		   $("#add-transaction-users input").each(function (ind, el) {
+		   $.each(getCheckedUsers(), function (ind, el) {
 			  var amt = parseFloat($(el).val()).moneyRound();
 			  if (isNaN(amt))
 				 amt = 0;
@@ -218,6 +242,7 @@
 		   //save on server
 		   var item =
 			  {
+				 Id: $("#transactionId").val(),
 				 Description: $("#description").val(),
 				 Amount: parseFloat($("#fullAmount").val()).moneyRound(),
 				 IsSplitAmountEqually: $("#splitEqually").is(":checked"),
@@ -250,6 +275,23 @@
 	  $("#filterByUserId").val($(item).attr("systemId")).blur();
    }
 
+   function onUserAmtChanged(item)
+   {
+	  if($("#fullAmount").val()=='')
+	  {
+          $("#fullAmount").val($(item).val());
+	  }
+   }
+
+   function userActiveChanged(el, userId)
+   {
+	   var amtInput = $(el).closest('div').find("input[type='number']");
+	   if($(el).is(":checked"))
+		 amtInput.prop('disabled', false);
+	   else
+		 amtInput.prop('disabled', true);
+   }
+
 
     </script>
 </head>
@@ -260,13 +302,14 @@
 
 	   <div id="detailsDialog">
 	   <form id="detailsForm" novalidate="novalidate">
+		  <input id="transactionId" name="transactionId" type="hidden"/>
 	      <div class="details-form-field">
 	         <label for="fullAmount">Amount:</label>
 	         <input id="fullAmount" name="fullAmount" type="number" min="0"> 
 	      </div>
-	      <div class="details-form-field" style="width: 70%;">
+	      <div class="details-form-field">
 	         <label for="description">Description:</label>
-	         <input id="description" name="description" type="text">
+	         <input id="description" name="description" type="text" style="width: 70%;">
 	      </div>
 		  <div class="details-form-field">
 			 <label for="splitEqually">Split equally</label>
