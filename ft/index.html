@@ -58,6 +58,7 @@
 		   var user = app.context.CurrentUser;
 		   document.getElementById("username").innerText = user.Name;
 		   document.getElementById("userid").innerText = user.Id;
+		   document.getElementById("authToken").value = user.AuthToken;
 
 	 	   app.loadCurrentRoom(function ()
 		   {
@@ -332,15 +333,20 @@
 	  </div>
 
       <div style="padding-bottom: 40px;">
-            UserId: <span name="userid" id="userid"></span>
-            Username: <span name="username" id="username"></span>
-            <span style="float:right;">
-               <button type="button" onclick="logout(this)">Logout</button>
-            </span>
-		 <div>
-	     Filter by User Id: <input id="filterByUserId" name="filterByUserId" type="text" onblur="onFilterByUserIdChanged()">
+	     <div style="display:inline-block;width:75%;">
+	        UserId: <span name="userid" id="userid"></span>
+	        AuthToken: <input name="authToken" id="authToken" type="text" disabled="disabled"  style="width: 600px;" />
 	     </div>
-      </div>
+	     <div style="display:inline-block;width:24%;float:right">
+		   <span style="float:right;">
+		      <button type="button" onclick="logout(this)">Logout</button>
+		   </span>
+	       <span style="float:right;padding-right: 10px;">Username: <span name="username" id="username" ></span></span>
+	     </div>
+	     <div style="padding-top:20px;">
+	           Filter by User Id: <input id="filterByUserId" name="filterByUserId" type="text" onblur="onFilterByUserIdChanged()">
+	        </div>
+	  </div>
 
 	  <div style="width:80%;display: inline-block;height:100%;"><div id="transactionGrid" ></div></div>
 	  <div id="roomInfo" style="width:18%;display: inline-block;float:right;padding: 1%;">
