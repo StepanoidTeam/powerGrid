@@ -53,10 +53,9 @@ var app = {
 	},
 
 	onError: function(data) {
-		var logTxt = "Sorryan, kakoyto bag. ";
+		var logTxt = "⛔️ ERROR";
 		var errModel = JSON.parse(data.responseText);
-		if (errModel.message) logTxt += errModel.message;
-		app.log(logTxt);
+		app.log(`${logTxt} - ${errModel.message || "kakoy-to bag"}`);
 		console.log(JSON.stringify(data));
 	},
 
@@ -150,18 +149,13 @@ var app = {
 		app.checkAuth(app.context.CurrentUser);
 
 		//add logs component
-		$("body").prepend(
-			'<div id="app-log" style="position:absolute;width:100%;height:10%;z-index:100;color:red;background-color: gainsboro;display:none;"></div>'
-		);
+		$("body").prepend('<div id="app-log"></div>');
 
 		//add global loading component
 		var loading = document.createElement("div");
 		document.body.insertBefore(loading, document.body.firstChild);
 		loading.setAttribute("id", "loading");
-		loading.setAttribute(
-			"style",
-			"display:none;position:absolute;width:100%;height:100%;opacity:0.3;z-index:1000;background:#000;"
-		);
+		loading.classList.add("loading");
 	},
 
 	checkAuth: function(user) {
