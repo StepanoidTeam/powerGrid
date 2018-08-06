@@ -1,18 +1,18 @@
-﻿Number.prototype.moneyRound = function () {
-    return Math.round(this * 100) / 100
+﻿Number.prototype.moneyRound = function() {
+	return Math.round(this * 100) / 100;
 };
 
 const config = {
-    //wsUrl: 'ws://localhost:5000',
-    wsUrl: 'ws://pg-api.azurewebsites.net/api',
-    httpUrl: 'http://pg-api.azurewebsites.net/api/',
-    //httpUrl: 'http://localhost:5000/api/',
-    title: "Friends Trip v.0.1",
-    routes: {
-        Login: "login.html",
-        Transactions: "index.html",
-        Report: "report.html",
-    }
+	//wsUrl: 'ws://localhost:5000',
+	wsUrl: "ws://pg-api.azurewebsites.net/api",
+	httpUrl: "http://pg-api.azurewebsites.net/api/",
+	//httpUrl: 'http://localhost:5000/api/',
+	title: "Friends Trip v.0.1",
+	routes: {
+		Login: "login.html",
+		Transactions: "index.html",
+		Report: "report.html"
+	}
 };
 
 //function jsonp(url, callback) {
@@ -29,205 +29,209 @@ const config = {
 //}
 
 var app = {
+	generateUid: function() {
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
+			c
+		) {
+			var r = (Math.random() * 16) | 0,
+				v = c == "x" ? r : (r & 0x3) | 0x8;
+			return v.toString(16);
+		});
+	},
 
-    generateUid: function () {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    },
+	EmptyRoom: {
+		Id: "",
+		Name: ""
+	},
 
-    EmptyRoom: {
-        Id: "",
-        Name: "",
-    },
+	context: {
+		Settings: {
+			filterByUserId: ""
+		},
+		CurrentUser: null,
+		CurrentRoom: null
+	},
 
-    context:
-    {
-        Settings: {
-            filterByUserId: ""
-        },
-        CurrentUser: null,
-        CurrentRoom: null
-    },
+	onError: function(data) {
+		var logTxt = "Sorryan, kakoyto bag. ";
+		var errModel = JSON.parse(data.responseText);
+		if (errModel.message) logTxt += errModel.message;
+		app.log(logTxt);
+		console.log(JSON.stringify(data));
+	},
 
-    onError: function (data) {
-        var logTxt = "Sorryan, kakoyto bag. ";
-        var errModel = JSON.parse(data.responseText);
-        if (errModel.message)
-            logTxt += errModel.message;
-        app.log(logTxt);
-        console.log(JSON.stringify(data));
-    },
+	ajax: function(actionUrl, data, method, successCallback, errorCallback) {
+		var authKey =
+			app.context.CurrentUser == null
+				? null
+				: app.context.CurrentUser.AuthToken;
+		var ajaxUrl = config.httpUrl + actionUrl;
+		app.showLoading(true);
+		return $.ajax({
+			type: method,
+			url: ajaxUrl,
+			contentType: "application/json",
+			data: JSON.stringify(data),
+			beforeSend: function(request) {
+				request.setRequestHeader("authToken", authKey);
+			},
+			crossDomain: true,
+			cache: false,
+			success: function(data) {
+				if (successCallback) successCallback(data);
+			},
+			error: function(data) {
+				app.onError(data);
+			},
+			complete: function() {
+				app.showLoading(false);
+				console.log("ajax completed");
+			}
+		});
+	},
 
-    ajax: function (actionUrl, data, method, successCallback, errorCallback) {
-        var authKey = app.context.CurrentUser == null ? null : app.context.CurrentUser.AuthToken;
-        var ajaxUrl = config.httpUrl + actionUrl;
-        app.showLoading(true);
-        return $.ajax({
-            type: method,
-            url: ajaxUrl,
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            beforeSend: function (request) {
-                request.setRequestHeader("authToken", authKey);
-            },
-            crossDomain: true,
-            cache: false,
-            success: function (data) {
-                if (successCallback)
-                    successCallback(data);
-            },
-            error: function (data) {
-                app.onError(data);
-            },
-            complete: function () {
-                app.showLoading(false);
-                console.log("ajax completed");
-            }
-        });
-    },
+	ajax1: function(actionUrl, data, method, successCallback, errorCallback) {
+		var ajaxUrl = config.httpUrl + actionUrl;
+		app.showLoading(true);
+		method = method || "POST";
+		var xhr = new XMLHttpRequest();
+		xhr.open(method, config.httpUrl + actionUrl);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.onload = function() {
+			document.getElementById("logs").innerText = "test4";
+			app.showLoading(false);
+			if (xhr.status === 200) {
+				document.getElementById("logs").innerText = "test5";
+				if (successCallback)
+					successCallback(JSON.parse(xhr.responseText));
+			} else {
+				document.getElementById("logs").innerText = "test6";
+				if (errorCallback) errorCallback(xhr);
+				else app.onError(xhr);
+			}
+		};
+		xhr.send(JSON.stringify(data));
+	},
 
+	showLoading: function(show) {
+		var loading = document.getElementById("loading");
+		if (show) loading.style.display = "block";
+		else loading.style.display = "none";
+	},
 
-    ajax1: function (actionUrl, data, method, successCallback, errorCallback) {
-        var ajaxUrl = config.httpUrl + actionUrl;
-        app.showLoading(true);
-        method = method || "POST";
-        var xhr = new XMLHttpRequest();
-        xhr.open(method, config.httpUrl + actionUrl);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onload = function () {
-            document.getElementById("logs").innerText = "test4";
-            app.showLoading(false);
-            if (xhr.status === 200) {
+	getFromLocalStorage: function(key) {
+		var data = JSON.parse(window.localStorage.getItem(key));
+		if (!data) return null;
+		return data;
+	},
 
-                document.getElementById("logs").innerText = "test5";
-                if (successCallback)
-                    successCallback(JSON.parse(xhr.responseText));
-            }
-            else {
-                document.getElementById("logs").innerText = "test6";
-                if (errorCallback)
-                    errorCallback(xhr);
-                else
-                    app.onError(xhr);
-            }
-        };
-        xhr.send(JSON.stringify(data));
-    },
+	log: function(text) {
+		var logBox = document.getElementById("app-log");
+		logBox.innerText = text;
+		logBox.style.display = "block";
+		var logId = app.generateUid();
+		logBox.logId = logId;
+		setTimeout(function() {
+			if (logId == logBox.logId) {
+				logBox.innerText = "";
+				logBox.style.display = "none";
+			}
+		}, 4000);
+	},
 
-    showLoading: function (show) {
-        var loading = document.getElementById("loading");
-        if (show)
-            loading.style.display = "block";
-        else
-            loading.style.display = "none";
-    },
+	logout: function() {
+		window.localStorage.setItem("current-user", null);
+		app.checkAuth(null);
+	},
 
-    getFromLocalStorage: function (key) {
-        var data = JSON.parse(window.localStorage.getItem(key));
-        if (!data)
-            return null;
-        return data;
-    },
+	init: function() {
+		document.title = config.title;
+		app.initContext();
+		app.checkAuth(app.context.CurrentUser);
 
-    log: function (text) {
-        var logBox = document.getElementById("app-log");
-        logBox.innerText = text;
-        logBox.style.display = "block";
-        var logId = app.generateUid();
-        logBox.logId = logId;
-        setTimeout(function () {
-            if (logId == logBox.logId) {
-                logBox.innerText = "";
-                logBox.style.display = "none";
-            }
-        }, 4000);
-    },
+		//add logs component
+		$("body").prepend(
+			'<div id="app-log" style="position:absolute;width:100%;height:10%;z-index:100;color:red;background-color: gainsboro;display:none;"></div>'
+		);
 
-    logout: function () {
-        window.localStorage.setItem('current-user', null);
-        app.checkAuth(null);
-    },
+		//add global loading component
+		var loading = document.createElement("div");
+		document.body.insertBefore(loading, document.body.firstChild);
+		loading.setAttribute("id", "loading");
+		loading.setAttribute(
+			"style",
+			"display:none;position:absolute;width:100%;height:100%;opacity:0.3;z-index:1000;background:#000;"
+		);
+	},
 
-    init: function () {
-        document.title = config.title;
-        app.initContext();
-        app.checkAuth(app.context.CurrentUser);
+	checkAuth: function(user) {
+		var curPage = location.pathname.toLowerCase();
+		curPage = curPage.substring(curPage.lastIndexOf("/") + 1);
+		//document.getElementById("logs").innerText = "["+curPage+"]";
+		if (user && curPage == config.routes.Login)
+			location.href = config.routes.Transactions;
+		else if (!user && curPage != config.routes.Login)
+			location.href = config.routes.Login;
+	},
 
-        //add logs component
-        $('body').prepend('<div id="app-log" style="position:absolute;width:100%;height:10%;z-index:100;color:red;background-color: gainsboro;display:none;"></div>');
+	initContext: function() {
+		var settings = app.getFromLocalStorage("current-settings");
+		if (settings != null) app.context.Settings = settings;
 
-        //add global loading component
-        var loading = document.createElement('div');
-        document.body.insertBefore(loading, document.body.firstChild);
-        loading.setAttribute('id', 'loading');
-        loading.setAttribute('style', 'display:none;position:absolute;width:100%;height:100%;opacity:0.3;z-index:1000;background:#000;');
+		var user = app.getFromLocalStorage("current-user");
+		app.context.CurrentUser = user;
+		var room = app.getFromLocalStorage("current-room");
+		if (room == null) app.context.CurrentRoom = app.EmptyRoom;
+		else app.context.CurrentRoom = room;
+	},
 
-    },
+	saveSettings: function() {
+		window.localStorage.setItem(
+			"current-settings",
+			JSON.stringify(app.context.Settings)
+		);
+	},
 
-    checkAuth: function (user) {
-        var curPage = location.pathname.toLowerCase();
-        curPage = curPage.substring(curPage.lastIndexOf("/") + 1);
-        //document.getElementById("logs").innerText = "["+curPage+"]";
-        if (user && curPage == config.routes.Login)
-            location.href = config.routes.Transactions;
-        else if (!user && curPage != config.routes.Login)
-            location.href = config.routes.Login;
-    },
+	onLoginDone: function(data) {
+		var user = data.data;
 
-    initContext: function () {
-        var settings = app.getFromLocalStorage('current-settings');
-        if (settings != null)
-            app.context.Settings = settings;
+		window.localStorage.setItem("current-user", JSON.stringify(user));
+		app.checkAuth(user);
+		//location.href = config.routes.Transactions;
+	},
 
-        var user = app.getFromLocalStorage('current-user');
-        app.context.CurrentUser = user;
-        var room = app.getFromLocalStorage('current-room');
-        if (room == null)
-            app.context.CurrentRoom = app.EmptyRoom;
-        else
-            app.context.CurrentRoom = room;
-    },
+	onGetRoomDone: function(data) {
+		var room = data.data;
+		window.localStorage.setItem("current-room", JSON.stringify(room));
+	},
 
-    saveSettings: function ()
-    {
-        window.localStorage.setItem('current-settings', JSON.stringify(app.context.Settings));
-    },
+	login: function(username, password) {
+		app.ajax(
+			"auth/login",
+			{ username: username, password: password },
+			"POST",
+			app.onLoginDone
+		);
+	},
 
-    onLoginDone: function (data) {
-        var user = data.data;
+	register: function(username, password) {
+		app.ajax(
+			"auth/register",
+			{ username: username, password: password },
+			"POST",
+			app.onLoginDone
+		);
+	},
 
-        window.localStorage.setItem('current-user', JSON.stringify(user));
-        app.checkAuth(user);
-        //location.href = config.routes.Transactions;
-    },
+	loadCurrentRoom: function(callback) {
+		return app.ajax("room/status", {}, "POST", function(result) {
+			app.onGetRoomDone(result);
+			callback(result);
+		});
+	}
+};
 
-    onGetRoomDone: function (data) {
-        var room = data.data;
-        window.localStorage.setItem('current-room', JSON.stringify(room)); 
-    },
-
-    login: function (username, password) {
-        app.ajax('auth/login', { username: username, password: password }, 'POST', app.onLoginDone);
-    },
-
-    register: function (username, password) {
-        app.ajax('auth/register', { username: username, password: password }, 'POST', app.onLoginDone);
-    },
-
-	loadCurrentRoom: function (callback)
-    {
-        return app.ajax('room/status', {}, 'POST',
-            function (result) {
-                app.onGetRoomDone(result);
-                callback(result);
-            });
-    }
-}
-
-$(function () {
-    app.init();
-    if (onPageLoaded)
-        onPageLoaded();
+$(function() {
+	app.init();
+	if (onPageLoaded) onPageLoaded();
 });

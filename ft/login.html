@@ -1,46 +1,47 @@
 ﻿<html lang="en">
 
 <head>
-   <title></title>
-   <link rel="stylesheet" href="css/app.css" title="">
-   <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-   <script type="text/javascript" src="js/app.js"></script>
+    <title></title>
+    <link rel="stylesheet" href="css/app.css" title="">
+    <script type="text/javascript" src="external/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
 
-   <script type="text/javascript">
+    <script type="text/javascript">
 
-   function signin() {
-      app.login(this.username.value, this.password.value);
-   }
+        function signin() {
+            app.login(this.username.value, this.password.value);
+        }
 
-   function register() {
-      app.register(this.username.value, this.password.value);
-   }
+        function register() {
+            app.register(this.username.value, this.password.value);
+        }
 
-   function onPageLoaded() {
-      document.forms.login.onsubmit = function (event) {
-            event.preventDefault();
-            return false;
-      };
-   }
+        function onPageLoaded() {
+            document.forms.login.onsubmit = function (event) {
+                event.preventDefault();
+                return false;
+            };
+        }
 
-   </script>
+    </script>
 </head>
 
 <body>
-<span id="logs"></span>
-<form name="login" method="POST">
-    <div class="pd-l-10">
-        Username: <input type="text" id="username" name="username">
-    </div>
-    <div class="pd-l-10">
-        Password: <input type="password" id="password" name="password">
-    </div>
-    <div class="pd-l-10">
-        <input type="button" value="Login" onclick="signin(this)">
-        OR 
-        <input type="button" value="Register me" onclick="register(this)">
-    </div>
-</form>
+    <span id="logs"></span>
+    <form name="login" method="POST">
+        <div class="pd-l-10">
+            Username:
+            <input type="text" id="username" name="username">
+        </div>
+        <div class="pd-l-10">
+            Password:
+            <input type="password" id="password" name="password">
+        </div>
+        <div class="pd-l-10">
+            <input type="button" value="Login" onclick="signin(this)"> OR
+            <input type="button" value="Register me" onclick="register(this)">
+        </div>
+    </form>
 
 </body>
 
