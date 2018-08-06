@@ -43,3 +43,19 @@ body * {
   background-color: rgba(220, 220, 220, 0.5);
   display: none;
 }
+
+#room-users {
+  padding: 0;
+}
+
+#room-users > li {
+  padding: 10px;
+  margin: 5px;
+  list-style: none;
+  box-shadow: 1px 1px 1px 1px grey;
+}
+
+#room-users > li:hover,
+#room-users > li:active {
+  background-color: rgba(172, 255, 47, 0.2);
+}
