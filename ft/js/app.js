@@ -1,8 +1,4 @@
-﻿Number.prototype.moneyRound = function() {
-	return Math.round(this * 100) / 100;
-};
-
-const config = {
+﻿const config = {
 	//wsUrl: 'ws://localhost:5000',
 	wsUrl: "ws://pg-api.azurewebsites.net/api",
 	httpUrl: "http://pg-api.azurewebsites.net/api/",

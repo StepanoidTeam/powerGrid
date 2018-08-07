@@ -18,6 +18,12 @@
 
 	<script type="text/javascript">
 
+
+		function moneyRound(value) {
+			return Math.round(value * 100) / 100;
+		};
+
+
 		function logout() {
 			if (confirm("You will not be able log in back if you will not have an Internet, are you want to log out anyway?")) {
 				app.logout()
@@ -218,10 +224,10 @@
 			if ($("#transactionId").val() != '' && !confirm("It's old trnsaction, are you sure you want to change it?")) {
 				return false;
 			}
-			//var test = parseFloat($("#fullAmount").val()).moneyRound();
+			//var test = moneyRound( parseFloat($("#fullAmount").val()));
 			//$.extend(client, {
 			//Descripton: $("#name").val(),
-			//FullAmount: parseFloat($("#fullAmount").val()).moneyRound(),
+			//FullAmount: moneyRound(parseFloat($("#fullAmount").val())),
 			////Country: parseInt($("#country").val(), 10),
 			////Married: $("#married").is(":checked")
 			//});
@@ -230,7 +236,7 @@
 
 			var usersInfo = [];
 			$.each(getCheckedUsers(), function (ind, el) {
-				var amt = parseFloat($(el).val()).moneyRound();
+				var amt = moneyRound(parseFloat($(el).val()));
 				if (isNaN(amt))
 					amt = 0;
 				usersInfo.push({
@@ -243,7 +249,7 @@
 			{
 				Id: $("#transactionId").val(),
 				Description: $("#description").val(),
-				Amount: parseFloat($("#fullAmount").val()).moneyRound(),
+				Amount: moneyRound(parseFloat($("#fullAmount").val())),
 				IsSplitAmountEqually: $("#splitEqually").is(":checked"),
 				IsCurrentUserInSplitListToo: $("#splitOnYou").is(":checked"),
 				OweUsers: usersInfo
