@@ -192,6 +192,7 @@
 				$("#splitEqually").prop("checked", false);
 				$("#splitOnYou").prop("checked", false);
 				$("#add-transaction-users").html("");
+
 				for (var userKey in app.context.CurrentRoom.Users) {
 					var curUserId = app.context.CurrentUser.Id;
 					var user = app.context.CurrentRoom.Users[userKey];
@@ -224,15 +225,6 @@
 			if ($("#transactionId").val() != '' && !confirm("It's old trnsaction, are you sure you want to change it?")) {
 				return false;
 			}
-			//var test = moneyRound( parseFloat($("#fullAmount").val()));
-			//$.extend(client, {
-			//Descripton: $("#name").val(),
-			//FullAmount: moneyRound(parseFloat($("#fullAmount").val())),
-			////Country: parseInt($("#country").val(), 10),
-			////Married: $("#married").is(":checked")
-			//});
-
-			//$("#transactionGrid").jsGrid(isNew ? "insertItem" : "updateItem", client);
 
 			var usersInfo = [];
 			$.each(getCheckedUsers(), function (ind, el) {
