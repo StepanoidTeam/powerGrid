@@ -29,16 +29,6 @@ const config = {
 //}
 
 var app = {
-	generateUid: function() {
-		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
-			c
-		) {
-			var r = (Math.random() * 16) | 0,
-				v = c == "x" ? r : (r & 0x3) | 0x8;
-			return v.toString(16);
-		});
-	},
-
 	EmptyRoom: {
 		Id: "",
 		Name: ""
@@ -52,14 +42,22 @@ var app = {
 		CurrentRoom: null
 	},
 
-	onError: function(data) {
+	generateUid() {
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+			var r = (Math.random() * 16) | 0,
+				v = c == "x" ? r : (r & 0x3) | 0x8;
+			return v.toString(16);
+		});
+	},
+
+	onError(data) {
 		var logTxt = "⛔️ ERROR";
 		var errModel = JSON.parse(data.responseText);
 		app.log(`${logTxt} - ${errModel.message || "kakoy-to bag"}`);
 		console.log(JSON.stringify(data));
 	},
 
-	ajax: function(actionUrl, data, method, successCallback, errorCallback) {
+	ajax(actionUrl, data, method, successCallback, errorCallback) {
 		var authKey =
 			app.context.CurrentUser == null
 				? null
@@ -89,8 +87,8 @@ var app = {
 		});
 	},
 
-	ajax1: function(actionUrl, data, method, successCallback, errorCallback) {
-		var ajaxUrl = config.httpUrl + actionUrl;
+	ajax1(actionUrl, data, method, successCallback, errorCallback) {
+		//var ajaxUrl = config.httpUrl + actionUrl;
 		app.showLoading(true);
 		method = method || "POST";
 		var xhr = new XMLHttpRequest();
@@ -112,19 +110,18 @@ var app = {
 		xhr.send(JSON.stringify(data));
 	},
 
-	showLoading: function(show) {
+	showLoading(show) {
 		var loading = document.getElementById("loading");
 		if (show) loading.style.display = "block";
 		else loading.style.display = "none";
 	},
 
-	getFromLocalStorage: function(key) {
+	getFromLocalStorage(key) {
 		var data = JSON.parse(window.localStorage.getItem(key));
-		if (!data) return null;
-		return data;
+		return data || null;
 	},
 
-	log: function(text) {
+	log(text) {
 		var logBox = document.getElementById("app-log");
 		logBox.innerText = text;
 		logBox.style.display = "block";
@@ -138,12 +135,12 @@ var app = {
 		}, 4000);
 	},
 
-	logout: function() {
+	logout() {
 		window.localStorage.setItem("current-user", null);
 		app.checkAuth(null);
 	},
 
-	init: function() {
+	init() {
 		document.title = config.title;
 		app.initContext();
 		app.checkAuth(app.context.CurrentUser);
@@ -158,7 +155,7 @@ var app = {
 		loading.classList.add("loading");
 	},
 
-	checkAuth: function(user) {
+	checkAuth(user) {
 		var curPage = location.pathname.toLowerCase();
 		curPage = curPage.substring(curPage.lastIndexOf("/") + 1);
 		//document.getElementById("logs").innerText = "["+curPage+"]";
@@ -168,7 +165,7 @@ var app = {
 			location.href = config.routes.Login;
 	},
 
-	initContext: function() {
+	initContext() {
 		var settings = app.getFromLocalStorage("current-settings");
 		if (settings != null) app.context.Settings = settings;
 
@@ -179,14 +176,14 @@ var app = {
 		else app.context.CurrentRoom = room;
 	},
 
-	saveSettings: function() {
+	saveSettings() {
 		window.localStorage.setItem(
 			"current-settings",
 			JSON.stringify(app.context.Settings)
 		);
 	},
 
-	onLoginDone: function(data) {
+	onLoginDone(data) {
 		var user = data.data;
 
 		window.localStorage.setItem("current-user", JSON.stringify(user));
@@ -194,12 +191,12 @@ var app = {
 		//location.href = config.routes.Transactions;
 	},
 
-	onGetRoomDone: function(data) {
+	onGetRoomDone(data) {
 		var room = data.data;
 		window.localStorage.setItem("current-room", JSON.stringify(room));
 	},
 
-	login: function(username, password) {
+	login(username, password) {
 		app.ajax(
 			"auth/login",
 			{ username: username, password: password },
@@ -208,7 +205,7 @@ var app = {
 		);
 	},
 
-	register: function(username, password) {
+	register(username, password) {
 		app.ajax(
 			"auth/register",
 			{ username: username, password: password },
@@ -217,7 +214,7 @@ var app = {
 		);
 	},
 
-	loadCurrentRoom: function(callback) {
+	loadCurrentRoom(callback) {
 		return app.ajax("room/status", {}, "POST", function(result) {
 			app.onGetRoomDone(result);
 			callback(result);
