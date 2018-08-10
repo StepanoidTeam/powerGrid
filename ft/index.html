@@ -1,19 +1,23 @@
 ﻿<html lang="en">
 
 <head>
-	<title></title>
+	<title>Friends Trip v.000</title>
+
+	<!-- remote scripts -->
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 	 crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
+	<!-- remote styles -->
+	<link type="text/css" rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<link type="text/css" rel="stylesheet" href="external/jsgrid-1.5.3/jsgrid.min.css" />
 	<link type="text/css" rel="stylesheet" href="external/jsgrid-1.5.3/jsgrid-theme.min.css" />
+
+	<!-- local -->
 	<script type="text/javascript" src="external/jsgrid-1.5.3/jsgrid.min.js"></script>
 
-	<link rel="stylesheet" href="css/app.css" title="">
+	<link rel="stylesheet" href="styles/app.css" title="">
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript" src="js/web.js"></script>
 </head>
@@ -48,45 +52,55 @@
 					</div>
 				</div>
 				<div class="details-form-field">
-					<button type="button" id="save" onclick="saveClient();">Save</button>
+					<button type="button" id="save" onclick="saveClient();">✅ Save</button>
 				</div>
 			</form>
 		</div>
 
-		<div style="padding-bottom: 40px;">
-			<div style="display:inline-block;width:75%;">
+		<div class="head-block">
+			<div>
 				UserId:
 				<span name="userid" id="userid"></span>
-				AuthToken:
-				<input name="authToken" id="authToken" type="text" disabled="disabled" style="width: 600px;" />
+				🔑 AuthToken:
+				<input name="authToken" id="authToken" type="text" disabled="disabled" style="width: 600px" />
 			</div>
-			<div style="display:inline-block;width:24%;float:right">
-				<span style="float:right;">
-					<button type="button" onclick="logout(this)">Logout</button>
-				</span>
-				<span style="float:right;padding-right: 10px;">Username:
-					<span name="username" id="username"></span>
-				</span>
-			</div>
-			<div style="padding-top:20px;">
-				Filter by User Id:
+
+			<div>
+				🔍 Filter by User Id:
 				<input id="filterByUserId" name="filterByUserId" type="text" onblur="onFilterByUserIdChanged()">
+			</div>
+
+			<button class="btn-logout" type="button" onclick="logout(this)">
+				👤
+				<span name="username" id="username"></span>
+				❌
+			</button>
+		</div>
+
+		<div class="main-block">
+
+			<div id="transactionGrid"></div>
+
+			<div id="roomInfo">
+
+
+				<button onclick="showDetailsDialog(' ✳️ Add 💰', {})">✳️ Add 💰</button>
+
+				<span>Room Id:
+					<span name="roomid" id="roomid"></span>
+				</span>
+
+				<span>Name:
+					<span name="roomname" id="roomname"></span>
+				</span>
+
+				<ul id="room-users">
+				</ul>
+
 			</div>
 		</div>
 
-		<div style="width:80%;display: inline-block;height:100%;">
-			<div id="transactionGrid"></div>
-		</div>
-		<div id="roomInfo" style="width:18%;display: inline-block;float:right;padding: 1%;">
-			Room Id:
-			<span name="roomid" id="roomid"></span>
-			Name:
-			<span name="roomname" id="roomname"></span>
-			<div>
-				<ul id="room-users">
-				</ul>
-			</div>
-		</div>
+
 	</div>
 </body>
 

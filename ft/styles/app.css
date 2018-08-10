@@ -44,11 +44,19 @@ body * {
   display: none;
 }
 
-#room-info {
-  width: 18%;
-  display: inline-block;
-  float: right;
-  padding: 1%;
+.head-block {
+  display: flex;
+  flex-direction: row;
+}
+
+.main-block {
+  display: flex;
+  flex-direction: row;
+}
+
+#roomInfo {
+  display: flex;
+  flex-direction: column;
 }
 
 #room-users {
@@ -65,4 +73,14 @@ body * {
 #room-users > li:hover,
 #room-users > li:active {
   background-color: rgba(172, 255, 47, 0.2);
+}
+
+.btn-logout {
+  width: 150px;
+  align-self: center;
+}
+
+.btn-logout,
+#username {
+  font-size: 20px;
 }
