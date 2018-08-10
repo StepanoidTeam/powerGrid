@@ -1,5 +1,11 @@
+import React from "react";
+import ReactDOM from "react-dom";
 import $ from "jquery";
+
 import app from "./app.js";
+import Grid from "./grid.jsx";
+
+import "../styles/app.less";
 
 function moneyRound(value) {
   return Math.round(value * 100) / 100;
@@ -20,7 +26,8 @@ function logout() {
 
 function refreshGrid() {
   var online = navigator.onLine;
-  if (online) $("#transactionGrid").jsGrid("loadData");
+
+  ReactDOM.render(Grid("loadData"), document.getElementById("transactionGrid"));
 }
 
 function addTransaction(item) {
@@ -75,6 +82,7 @@ function onPageLoaded() {
     }
   });
 
+  ReactDOM.render(Grid("jsgrid"), document.getElementById("transactionGrid"));
   $("#transactionGrid").jsGrid({
     editing: false,
     autoload: true,
@@ -153,6 +161,11 @@ function onPageLoaded() {
 
   $("#pager").on("change", function() {
     var page = parseInt($(this).val(), 10);
+
+    ReactDOM.render(
+      Grid("loadData"),
+      document.getElementById("transactionGrid")
+    );
     $("#transactionGrid").jsGrid("openPage", page);
   });
 
@@ -161,7 +174,7 @@ function onPageLoaded() {
     width: 700,
     close: function() {
       $("#detailsForm")
-        .validate()
+        //.validate()//todo: make own validation
         .resetForm();
       $("#detailsForm")
         .find(".error")

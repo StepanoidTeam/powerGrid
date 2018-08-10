@@ -18,8 +18,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: `${title}`,
       filename: "index.html",
-      template: "src/index.html",
-      chunks: ["web", "runtime", "vendors"]
+      template: "src/index.html"
+      // chunks: ["web", "runtime", "vendors"]
     }),
 
     new HtmlWebpackPlugin({

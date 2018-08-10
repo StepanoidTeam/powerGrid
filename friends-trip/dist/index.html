@@ -1,0 +1,91 @@
+<html lang="en">
+
+<head>
+
+</head>
+
+<body>
+
+	<div id="app">react here</div>
+
+	<span id="logs"></span>
+
+
+	<div id="detailsDialog">
+		<form id="detailsForm" novalidate="novalidate">
+			<input id="transactionId" name="transactionId" type="hidden" />
+			<div class="details-form-field">
+				<label for="fullAmount">Amount:</label>
+				<input id="fullAmount" name="fullAmount" type="number" min="0">
+			</div>
+			<div class="details-form-field">
+				<label for="description">Description:</label>
+				<input id="description" name="description" type="text" style="width: 70%;">
+			</div>
+			<div class="details-form-field">
+				<label for="splitEqually">Split equally</label>
+				<input id="splitEqually" name="splitEqually" type="checkbox">
+			</div>
+			<div class="details-form-field">
+				<label for="splitOnYou">Split on you too?</label>
+				<input id="splitOnYou" name="splitOnYou" type="checkbox">
+			</div>
+			<div class="details-form-field">
+				<label>Users:</label>
+				<div id="add-transaction-users">
+
+				</div>
+			</div>
+			<div class="details-form-field">
+				<button type="button" id="save" onclick="saveClient();">✅ Save</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="head-block">
+		<div>
+			UserId:
+			<span name="userid" id="userid"></span>
+			🔑 AuthToken:
+			<input name="authToken" id="authToken" type="text" disabled="disabled" style="width: 600px" />
+		</div>
+
+		<button class="btn-logout" type="button" onclick="logout(this)">
+			👤
+			<span name="username" id="username"></span>
+			❌
+		</button>
+	</div>
+
+	<div class="main-block">
+
+		<div id="transactionGrid"></div>
+
+		<div id="roomInfo">
+			<button onclick="showDetailsDialog(' ✳️ Add 💰', {})">✳️ Add 💰</button>
+
+			<span>Room Id:
+				<span name="roomid" id="roomid"></span>
+			</span>
+
+			<span>Name:
+				<span name="roomname" id="roomname"></span>
+			</span>
+
+			<div>
+				<div>🔍 Filter by User Id:</div>
+				<input id="filterByUserId" name="filterByUserId" type="text" onblur="onFilterByUserIdChanged()">
+			</div>
+
+
+			<ul id="room-users">
+			</ul>
+
+		</div>
+	</div>
+
+
+
+<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="vendors.js"></script><script type="text/javascript" src="app.js"></script><script type="text/javascript" src="login.js"></script><script type="text/javascript" src="web.js"></script></body>
+
+</html>

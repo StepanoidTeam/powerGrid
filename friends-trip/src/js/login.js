@@ -1,7 +1,7 @@
 import $ from "jquery";
-import "../styles/app.less";
-
 import app from "./app.js";
+
+import "../styles/app.less";
 
 function signin() {
   app.login(username.value, password.value);
