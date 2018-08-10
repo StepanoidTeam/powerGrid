@@ -73,8 +73,6 @@ function onPageLoaded() {
   });
 
   $("#transactionGrid").jsGrid({
-    height: "100%",
-    width: "100%",
     editing: false,
     autoload: true,
     paging: true,

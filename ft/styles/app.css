@@ -1,4 +1,16 @@
-﻿.message {
+﻿body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  margin: 0;
+}
+
+body * {
+  font-size: 20pt;
+}
+
+.message {
   border: 1px solid lightgray;
   padding: 10px;
 }
@@ -9,9 +21,6 @@
   padding-bottom: 20px;
 }
 
-body * {
-  font-size: 20pt;
-}
 .details-form-field {
   padding: 10px 0px;
 }
@@ -47,11 +56,21 @@ body * {
 .head-block {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  box-sizing: border-box;
+  padding: 20px;
 }
 
 .main-block {
   display: flex;
   flex-direction: row;
+}
+
+#transactionGrid {
+  flex: 1 1 auto;
+  overflow: visible;
 }
 
 #roomInfo {
