@@ -1,25 +1,86 @@
 const webpack = require("webpack");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+const title = "Friends Trip";
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: {
+    app: "./src/js/app.js",
+    login: "./src/js/login.js",
+    web: "./src/js/web.js"
+  },
+
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin(["dist/*"]),
+
+    new HtmlWebpackPlugin({
+      title: `${title}`,
+      filename: "index.html",
+      template: "src/index.html",
+      chunks: ["web", "runtime", "vendors"]
+    }),
+
+    new HtmlWebpackPlugin({
+      title: `${title} - Login`,
+      filename: "login.html",
+      template: "src/login.html",
+      chunks: ["login", "runtime", "vendors"]
+    })
+  ],
+  output: {
+    path: __dirname + "/dist",
+    //publicPath: "/",
+    //filename: "[name].[hash].js",
+    filename: "[name].js"
+  },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
+      },
+      {
+        test: /\.less$/,
+        use: [
+          {
+            loader: "style-loader"
+          },
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: "less-loader",
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
       }
     ]
   },
   resolve: {
     extensions: ["*", ".js", ".jsx"]
   },
-  output: {
-    path: __dirname + "/dist",
-    publicPath: "/",
-    filename: "bundle.js"
+
+  optimization: {
+    runtimeChunk: "single",
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          chunks: "all"
+        }
+      }
+    }
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  devtool: "eval-source-map",
   devServer: {
     contentBase: "./dist",
     hot: true
