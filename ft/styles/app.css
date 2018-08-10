@@ -14,6 +14,15 @@ body * {
   border: 1px solid lightgray;
   padding: 10px;
 }
+
+.form-field {
+}
+
+.form-field > input[type="text"],
+.form-field > input[type="password"] {
+  width: 200px;
+}
+
 .pd-l-10 {
   padding: 10px;
 }
@@ -100,6 +109,7 @@ body * {
 }
 
 .btn-logout,
-#username {
+#username,
+#password {
   font-size: 20px;
 }
