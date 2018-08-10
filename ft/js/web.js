@@ -202,12 +202,14 @@ function showDetailsDialog(dialogType, item) {
     var checked = curUserId == user.Id ? "" : "checked='checked'";
     var enabled = curUserId == user.Id ? "disabled='disabled'" : "";
     var val = 0;
+
     if (dialogType == "Edit") {
       var found = jQuery.grep(item.owe, function(n, i) {
         return n.user == user.Name;
       });
       if (found.length == 1) val = found[0].amount;
     }
+
     $("#add-transaction-users").append(
       "<div><input type='checkbox' " +
         checked +
