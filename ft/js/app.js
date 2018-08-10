@@ -83,28 +83,28 @@ var app = {
 		});
 	},
 
-	ajax1(actionUrl, data, method, successCallback, errorCallback) {
-		//var ajaxUrl = config.httpUrl + actionUrl;
-		app.showLoading(true);
-		method = method || "POST";
-		var xhr = new XMLHttpRequest();
-		xhr.open(method, config.httpUrl + actionUrl);
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.onload = function() {
-			document.getElementById("logs").innerText = "test4";
-			app.showLoading(false);
-			if (xhr.status === 200) {
-				document.getElementById("logs").innerText = "test5";
-				if (successCallback)
-					successCallback(JSON.parse(xhr.responseText));
-			} else {
-				document.getElementById("logs").innerText = "test6";
-				if (errorCallback) errorCallback(xhr);
-				else app.onError(xhr);
-			}
-		};
-		xhr.send(JSON.stringify(data));
-	},
+	// ajax1(actionUrl, data, method, successCallback, errorCallback) {
+	// 	//var ajaxUrl = config.httpUrl + actionUrl;
+	// 	app.showLoading(true);
+	// 	method = method || "POST";
+	// 	var xhr = new XMLHttpRequest();
+	// 	xhr.open(method, config.httpUrl + actionUrl);
+	// 	xhr.setRequestHeader("Content-Type", "application/json");
+	// 	xhr.onload = function() {
+	// 		document.getElementById("logs").innerText = "test4";
+	// 		app.showLoading(false);
+	// 		if (xhr.status === 200) {
+	// 			document.getElementById("logs").innerText = "test5";
+	// 			if (successCallback)
+	// 				successCallback(JSON.parse(xhr.responseText));
+	// 		} else {
+	// 			document.getElementById("logs").innerText = "test6";
+	// 			if (errorCallback) errorCallback(xhr);
+	// 			else app.onError(xhr);
+	// 		}
+	// 	};
+	// 	xhr.send(JSON.stringify(data));
+	// },
 
 	showLoading(show) {
 		var loading = document.getElementById("loading");

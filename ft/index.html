@@ -40,6 +40,9 @@
 		}
 
 		function addTransaction(item) {
+			//todo: @vm do not put item on server directly
+			// put it into grid/storage
+			// then ELSEWHERE try to sync with server, if online === ok
 			app.ajax('trans/addorupdate', item, 'POST', refreshGrid);
 			return false;
 		}
@@ -95,6 +98,8 @@
 
 						var filterByUserId = $("#filterByUserId").val();
 
+
+						//todo: @vm ESLI error THEN do nothing
 						app.ajax("trans/list", { FilterByUserId: filterByUserId, PageIndex: filter.pageIndex - 1, PageSize: filter.pageSize, }, "POST",
 							function (response) {
 								var result = response.data.data;
@@ -251,14 +256,11 @@
 			//Id
 
 			$("#detailsDialog").dialog("close");
-
+			//todo: @vm make all calculations on CLIENT then send calc data to SERVER
 			addTransaction(item);
 			return false;
 		};
 
-		$(function () {
-
-		});
 
 		function onFilterByUserIdChanged() {
 			app.context.Settings.filterByUserId = $("#filterByUserId").val();
