@@ -52,8 +52,8 @@ const page = (
   </div>
 );
 
-$(function() {
-  app.init();
+app.init();
 
-  ReactDOM.render(page, document.querySelector("#app"));
-});
+ReactDOM.render(page, document.querySelector("#app"));
+
+module.hot.accept();

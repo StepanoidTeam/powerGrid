@@ -27,7 +27,7 @@ function logout() {
 function refreshGrid() {
   var online = navigator.onLine;
 
-  ReactDOM.render(Grid("loadData"), document.getElementById("transactionGrid"));
+  grid.loadData();
 }
 
 function addTransaction(item) {
@@ -57,108 +57,7 @@ function getCheckedUsers() {
 }
 
 function onPageLoaded() {
-  $("#filterByUserId").val(app.context.Settings.filterByUserId);
-  var user = app.context.CurrentUser;
-  document.getElementById("username").innerText = user.Name;
-  document.getElementById("userid").innerText = user.Id;
-  document.getElementById("authToken").value = user.AuthToken;
-
-  app.loadCurrentRoom(function() {
-    console.log("load room done");
-    $("#roomid").text(app.context.CurrentRoom.Id);
-    $("#roomname").text(app.context.CurrentRoom.Name);
-    $("#room-users").html("");
-    for (var userKey in app.context.CurrentRoom.Users) {
-      var user = app.context.CurrentRoom.Users[userKey];
-      $("#room-users").append(
-        "<li onclick='onUserClick(this)' systemId='" +
-          user.Id +
-          "'>" +
-          user.Name +
-          " (" +
-          user.Id +
-          ")</li>"
-      );
-    }
-  });
-
-  ReactDOM.render(Grid("jsgrid"), document.getElementById("transactionGrid"));
-  $("#transactionGrid").jsGrid({
-    editing: false,
-    autoload: true,
-    paging: true,
-    pageLoading: true,
-    pageSize: 10,
-    pageIndex: 1,
-    pageButtonCount: 10,
-
-    controller: {
-      loadData: function(filter) {
-        var startIndex = (filter.pageIndex - 1) * filter.pageSize;
-
-        var deferred = $.Deferred();
-
-        var filterByUserId = $("#filterByUserId").val();
-
-        //todo: @vm ESLI error THEN do nothing
-        app.ajax(
-          "trans/list",
-          {
-            FilterByUserId: filterByUserId,
-            PageIndex: filter.pageIndex - 1,
-            PageSize: filter.pageSize
-          },
-          "POST",
-          function(response) {
-            var result = response.data.data;
-            //data: db.clients.slice(startIndex, startIndex + filter.pageSize),
-            //  itemsCount: db.clients.length
-            //return{
-            //data: result.data,
-            //itemsCount: result.totalCount
-            //};
-            $.map(result.data, function(val, i) {
-              var oweText = "";
-              for (var userKey in val.owe) {
-                var user = val.owe[userKey];
-                oweText +=
-                  "<div class='pd-b-20'>" +
-                  user.user +
-                  ": " +
-                  user.amount +
-                  "</div>";
-              }
-              val.oweText = oweText;
-            });
-            deferred.resolve({
-              data: result.data,
-              itemsCount: result.totalCount
-            });
-          }
-        );
-
-        return deferred.promise();
-      }
-    },
-
-    //deleteConfirm: function (item) {
-    //return "The item \"" + item.Id + "\" will be removed. Are you sure?";
-    //},
-
-    rowClick: function(args) {
-      showDetailsDialog("Edit", args.item);
-    },
-
-    fields: [
-      { name: "id", type: "text", width: 150, visible: false, title: "Id" },
-      { name: "payer", type: "text", width: 100, title: "Payer" },
-      { name: "fullAmount", type: "number", width: 80, title: "Amount" },
-      { name: "time", type: "text", width: 100, title: "Time" },
-      { name: "oweText", type: "text", width: 150, title: "Owe" },
-      { name: "description", type: "text", width: 100, title: "Description" }
-    ]
-  });
-
+  //jsgrid basic setup was here
   $("#pager").on("change", function() {
     var page = parseInt($(this).val(), 10);
 
@@ -169,87 +68,29 @@ function onPageLoaded() {
     $("#transactionGrid").jsGrid("openPage", page);
   });
 
-  $("#detailsDialog").dialog({
-    autoOpen: false,
-    width: 700,
-    close: function() {
-      $("#detailsForm")
-        //.validate()//todo: make own validation
-        .resetForm();
-      $("#detailsForm")
-        .find(".error")
-        .removeClass("error");
-    }
-  });
+  //init dialog
+  $("#detailsDialog").addClass("open");
+  //todo: validate diag form
 
-  $("#detailsForm").validate({
-    rules: {
-      //description: "required",
-      fullAmount: { required: true }
-      //address: { required: true, minlength: 10 },
-      //country: "required"
-    },
-    messages: {
-      // name: "Please enter name",
-      fullAmount: "Please enter valid amount"
-      //address: "Please enter address (more than 10 chars)",
-      //country: "Please select country"
-    },
-    submitHandler: function(event) {
-      formSubmitHandler(event);
-    }
-  });
+  // $("#detailsForm").validate({
+  //   rules: {
+  //     //description: "required",
+  //     fullAmount: { required: true }
+  //     //address: { required: true, minlength: 10 },
+  //     //country: "required"
+  //   },
+  //   messages: {
+  //     // name: "Please enter name",
+  //     fullAmount: "Please enter valid amount"
+  //     //address: "Please enter address (more than 10 chars)",
+  //     //country: "Please select country"
+  //   },
+  //   submitHandler: function(event) {
+  //     formSubmitHandler(event);
+  //   }
+  // });
 
   var formSubmitHandler = $.noop;
-}
-
-function showDetailsDialog(dialogType, item) {
-  $("#transactionId").val(item.id);
-  $("#description").val(item.description);
-  $("#fullAmount").val(item.fullAmount);
-  $("#splitEqually").prop("checked", false);
-  $("#splitOnYou").prop("checked", false);
-  $("#add-transaction-users").html("");
-
-  for (var userKey in app.context.CurrentRoom.Users) {
-    var curUserId = app.context.CurrentUser.Id;
-    var user = app.context.CurrentRoom.Users[userKey];
-
-    var checked = curUserId == user.Id ? "" : "checked='checked'";
-    var enabled = curUserId == user.Id ? "disabled='disabled'" : "";
-    var val = 0;
-
-    if (dialogType == "Edit") {
-      var found = jQuery.grep(item.owe, function(n, i) {
-        return n.user == user.Name;
-      });
-      if (found.length == 1) val = found[0].amount;
-    }
-
-    $("#add-transaction-users").append(
-      "<div><input type='checkbox' " +
-        checked +
-        " onclick='userActiveChanged(this, \"" +
-        user.Id +
-        "\");'>" +
-        user.Name +
-        ": " +
-        "<input type='number' " +
-        enabled +
-        " min='0' id='add-trans-user-" +
-        user.Id +
-        "' systemId='" +
-        user.Id +
-        "' onblur='onUserAmtChanged(this);' value='" +
-        val +
-        "' />" +
-        "</div>"
-    );
-  }
-
-  $("#detailsDialog")
-    .dialog("option", "title", dialogType + " Transaction")
-    .dialog("open");
 }
 
 function formSubmitHandler(event) {
@@ -288,7 +129,7 @@ function saveClient(item, isNew) {
   //Dt
   //Id
 
-  $("#detailsDialog").dialog("close");
+  $("#detailsDialog").removeClass("open");
   //todo: @vm make all calculations on CLIENT then send calc data to SERVER
   addTransaction(item);
   return false;
@@ -300,9 +141,9 @@ function onFilterByUserIdChanged() {
   refreshGrid();
 }
 
-function onUserClick(item) {
+function onUserClick(systemId) {
   $("#filterByUserId")
-    .val($(item).attr("systemId"))
+    .val(systemId)
     .blur();
 }
 
@@ -320,7 +161,135 @@ function userActiveChanged(el, userId) {
   else amtInput.prop("disabled", true);
 }
 
-$(function() {
-  app.init();
-  onPageLoaded();
-});
+const renderRoomUsers = room => {
+  if (!room) return;
+
+  return (
+    <div>
+      <span>
+        Room Id:
+        <span name="roomid" id="roomid">
+          {room.Id}
+        </span>
+      </span>
+
+      <span>
+        Name:
+        <span name="roomname" id="roomname">
+          {room.Name}
+        </span>
+      </span>
+
+      <ul id="room-users">
+        {room.Users.map(user => (
+          <li onClick={() => onUserClick(user.Id)} systemId={user.Id}>
+            {`${user.Name}(${user.Id})`}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const renderHeadBlock = user => {
+  if (!user) return null;
+
+  return (
+    <div className="head-block">
+      <div>
+        UserId:
+        <span name="userid" id="userid">
+          {user.Id}
+        </span>
+        🔑AuthToken:
+        <input
+          name="authToken"
+          id="authToken"
+          type="text"
+          value={user.AuthToken}
+          // disabled="disabled"
+          readOnly={true}
+          style={{ width: "600px" }}
+        />
+      </div>
+
+      <button className="btn-logout" type="button" onClick={logout}>
+        👤
+        <span name="username" id="username">
+          {user.Name}
+        </span>
+        ❌
+      </button>
+    </div>
+  );
+};
+
+export default class Web extends React.Component {
+  state = {
+    Settings: {
+      filterByUserId: ""
+    },
+    CurrentUser: null,
+    CurrentRoom: null
+  };
+
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    // todo: run all init shit here
+    app.init();
+    this.setState(app.context);
+    onPageLoaded();
+
+    console.log(app.context);
+
+    app.loadCurrentRoom(() => {
+      console.log("load room done");
+      this.setState(app.context);
+    });
+  }
+
+  render() {
+    const context = this.state;
+
+    const { CurrentUser = {} } = context;
+
+    return (
+      <div>
+        <span id="logs" />
+        <div id="detailsDialog" />
+        {renderHeadBlock(context.CurrentUser)}
+        <div className="main-block">
+          <div id="transactionGrid">
+            <Grid />
+          </div>
+
+          <div id="roomInfo">
+            <button onClick={() => showDetailsDialog(" ✳️ Add 💰", {})}>
+              ✳️ Add 💰
+            </button>
+
+            <div>
+              <div>🔍 Filter by User Id:</div>
+              <input
+                id="filterByUserId"
+                name="filterByUserId"
+                type="text"
+                onBlur={onFilterByUserIdChanged}
+                value={context.Settings.filterByUserId}
+              />
+            </div>
+
+            {renderRoomUsers(context.CurrentRoom)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Web />, document.querySelector("#app"));
+
+module.hot.accept();
