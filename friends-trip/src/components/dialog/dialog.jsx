@@ -1,8 +1,7 @@
 import React from "react";
 import jQuery from "jquery";
-import app from "./app.js";
 
-const title = "react grid test component";
+import "./dialog.less";
 
 export default class Dialog extends React.Component {
   showDetailsDialog(dialogType, item) {
@@ -50,9 +49,12 @@ export default class Dialog extends React.Component {
       );
     }
 
-    $("#detailsDialog").addClass("open");
     //.dialog("option", "title", dialogType + " Transaction");
     //.dialog("open");
+  }
+
+  saveClient(data) {
+    this.props.onClose(data);
   }
 
   //todo: validate diag form
@@ -76,61 +78,50 @@ export default class Dialog extends React.Component {
   // });
 
   render() {
-    <form id="detailsForm">
-      <input id="transactionId" name="transactionId" type="hidden" />
-      <div className="details-form-field">
-        <label>
-          Amount:
-          <input id="fullAmount" name="fullAmount" type="number" min="0" />
-        </label>
+    return (
+      <div className="overlay">
+        <form class="dialog">
+          <input id="transactionId" name="transactionId" type="hidden" />
+          <div className="details-form-field">
+            <label>
+              Amount:
+              <input id="fullAmount" name="fullAmount" type="number" min="0" />
+            </label>
+          </div>
+          <div className="details-form-field">
+            <label>
+              Description:
+              <input
+                id="description"
+                name="description"
+                type="text"
+                style={{ width: "70%" }}
+              />
+            </label>
+          </div>
+          <div className="details-form-field">
+            <label>
+              Split equally
+              <input id="splitEqually" name="splitEqually" type="checkbox" />
+            </label>
+          </div>
+          <div className="details-form-field">
+            <label>
+              Split on you too?
+              <input id="splitOnYou" name="splitOnYou" type="checkbox" />
+            </label>
+          </div>
+          <div className="details-form-field">
+            <label>Users:</label>
+            <div id="add-transaction-users" />
+          </div>
+          <div className="details-form-field">
+            <button type="button" id="save" onClick={() => this.saveClient()}>
+              ✅ Save
+            </button>
+          </div>
+        </form>
       </div>
-      <div className="details-form-field">
-        <label>
-          Description:
-          <input
-            id="description"
-            name="description"
-            type="text"
-            style={{ width: "70%" }}
-          />
-        </label>
-      </div>
-      <div className="details-form-field">
-        <label>
-          Split equally
-          <input id="splitEqually" name="splitEqually" type="checkbox" />
-        </label>
-      </div>
-      <div className="details-form-field">
-        <label>
-          Split on you too?
-          <input id="splitOnYou" name="splitOnYou" type="checkbox" />
-        </label>
-      </div>
-      <div className="details-form-field">
-        <label>Users:</label>
-        <div id="add-transaction-users" />
-      </div>
-      <div className="details-form-field">
-        <button type="button" id="save" onClick={saveClient}>
-          ✅ Save
-        </button>
-      </div>
-    </form>;
+    );
   }
-
-  //refac this shit
 }
-
-({
-  autoOpen: false,
-  width: 700,
-  close: function() {
-    $("#detailsForm");
-    //.validate()//todo: make own validation
-    //.resetForm();
-    $("#detailsForm")
-      .find(".error")
-      .removeClass("error");
-  }
-});

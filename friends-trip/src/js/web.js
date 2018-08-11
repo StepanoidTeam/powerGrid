@@ -3,7 +3,8 @@ import ReactDOM from "react-dom";
 import $ from "jquery";
 
 import app from "./app.js";
-import Grid from "./grid.jsx";
+import Grid from "../components/grid/grid.jsx";
+import Dialog from "../components/dialog/dialog.jsx";
 
 import "../styles/app.less";
 
@@ -169,7 +170,12 @@ const renderRoomUsers = ({ room, selected }, onUserSelected) => {
         </span>
       </span>
 
-      <div>🔍 Filter by User Id:</div>
+      <div>
+        🔍 Filter by User Id:
+        {selected && (
+          <button onClick={() => onUserSelected("")}>clear❌</button>
+        )}
+      </div>
       <ul id="room-users">
         {room.Users.map((user, i) => (
           <li
@@ -221,7 +227,8 @@ export default class Web extends React.Component {
     },
     CurrentUser: null,
     CurrentRoom: null,
-    Table: []
+    Table: [],
+    isOpen: false
   };
 
   constructor(props) {
@@ -267,21 +274,37 @@ export default class Web extends React.Component {
     });
   };
 
+  openDialog(data) {
+    this.setState({ isOpen: true });
+  }
+
+  closeDialog(data) {
+    console.log(data);
+    this.setState({ isOpen: false });
+  }
+
   render() {
     const context = this.state;
 
     return (
       <div>
         <span id="logs" />
-        <div id="detailsDialog" />
+
+        {this.state.isOpen && (
+          <Dialog data={{}} onClose={data => this.closeDialog(data)} />
+        )}
+
         {renderHeadBlock(context.CurrentUser)}
         <div className="main-block">
           <div id="transactionGrid">
-            <Grid data={context.Table} />
+            <Grid
+              data={context.Table}
+              onItemSelected={item => this.openDialog("Edit", item)}
+            />
           </div>
 
           <div id="roomInfo">
-            <button onClick={() => showDetailsDialog(" ✳️ Add 💰", {})}>
+            <button onClick={() => this.openDialog(" ✳️ Add 💰", {})}>
               ✳️ Add 💰
             </button>
 

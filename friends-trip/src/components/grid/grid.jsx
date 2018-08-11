@@ -1,13 +1,11 @@
 import React from "react";
-import jQuery from "jquery";
-import app from "./app.js";
 
-const title = "react grid test component";
+import "./grid.less";
 
 export default class Grid extends React.Component {
-  pageSize = 10;
-  pageIndex = 1;
-  pageButtonCount = 10;
+  // pageSize = 10;
+  // pageIndex = 1;
+  // pageButtonCount = 10;
 
   defaultRenderer = (item, fieldName) => item[fieldName];
 
@@ -37,10 +35,10 @@ export default class Grid extends React.Component {
   ];
 
   render() {
-    const { data = [] } = this.props;
+    const { data = [], onItemSelected } = this.props;
 
     return (
-      <table>
+      <table className="grid">
         <thead>
           <tr>
             {this.fields.filter(f => f.visible !== false).map((f, key) => (
@@ -52,7 +50,7 @@ export default class Grid extends React.Component {
         </thead>
         <tbody>
           {data.map((item, key) => (
-            <tr key={key}>
+            <tr key={key} onClick={() => onItemSelected(item)}>
               {this.fields.filter(f => f.visible !== false).map((f, key2) => (
                 <td key={key2}>
                   {(f.renderer || this.defaultRenderer)(item, f.name)}
@@ -77,8 +75,4 @@ export default class Grid extends React.Component {
 
   //   $("#transactionGrid").jsGrid("openPage", page);
   // });
-
-  rowClick = function(args) {
-    showDetailsDialog("Edit", args.item);
-  };
 }
