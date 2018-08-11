@@ -144,9 +144,6 @@ const app = {
     app.initContext();
     app.checkAuth(app.context.CurrentUser);
 
-    //add logs component
-    $("body").prepend('<div id="app-log"></div>');
-
     //add global loading component
     var loading = document.createElement("div");
     document.body.insertBefore(loading, document.body.firstChild);

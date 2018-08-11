@@ -4,7 +4,9 @@ import $ from "jquery";
 
 import app from "./app.js";
 import Grid from "../components/grid/grid.jsx";
-import Dialog from "../components/dialog/dialog.jsx";
+import TransactionDialog, {
+  DialogTypes
+} from "../components/transaction-dialog/transaction-dialog.jsx";
 
 import "../styles/app.less";
 
@@ -21,8 +23,6 @@ function logout() {
     app.logout();
     //location.href = config.routes.Login;
   }
-  return;
-  false;
 }
 
 function addTransaction(item) {
@@ -180,7 +180,7 @@ const renderRoomUsers = ({ room, selected }, onUserSelected) => {
         {room.Users.map((user, i) => (
           <li
             key={i}
-            className={selected === user.Id && "selected"}
+            className={selected === user.Id ? "selected" : undefined}
             onClick={() => onUserSelected(user.Id)}
           >
             {user.Name}
@@ -228,7 +228,7 @@ export default class Web extends React.Component {
     CurrentUser: null,
     CurrentRoom: null,
     Table: [],
-    isOpen: false
+    dialog: { isOpen: false }
   };
 
   constructor(props) {
@@ -274,37 +274,44 @@ export default class Web extends React.Component {
     });
   };
 
-  openDialog(data) {
-    this.setState({ isOpen: true });
+  openDialog(type, item) {
+    this.setState({ dialog: { isOpen: true, type, item } });
   }
 
   closeDialog(data) {
     console.log(data);
-    this.setState({ isOpen: false });
+    this.setState({ dialog: { isOpen: false } });
   }
 
   render() {
     const context = this.state;
 
+    const { dialog } = context;
+
     return (
       <div>
+        <div id="app-log" />
         <span id="logs" />
 
-        {this.state.isOpen && (
-          <Dialog data={{}} onClose={data => this.closeDialog(data)} />
-        )}
+        <TransactionDialog
+          isOpen={dialog.isOpen}
+          type={dialog.type}
+          item={dialog.item}
+          context={context}
+          onClose={data => this.closeDialog(data)}
+        />
 
         {renderHeadBlock(context.CurrentUser)}
         <div className="main-block">
           <div id="transactionGrid">
             <Grid
               data={context.Table}
-              onItemSelected={item => this.openDialog("Edit", item)}
+              onItemSelected={item => this.openDialog(DialogTypes.EDIT, item)}
             />
           </div>
 
           <div id="roomInfo">
-            <button onClick={() => this.openDialog(" ✳️ Add 💰", {})}>
+            <button onClick={() => this.openDialog(DialogTypes.NEW, {})}>
               ✳️ Add 💰
             </button>
 
