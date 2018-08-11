@@ -114,7 +114,7 @@ const gridLoadData = ({
   pageIndex = 1,
   pageSize = 10
 } = {}) => {
-  filterByUserId = filterByUserId = app.context.Settings.FilterByUserId;
+  //filterByUserId = app.context.Settings.FilterByUserId;
   var startIndex = (pageIndex - 1) * pageSize;
 
   var deferred = $.Deferred();
@@ -150,7 +150,7 @@ const gridLoadData = ({
 
 /// REACT starts from here v v v
 
-const renderRoomUsers = (room, onUserSelected) => {
+const renderRoomUsers = ({ room, selected }, onUserSelected) => {
   if (!room) return;
 
   return (
@@ -169,10 +169,15 @@ const renderRoomUsers = (room, onUserSelected) => {
         </span>
       </span>
 
+      <div>🔍 Filter by User Id:</div>
       <ul id="room-users">
         {room.Users.map((user, i) => (
-          <li key={i} onClick={() => onUserSelected(user.Id)}>
-            {`${user.Name}(${user.Id})`}
+          <li
+            key={i}
+            className={selected === user.Id && "selected"}
+            onClick={() => onUserSelected(user.Id)}
+          >
+            {user.Name}
           </li>
         ))}
       </ul>
@@ -239,10 +244,12 @@ export default class Web extends React.Component {
       this.updateStateFromContext();
     });
 
-    gridLoadData().then(data => {
-      app.context.Table = data.data;
-      this.updateStateFromContext();
-    });
+    gridLoadData({ filterByUserId: app.context.Settings.filterByUserId }).then(
+      data => {
+        app.context.Table = data.data;
+        this.updateStateFromContext();
+      }
+    );
   }
 
   filterBy = userId => {
@@ -254,7 +261,10 @@ export default class Web extends React.Component {
     //hz
     var online = navigator.onLine;
 
-    gridLoadData();
+    gridLoadData({ filterByUserId: userId }).then(data => {
+      app.context.Table = data.data;
+      this.updateStateFromContext();
+    });
   };
 
   render() {
@@ -275,17 +285,13 @@ export default class Web extends React.Component {
               ✳️ Add 💰
             </button>
 
-            <div>
-              <div>🔍 Filter by User Id:</div>
-              <input
-                id="filterByUserId"
-                name="filterByUserId"
-                type="text"
-                value={context.Settings.filterByUserId}
-              />
-            </div>
-
-            {renderRoomUsers(context.CurrentRoom, this.filterBy)}
+            {renderRoomUsers(
+              {
+                room: context.CurrentRoom,
+                selected: context.Settings.filterByUserId
+              },
+              this.filterBy
+            )}
           </div>
         </div>
       </div>
