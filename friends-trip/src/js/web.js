@@ -24,17 +24,12 @@ function logout() {
   false;
 }
 
-function refreshGrid() {
-  var online = navigator.onLine;
-
-  grid.loadData();
-}
-
 function addTransaction(item) {
   //todo: @vm do not put item on server directly
   // put it into grid/storage
   // then ELSEWHERE try to sync with server, if online === ok
-  app.ajax("trans/addorupdate", item, "POST", refreshGrid);
+
+  app.ajax("trans/addorupdate", item, "POST", () => gridLoadData());
   return false;
 }
 
@@ -54,43 +49,6 @@ function getCheckedUsers() {
       users.push(inp);
     });
   return users;
-}
-
-function onPageLoaded() {
-  //jsgrid basic setup was here
-  $("#pager").on("change", function() {
-    var page = parseInt($(this).val(), 10);
-
-    ReactDOM.render(
-      Grid("loadData"),
-      document.getElementById("transactionGrid")
-    );
-    $("#transactionGrid").jsGrid("openPage", page);
-  });
-
-  //init dialog
-  $("#detailsDialog").addClass("open");
-  //todo: validate diag form
-
-  // $("#detailsForm").validate({
-  //   rules: {
-  //     //description: "required",
-  //     fullAmount: { required: true }
-  //     //address: { required: true, minlength: 10 },
-  //     //country: "required"
-  //   },
-  //   messages: {
-  //     // name: "Please enter name",
-  //     fullAmount: "Please enter valid amount"
-  //     //address: "Please enter address (more than 10 chars)",
-  //     //country: "Please select country"
-  //   },
-  //   submitHandler: function(event) {
-  //     formSubmitHandler(event);
-  //   }
-  // });
-
-  var formSubmitHandler = $.noop;
 }
 
 function formSubmitHandler(event) {
@@ -135,18 +93,6 @@ function saveClient(item, isNew) {
   return false;
 }
 
-function onFilterByUserIdChanged() {
-  app.context.Settings.filterByUserId = $("#filterByUserId").val();
-  app.saveSettings();
-  refreshGrid();
-}
-
-function onUserClick(systemId) {
-  $("#filterByUserId")
-    .val(systemId)
-    .blur();
-}
-
 function onUserAmtChanged(item) {
   if ($("#fullAmount").val() == "") {
     $("#fullAmount").val($(item).val());
@@ -161,7 +107,50 @@ function userActiveChanged(el, userId) {
   else amtInput.prop("disabled", true);
 }
 
-const renderRoomUsers = room => {
+// old shit upper ^ ^ ^
+
+const gridLoadData = ({
+  filterByUserId,
+  pageIndex = 1,
+  pageSize = 10
+} = {}) => {
+  filterByUserId = filterByUserId = app.context.Settings.FilterByUserId;
+  var startIndex = (pageIndex - 1) * pageSize;
+
+  var deferred = $.Deferred();
+
+  //todo: @vm ESLI error THEN do nothing
+  app.ajax(
+    "trans/list",
+    {
+      FilterByUserId: filterByUserId,
+      PageIndex: pageIndex - 1,
+      PageSize: pageSize
+    },
+    "POST",
+    function(response) {
+      var result = response.data.data;
+      //data: db.clients.slice(startIndex, startIndex + filter.pageSize),
+      //  itemsCount: db.clients.length
+      //return{
+      //data: result.data,
+      //itemsCount: result.totalCount
+      //};
+
+      console.log(result.data);
+      deferred.resolve({
+        data: result.data,
+        itemsCount: result.totalCount
+      });
+    }
+  );
+
+  return deferred.promise();
+};
+
+/// REACT starts from here v v v
+
+const renderRoomUsers = (room, onUserSelected) => {
   if (!room) return;
 
   return (
@@ -181,8 +170,8 @@ const renderRoomUsers = room => {
       </span>
 
       <ul id="room-users">
-        {room.Users.map(user => (
-          <li onClick={() => onUserClick(user.Id)} systemId={user.Id}>
+        {room.Users.map((user, i) => (
+          <li key={i} onClick={() => onUserSelected(user.Id)}>
             {`${user.Name}(${user.Id})`}
           </li>
         ))}
@@ -207,7 +196,6 @@ const renderHeadBlock = user => {
           id="authToken"
           type="text"
           value={user.AuthToken}
-          // disabled="disabled"
           readOnly={true}
           style={{ width: "600px" }}
         />
@@ -215,10 +203,7 @@ const renderHeadBlock = user => {
 
       <button className="btn-logout" type="button" onClick={logout}>
         👤
-        <span name="username" id="username">
-          {user.Name}
-        </span>
-        ❌
+        <span>{user.Name}</span>❌
       </button>
     </div>
   );
@@ -230,31 +215,50 @@ export default class Web extends React.Component {
       filterByUserId: ""
     },
     CurrentUser: null,
-    CurrentRoom: null
+    CurrentRoom: null,
+    Table: []
   };
 
   constructor(props) {
     super(props);
   }
 
+  updateStateFromContext() {
+    this.setState(app.context);
+  }
+
   componentDidMount() {
     // todo: run all init shit here
     app.init();
-    this.setState(app.context);
-    onPageLoaded();
+    this.updateStateFromContext();
 
     console.log(app.context);
 
     app.loadCurrentRoom(() => {
       console.log("load room done");
-      this.setState(app.context);
+      this.updateStateFromContext();
+    });
+
+    gridLoadData().then(data => {
+      app.context.Table = data.data;
+      this.updateStateFromContext();
     });
   }
 
+  filterBy = userId => {
+    app.context.Settings.filterByUserId = userId;
+    app.saveSettings();
+
+    this.updateStateFromContext();
+
+    //hz
+    var online = navigator.onLine;
+
+    gridLoadData();
+  };
+
   render() {
     const context = this.state;
-
-    const { CurrentUser = {} } = context;
 
     return (
       <div>
@@ -263,7 +267,7 @@ export default class Web extends React.Component {
         {renderHeadBlock(context.CurrentUser)}
         <div className="main-block">
           <div id="transactionGrid">
-            <Grid />
+            <Grid data={context.Table} />
           </div>
 
           <div id="roomInfo">
@@ -277,12 +281,11 @@ export default class Web extends React.Component {
                 id="filterByUserId"
                 name="filterByUserId"
                 type="text"
-                onBlur={onFilterByUserIdChanged}
                 value={context.Settings.filterByUserId}
               />
             </div>
 
-            {renderRoomUsers(context.CurrentRoom)}
+            {renderRoomUsers(context.CurrentRoom, this.filterBy)}
           </div>
         </div>
       </div>

@@ -9,55 +9,60 @@ export default class Grid extends React.Component {
   pageIndex = 1;
   pageButtonCount = 10;
 
+  defaultRenderer = (item, fieldName) => item[fieldName];
+
+  oweRenderer = (item, fieldName) => {
+    return item[fieldName].map((owe, key) => {
+      return (
+        <div key={key} className={"pd-b-20"}>
+          {owe.user} : {owe.amount}
+        </div>
+      );
+    });
+  };
+
+  fields = [
+    { name: "id", type: "text", width: 150, visible: false, title: "Id" },
+    { name: "payer", type: "text", width: 100, title: "Payer" },
+    { name: "fullAmount", type: "number", width: 80, title: "Amount" },
+    { name: "time", type: "text", width: 100, title: "Time" },
+    {
+      name: "owe",
+      type: "text",
+      width: 150,
+      title: "Owe",
+      renderer: this.oweRenderer
+    },
+    { name: "description", type: "text", width: 100, title: "Description" }
+  ];
+
   render() {
-    return <div>{title}</div>;
-  }
+    const { data = [] } = this.props;
 
-  loadData(filter) {
-    var startIndex = (filter.pageIndex - 1) * filter.pageSize;
-
-    var deferred = $.Deferred();
-
-    var filterByUserId = $("#filterByUserId").val();
-
-    //todo: @vm ESLI error THEN do nothing
-    app.ajax(
-      "trans/list",
-      {
-        FilterByUserId: filterByUserId,
-        PageIndex: filter.pageIndex - 1,
-        PageSize: filter.pageSize
-      },
-      "POST",
-      function(response) {
-        var result = response.data.data;
-        //data: db.clients.slice(startIndex, startIndex + filter.pageSize),
-        //  itemsCount: db.clients.length
-        //return{
-        //data: result.data,
-        //itemsCount: result.totalCount
-        //};
-        $.map(result.data, function(val, i) {
-          var oweText = "";
-          for (var userKey in val.owe) {
-            var user = val.owe[userKey];
-            oweText +=
-              "<div class='pd-b-20'>" +
-              user.user +
-              ": " +
-              user.amount +
-              "</div>";
-          }
-          val.oweText = oweText;
-        });
-        deferred.resolve({
-          data: result.data,
-          itemsCount: result.totalCount
-        });
-      }
+    return (
+      <table>
+        <thead>
+          <tr>
+            {this.fields.filter(f => f.visible !== false).map((f, key) => (
+              <td key={key} style={{ width: `${f.width}px` }}>
+                {f.title}
+              </td>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((item, key) => (
+            <tr key={key}>
+              {this.fields.filter(f => f.visible !== false).map((f, key2) => (
+                <td key={key2}>
+                  {(f.renderer || this.defaultRenderer)(item, f.name)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     );
-
-    return deferred.promise();
   }
 
   //todo: refac all that shit
@@ -66,16 +71,14 @@ export default class Grid extends React.Component {
   //return "The item \"" + item.Id + "\" will be removed. Are you sure?";
   //},
 
+  // jQuery('#pager').on('change', function() {
+  //   var page = parseInt($(this).val(), 10);
+  //   gridLoadData();
+
+  //   $("#transactionGrid").jsGrid("openPage", page);
+  // });
+
   rowClick = function(args) {
     showDetailsDialog("Edit", args.item);
   };
-
-  fields = [
-    { name: "id", type: "text", width: 150, visible: false, title: "Id" },
-    { name: "payer", type: "text", width: 100, title: "Payer" },
-    { name: "fullAmount", type: "number", width: 80, title: "Amount" },
-    { name: "time", type: "text", width: 100, title: "Time" },
-    { name: "oweText", type: "text", width: 150, title: "Owe" },
-    { name: "description", type: "text", width: 100, title: "Description" }
-  ];
 }

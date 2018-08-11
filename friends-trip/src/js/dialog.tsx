@@ -50,11 +50,30 @@ export default class Dialog extends React.Component {
       );
     }
 
-    $("#detailsDialog")
-      .addClass("open")
-      .dialog("option", "title", dialogType + " Transaction");
+    $("#detailsDialog").addClass("open");
+    //.dialog("option", "title", dialogType + " Transaction");
     //.dialog("open");
   }
+
+  //todo: validate diag form
+
+  // $("#detailsForm").validate({
+  //   rules: {
+  //     //description: "required",
+  //     fullAmount: { required: true }
+  //     //address: { required: true, minlength: 10 },
+  //     //country: "required"
+  //   },
+  //   messages: {
+  //     // name: "Please enter name",
+  //     fullAmount: "Please enter valid amount"
+  //     //address: "Please enter address (more than 10 chars)",
+  //     //country: "Please select country"
+  //   },
+  //   submitHandler: function(event) {
+  //     formSubmitHandler(event);
+  //   }
+  // });
 
   render() {
     <form id="detailsForm">

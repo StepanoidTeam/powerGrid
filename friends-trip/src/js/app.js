@@ -37,7 +37,8 @@ const app = {
       filterByUserId: ""
     },
     CurrentUser: null,
-    CurrentRoom: null
+    CurrentRoom: null,
+    Table: []
   },
 
   generateUid() {
