@@ -39,46 +39,6 @@ function addTransaction(item) {
 //    return false;
 //};
 
-function formSubmitHandler(event) {
-  saveClient(client, dialogType === "Add");
-}
-
-function saveClient(item, isNew) {
-  if (
-    $("#transactionId").val() != "" &&
-    !confirm("It's old trnsaction, are you sure you want to change it?")
-  ) {
-    return false;
-  }
-
-  var usersInfo = [];
-  $.each(getCheckedUsers(), function(ind, el) {
-    var amt = moneyRound(parseFloat($(el).val()));
-    if (isNaN(amt)) amt = 0;
-    usersInfo.push({
-      UserId: $(el).attr("systemId"),
-      Amount: amt
-    });
-  });
-  //save on server
-  var item = {
-    Id: $("#transactionId").val(),
-    Description: $("#description").val(),
-    Amount: moneyRound(parseFloat($("#fullAmount").val())),
-    //IsSplitAmountEqually: $("#splitEqually").is(":checked"),
-    IsCurrentUserInSplitListToo: $("#splitOnYou").is(":checked"),
-    OweUsers: usersInfo
-  };
-
-  //Dt
-  //Id
-
-  $("#detailsDialog").removeClass("open");
-  //todo: @vm make all calculations on CLIENT then send calc data to SERVER
-  addTransaction(item);
-  return false;
-}
-
 // old shit upper ^ ^ ^
 
 const gridLoadData = ({
@@ -189,8 +149,44 @@ export default class Web extends React.Component {
     this.setState({ dialog: { isOpen: true, type, item } });
   }
 
+  saveClient(item) {
+    if (
+      item.id &&
+      !confirm("It's old trnsaction, are you sure you want to change it?")
+    ) {
+      return;
+    }
+
+    const context = this.state;
+
+    const { CurrentRoom: room } = context;
+
+    const getUserIdByName = name => room.Users.find(u => u.Name === name);
+
+    var usersInfo = item.owe.map(user => ({
+      UserId: getUserIdByName(user.name),
+      Amount: user.amount
+    }));
+
+    //save on server
+    var trans = {
+      Id: item.id, //todo: what todo with null id? when new
+      Description: item.description,
+      Amount: item.fullAmount,
+      OweUsers: usersInfo
+    };
+
+    addTransaction(trans);
+  }
+
   closeDialog(data) {
     console.log(data);
+
+    if (data) {
+      //todo: do checks?
+      this.saveClient(data, !data.id);
+    }
+
     this.setState({ dialog: { isOpen: false } });
   }
 

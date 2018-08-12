@@ -240,14 +240,10 @@ export default class TransactionDialog extends React.Component {
   //   rules: {
   //     //description: "required",
   //     fullAmount: { required: true }
-  //     //address: { required: true, minlength: 10 },
-  //     //country: "required"
   //   },
   //   messages: {
   //     // name: "Please enter name",
   //     fullAmount: "Please enter valid amount"
-  //     //address: "Please enter address (more than 10 chars)",
-  //     //country: "Please select country"
   //   },
   //   submitHandler: function(event) {
   //     formSubmitHandler(event);
