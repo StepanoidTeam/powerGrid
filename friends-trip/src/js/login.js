@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 
 import app from "./app.js";
 import Dialog from "../components/dialog/dialog.jsx";
+import Overlay from "../components/overlay/overlay.jsx";
 
 import "../styles/app.less";
 
@@ -12,7 +13,10 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
 
-    app.init({ onError: data => this.onError(data) });
+    app.init({
+      onError: data => this.onError(data),
+      onLoading: value => this.setState({ isLoading: value })
+    });
   }
 
   signin() {
@@ -41,6 +45,8 @@ export default class Login extends React.Component {
   render() {
     return (
       <div>
+        <Overlay isOpen={this.state.isLoading}>⏳Loading...</Overlay>
+
         <span id="logs" />
         <Dialog isOpen={true} className="login-form">
           <div className="fl-end fl-row">
