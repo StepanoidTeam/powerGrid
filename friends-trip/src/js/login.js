@@ -15,41 +15,34 @@ function register() {
   app.register(username.value, password.value);
 }
 
-function onSubmit(event) {
-  event.preventDefault();
-  return false;
-}
-
 const page = (
   <div>
     <div id="app-log" />
     <span id="logs" />
-    <Dialog isOpen={true}>
-      <form class="login-form" name="login" method="POST" onSubmit={onSubmit}>
-        <div className="pd-l-10">
-          Username:
-          <input type="text" id="username" name="username" />
-        </div>
-        <div className="pd-l-10">
-          Password:
-          <input type="password" id="password" name="password" />
-        </div>
-        <div className="pd-l-10">
-          <input
-            className="btn-login"
-            type="submit"
-            value="Login"
-            onClick={signin}
-          />
-          OR
-          <input
-            className="btn-register"
-            type="button"
-            value="Register me"
-            onClick={register}
-          />
-        </div>
-      </form>
+    <Dialog isOpen={true} className="login-form">
+      <div className="pd-l-10">
+        Username:
+        <input type="text" id="username" name="username" />
+      </div>
+      <div className="pd-l-10">
+        Password:
+        <input type="password" id="password" name="password" />
+      </div>
+      <div className="pd-l-10">
+        <input
+          className="btn-login"
+          type="submit"
+          value="Login"
+          onClick={signin}
+        />
+        OR
+        <input
+          className="btn-register"
+          type="button"
+          value="Register me"
+          onClick={register}
+        />
+      </div>
     </Dialog>
   </div>
 );

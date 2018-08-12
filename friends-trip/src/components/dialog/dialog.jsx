@@ -11,7 +11,12 @@ export default class Dialog extends React.Component {
 
     return (
       <Overlay isOpen={isOpen}>
-        <form className={cn("dialog", className)}>{children}</form>
+        <form
+          className={cn("dialog", className)}
+          onSubmit={event => event.preventDefault()}
+        >
+          {children}
+        </form>
       </Overlay>
     );
   }
