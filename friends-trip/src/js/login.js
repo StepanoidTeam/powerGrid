@@ -5,15 +5,6 @@ import app from "./app.js";
 import Dialog from "../components/dialog/dialog.jsx";
 
 import "../styles/app.less";
-//todo: make that shit a react component
-
-function signin() {
-  app.login(username.value, password.value);
-}
-
-function register() {
-  app.register(username.value, password.value);
-}
 
 export default class Login extends React.Component {
   state = { error: null };
@@ -22,6 +13,14 @@ export default class Login extends React.Component {
     super(props);
 
     app.init({ onError: data => this.onError(data) });
+  }
+
+  signin() {
+    app.login(username.value, password.value);
+  }
+
+  register() {
+    app.register(username.value, password.value);
   }
 
   onError(data) {
@@ -53,10 +52,14 @@ export default class Login extends React.Component {
             <input type="password" id="password" name="password" />
           </div>
           <div className="fl-row controls">
-            <button className="btn-register" type="button" onClick={register}>
+            <button
+              className="btn-register"
+              type="button"
+              onClick={this.register}
+            >
               *️⃣ Register
             </button>
-            <button className="btn-login" type="submit" onClick={signin}>
+            <button className="btn-login" type="submit" onClick={this.signin}>
               ✅ Login
             </button>
           </div>
