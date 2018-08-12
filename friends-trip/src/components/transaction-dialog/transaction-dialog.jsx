@@ -72,6 +72,7 @@ export default class TransactionDialog extends React.Component {
             //contentEditable={true}
             type="text"
             defaultValue={item.description}
+            onChange={event => this.descriptionChanged(event.target.value)}
           />
         </label>
 
@@ -135,6 +136,15 @@ export default class TransactionDialog extends React.Component {
           />
         </label>
       );
+    });
+  }
+
+  descriptionChanged(value) {
+    this.setState({
+      item: {
+        ...this.state.item,
+        description: value
+      }
     });
   }
 
