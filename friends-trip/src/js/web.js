@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import $ from "jquery";
 
 import app from "./app.js";
 import Grid from "../components/grid/grid.jsx";
@@ -100,12 +99,7 @@ export default class Web extends React.Component {
     });
     this.updateStateFromContext();
 
-    console.log(app.context);
-
-    app.loadCurrentRoom(() => {
-      console.log("load room done");
-      this.updateStateFromContext();
-    });
+    app.loadCurrentRoom().then(() => this.updateStateFromContext());
 
     gridLoadData({ filterByUserId: app.context.Settings.filterByUserId }).then(
       data => {
@@ -114,6 +108,8 @@ export default class Web extends React.Component {
       }
     );
   }
+
+  componentDidUpdate() {}
 
   filterBy = userId => {
     app.context.Settings.filterByUserId = userId;
@@ -135,47 +131,48 @@ export default class Web extends React.Component {
     this.setState({ dialog: { isOpen: true, type, item } });
   }
 
-  saveClient(item) {
-    if (
-      item.id &&
-      !confirm("It's old trnsaction, are you sure you want to change it?")
-    ) {
-      return;
-    }
+  mapItemToTransaction(item) {
+    const { CurrentRoom } = this.state;
 
-    const context = this.state;
+    const getUserIdByName = name =>
+      CurrentRoom.Users.find(u => u.Name === name).Id;
 
-    const { CurrentRoom: room } = context;
-
-    const getUserIdByName = name => room.Users.find(u => u.Name === name);
-
-    var usersInfo = item.owe.map(user => ({
-      UserId: getUserIdByName(user.user).Id,
+    const usersInfo = item.owe.map(user => ({
+      UserId: getUserIdByName(user.user),
       Amount: user.amount
     }));
 
-    //save on server
-    var trans = {
-      Id: item.id, //todo: what todo with null id? when new
+    return {
+      Id: item.id, //null when new
       Description: item.description,
       Amount: item.fullAmount,
       OweUsers: usersInfo
     };
-
-    this.syncItems([trans]);
   }
 
-  syncItems(transactions) {
+  saveClient(item) {
+    if (
+      item.id &&
+      !confirm("It's old transaction, are you sure you want to change it?")
+    ) {
+      return;
+    }
+
+    const transaction = this.mapItemToTransaction(item);
+    this.syncTransactions([transaction]);
+  }
+
+  syncTransactions(transactions) {
     //todo: @vm do not put item on server directly
     // put it into grid/storage
     // then ELSEWHERE try to sync with server, if online === ok
 
     this.checkOnline();
-
     app
       .ajax("trans/sync", {
         transactions,
-        filterByUserId: app.context.Settings.filterByUserId
+        //get list
+        ...app.context.Settings
         // pageIndex: 0,
         // pageSize: 0
       })
@@ -190,12 +187,11 @@ export default class Web extends React.Component {
     this.setState({ isOnline: navigator.onLine });
   }
 
-  closeDialog(data) {
-    console.log(data);
+  closeDialog(item) {
+    console.log("dialog", item);
 
-    if (data) {
-      //todo: do checks?
-      this.saveClient(data, !data.id);
+    if (item) {
+      this.saveClient(item);
     }
 
     this.setState({ dialog: { isOpen: false } });

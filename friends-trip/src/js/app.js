@@ -1,8 +1,4 @@
-﻿import $ from "jquery";
-
-const config = {
-  //wsUrl: 'ws://localhost:5000',
-  //wsUrl: "ws://pg-api.azurewebsites.net/api",
+﻿const config = {
   httpUrl: "//pg-api.azurewebsites.net/api/",
   //httpUrl: 'http://localhost:5000/api/',
 
@@ -131,11 +127,6 @@ const app = {
     //location.href = config.routes.Transactions;
   },
 
-  onGetRoomDone(data) {
-    var room = data.data;
-    app.LS.set(app.LS.Keys.ROOM, room);
-  },
-
   login(username, password) {
     app.ajax("auth/login", { username, password }).then(app.onLoginDone);
   },
@@ -144,10 +135,10 @@ const app = {
     app.ajax("auth/register", { username, password }).then(app.onLoginDone);
   },
 
-  loadCurrentRoom(callback) {
-    return app.ajax("room/status", {}).then(result => {
-      app.onGetRoomDone(result);
-      callback(result);
+  loadCurrentRoom() {
+    return app.ajax("room/status").then(result => {
+      const room = result.data;
+      app.LS.set(app.LS.Keys.ROOM, room);
     });
   }
 };
