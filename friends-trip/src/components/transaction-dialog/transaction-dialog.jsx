@@ -4,7 +4,8 @@ import { moneyRound } from "../../js/web";
 import Dialog from "../dialog/dialog";
 
 import "./transaction-dialog.less";
-import { isNumber } from "util";
+
+import InputProgress from "../input-progress/input-progress";
 
 export const DialogTypes = { NEW: "NEW", EDIT: "EDIT" };
 
@@ -85,34 +86,14 @@ export default class TransactionDialog extends React.Component {
             Split equally
           </label>
         </div>
-        <div className="details-form-field">
-          <label>
-            <input
-              id="splitOnYou"
-              name="splitOnYou"
-              type="checkbox"
-              onChange={event => this.splitOnYou(event.target.checked)}
-            />
-            Split on you too
-          </label>
-        </div>
+
         <div className="details-form-field">
           <label>Users:</label>
-          <div id="add-transaction-users">
-            {this.showDetailsDialog(type, item)}
-          </div>
+          {this.renderUsers(type, item)}
         </div>
         <div className="details-form-field">
-          <button
-            type="button"
-            id="save"
-            onClick={() => onClose(this.state.item)}
-          >
-            ✅ Save
-          </button>
-          <button type="button" onClick={() => onClose()}>
-            Cancel
-          </button>
+          <button onClick={() => onClose(this.state.item)}>✅ Save</button>
+          <button onClick={() => onClose()}>Cancel</button>
         </div>
       </Dialog>
     );
@@ -120,21 +101,9 @@ export default class TransactionDialog extends React.Component {
 
   //shit below --- v v v
 
-  showDetailsDialog(type, item) {
-    const { context } = this.props;
-    const users = context.CurrentRoom.Users;
-    const curUserId = context.CurrentUser.Id;
-
-    return users.map((user, key) => {
-      const getVal = user => {
-        var ower = item.owe.find(u => u.user === user.Name);
-
-        return ower ? ower.amount : 0;
-      };
-
-      const value = getVal(user);
-      const hasValue = value !== 0;
-      const pts = moneyRound(value / item.fullAmount) * 100;
+  renderUsers(type, item) {
+    return item.owe.sort((u1, u2) => u1.user > u2.user).map((user, key) => {
+      const hasValue = user.amount !== 0;
 
       return (
         <div key={key}>
@@ -142,21 +111,16 @@ export default class TransactionDialog extends React.Component {
             type="checkbox"
             checked={hasValue}
             onChange={event =>
-              this.userActiveChanged(user.Name, event.target.checked)
+              this.userActiveChanged(user.user, event.target.checked)
             }
           />
-          {user.Name}
-
-          <input
-            type="number"
-            min="0"
-            style={{
-              background: `linear-gradient(to right, #00ff1f30 ${pts}%, white 0%)`
-            }}
+          {user.user}
+          <InputProgress
+            value={user.amount}
+            max={item.fullAmount}
             onChange={event =>
-              this.onUserAmtChanged(user.Name, +event.target.value)
+              this.onUserAmtChanged(user.user, +event.target.value)
             }
-            value={value}
           />
         </div>
       );

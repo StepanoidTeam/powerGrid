@@ -39,23 +39,8 @@ function addTransaction(item) {
 //    return false;
 //};
 
-function getCheckedUsers() {
-  var users = [];
-  $("#add-transaction-users input[type='checkbox']")
-    .filter(":checked")
-    .each(function(ind, el) {
-      var inp = $(el)
-        .closest("div")
-        .find('input[type="number"]');
-      users.push(inp);
-    });
-  return users;
-}
-
 function formSubmitHandler(event) {
   saveClient(client, dialogType === "Add");
-  event.preventDefault();
-  return false;
 }
 
 function saveClient(item, isNew) {
@@ -92,20 +77,6 @@ function saveClient(item, isNew) {
   //todo: @vm make all calculations on CLIENT then send calc data to SERVER
   addTransaction(item);
   return false;
-}
-
-function onUserAmtChanged(item) {
-  if ($("#fullAmount").val() == "") {
-    $("#fullAmount").val($(item).val());
-  }
-}
-
-function userActiveChanged(el, userId) {
-  var amtInput = $(el)
-    .closest("div")
-    .find("input[type='number']");
-  if ($(el).is(":checked")) amtInput.prop("disabled", false);
-  else amtInput.prop("disabled", true);
 }
 
 // old shit upper ^ ^ ^
