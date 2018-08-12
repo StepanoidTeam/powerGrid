@@ -63,30 +63,38 @@ const app = {
         : app.context.CurrentUser.AuthToken;
     var ajaxUrl = config.httpUrl + actionUrl;
     app.onLoading(true);
-    return $.ajax({
-      type: method,
-      url: ajaxUrl,
-      contentType: "application/json",
-      data: JSON.stringify(data),
-      beforeSend: function(request) {
-        request.setRequestHeader("authToken", authKey);
+
+    return fetch(ajaxUrl, {
+      method,
+      body: JSON.stringify(data),
+      headers: {
+        authToken: authKey,
+        "Content-Type": "application/json"
       },
-      crossDomain: true,
-      cache: false,
-      success: function(data) {
+      mode: "cors",
+      cache: "no-cache"
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        //return response.json();
+        throw response; // new Error(`Network response was not ok. ${}`);
+      })
+      .then(data => {
+        console.log("fetch", data);
+        app.onLoading(false);
         if (successCallback) successCallback(data);
-      },
-      error: data => {
+      })
+      .catch(data => {
+        console.log("fetch err", data);
+        // errorCallback(data);
         if (data.status === 401) {
           this.logout();
         }
         app.onError(data);
-      },
-      complete: function() {
-        app.onLoading(false);
-        console.log("ajax completed");
-      }
-    });
+      });
   },
 
   // ajax1(actionUrl, data, method, successCallback, errorCallback) {
