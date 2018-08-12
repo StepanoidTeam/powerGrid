@@ -69,7 +69,10 @@ const app = {
       success: function(data) {
         if (successCallback) successCallback(data);
       },
-      error: function(data) {
+      error: data => {
+        if (data.status === 401) {
+          this.logout();
+        }
         app.onError(data);
       },
       complete: function() {
