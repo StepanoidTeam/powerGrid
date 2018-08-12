@@ -26,7 +26,11 @@ export default class Login extends React.Component {
 
   onError(data) {
     var logTxt = "⛔️ ERROR";
-    var errModel = JSON.parse(data.responseText);
+    var errModel = data.responseJSON
+      ? data.responseJSON
+      : data.status
+        ? { message: `${data.status} - ${data.statusText}` }
+        : {};
 
     this.setState({
       error: `${logTxt} - ${errModel.message || "kakoy-to bag"}`

@@ -122,7 +122,7 @@ const app = {
     this.onError = data => {
       //dunno logid for?
       //var logId = app.generateUid();
-      console.warn(data, logid);
+      console.log(data);
       onError(data);
     };
     document.title = config.title;

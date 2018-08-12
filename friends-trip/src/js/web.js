@@ -10,6 +10,7 @@ import TransactionDialog, {
 } from "../components/transaction-dialog/transaction-dialog.jsx";
 
 import "../styles/app.less";
+import { isObject } from "util";
 
 export function moneyRound(value) {
   return Math.round(value * 100) / 100;
@@ -96,7 +97,11 @@ export default class Web extends React.Component {
 
   onError(data) {
     var logTxt = "⛔️ ERROR";
-    var errModel = JSON.parse(data.responseText);
+    var errModel = data.responseJSON
+      ? data.responseJSON
+      : data.status
+        ? { message: `${data.status} - ${data.statusText}` }
+        : {};
 
     this.setState({
       error: `${logTxt} - ${errModel.message || "kakoy-to bag"}`
