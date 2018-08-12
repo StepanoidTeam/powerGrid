@@ -10,7 +10,7 @@ import TransactionDialog, {
 
 import "../styles/app.less";
 
-function moneyRound(value) {
+export function moneyRound(value) {
   return Math.round(value * 100) / 100;
 }
 
@@ -80,7 +80,7 @@ function saveClient(item, isNew) {
     Id: $("#transactionId").val(),
     Description: $("#description").val(),
     Amount: moneyRound(parseFloat($("#fullAmount").val())),
-    IsSplitAmountEqually: $("#splitEqually").is(":checked"),
+    //IsSplitAmountEqually: $("#splitEqually").is(":checked"),
     IsCurrentUserInSplitListToo: $("#splitOnYou").is(":checked"),
     OweUsers: usersInfo
   };

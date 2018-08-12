@@ -1,29 +1,47 @@
 import React from "react";
-import jQuery from "jquery";
 
+import { moneyRound } from "../../js/web";
 import Dialog from "../dialog/dialog";
 
 import "./transaction-dialog.less";
+import { isNumber } from "util";
 
 export const DialogTypes = { NEW: "NEW", EDIT: "EDIT" };
 
 export default class TransactionDialog extends React.Component {
-  save = () => {
-    this.props.onClose("some shit");
-  };
+  componentWillReceiveProps(props) {
+    const { context, item, isOpen } = props;
 
-  cancel = () => {
-    this.props.onClose();
-  };
+    if (!isOpen) return;
+
+    //{EntityType: "User", Id: "u#23ee7bc3", Name: "Igor"}
+    //owe
+    // {user: "Bob", amount: 34}
+
+    const users = context.CurrentRoom.Users;
+
+    const owe = users.map(user => {
+      const ower = item.owe.find(u => u.user === user.Name);
+      return {
+        user: user.Name,
+        amount: ower ? ower.amount : 0
+      };
+    });
+
+    this.setState({
+      item: {
+        ...item,
+        owe
+      }
+    });
+  }
 
   render() {
-    const { isOpen, type, item, onClose } = this.props;
-
-    //check type
-
-    //item = { id: "", description: "", fullAmount: 0 };
+    const { isOpen, type, onClose, context } = this.props;
 
     if (!isOpen) return null;
+
+    const { item } = this.state;
 
     return (
       <Dialog isOpen={isOpen} className="transaction-dialog">
@@ -42,6 +60,7 @@ export default class TransactionDialog extends React.Component {
               type="number"
               min="0"
               value={item.fullAmount}
+              onChange={event => this.totalChanged(+event.target.value)}
             />
           </label>
         </div>
@@ -49,23 +68,31 @@ export default class TransactionDialog extends React.Component {
           <label>
             Description:
             <input
+              //contentEditable={true}
               id="description"
               name="description"
               type="text"
-              style={{ width: "70%" }}
-              value={item.description}
+              defaultValue={item.description}
             />
           </label>
         </div>
         <div className="details-form-field">
           <label>
-            <input id="splitEqually" name="splitEqually" type="checkbox" />
+            <input
+              type="checkbox"
+              onChange={event => this.splitEquallyChecked(event.target.checked)}
+            />
             Split equally
           </label>
         </div>
         <div className="details-form-field">
           <label>
-            <input id="splitOnYou" name="splitOnYou" type="checkbox" />
+            <input
+              id="splitOnYou"
+              name="splitOnYou"
+              type="checkbox"
+              onChange={event => this.splitOnYou(event.target.checked)}
+            />
             Split on you too
           </label>
         </div>
@@ -79,11 +106,11 @@ export default class TransactionDialog extends React.Component {
           <button
             type="button"
             id="save"
-            onClick={() => onClose({ some: 123 })}
+            onClick={() => onClose(this.state.item)}
           >
             ✅ Save
           </button>
-          <button type="button" onClick={this.cancel}>
+          <button type="button" onClick={() => onClose()}>
             Cancel
           </button>
         </div>
@@ -93,47 +120,141 @@ export default class TransactionDialog extends React.Component {
 
   //shit below --- v v v
 
-  showDetailsDialog(dialogType, item) {
+  showDetailsDialog(type, item) {
     const { context } = this.props;
     const users = context.CurrentRoom.Users;
     const curUserId = context.CurrentUser.Id;
 
-    return users.map(user => {
-      var val = 0;
+    return users.map((user, key) => {
+      const getVal = user => {
+        var ower = item.owe.find(u => u.user === user.Name);
 
-      if (dialogType == "Edit") {
-        var found = jQuery.grep(item.owe, function(n, i) {
-          return n.user == user.Name;
-        });
-        if (found.length == 1) val = found[0].amount;
-      }
+        return ower ? ower.amount : 0;
+      };
+
+      const value = getVal(user);
+      const hasValue = value !== 0;
+      const pts = moneyRound(value / item.fullAmount) * 100;
 
       return (
-        <div>
+        <div key={key}>
           <input
             type="checkbox"
-            //checked={curUserId === user.Id}
-            onClick={() => this.userActiveChanged(this, user.Id)}
+            checked={hasValue}
+            onChange={event =>
+              this.userActiveChanged(user.Name, event.target.checked)
+            }
           />
           {user.Name}
 
           <input
             type="number"
-            //disabled={curUserId === user.Id}
             min="0"
-            id={`add-trans-user-${user.Id}`}
-            systemId={user.Id}
-            onBlur={() => onUserAmtChanged(this)}
-            value={val}
+            style={{
+              background: `linear-gradient(to right, #00ff1f30 ${pts}%, white 0%)`
+            }}
+            onChange={event =>
+              this.onUserAmtChanged(user.Name, +event.target.value)
+            }
+            value={value}
           />
         </div>
       );
     });
   }
 
-  userActiveChanged() {}
+  totalChanged(value) {
+    if (!isFinite(value)) return;
 
-  onUserAmtChanged() {}
+    this.setState(
+      {
+        item: {
+          ...this.state.item,
+          fullAmount: value
+        }
+      },
+      state => {
+        if (this.isEqual) {
+          this.splitEqually();
+        }
+      }
+    );
+  }
+
+  isEqual = false;
+
+  splitEquallyChecked(value) {
+    this.isEqual = value;
+    if (value) {
+      this.splitEqually();
+    }
+  }
+
+  //for all
+  splitEqually() {
+    const { item } = this.state;
+
+    const selected = item.owe.filter(user => user.amount > 0);
+    const rest = item.owe.filter(user => user.amount === 0);
+
+    const owe = selected.map(user => ({
+      user: user.user,
+      amount: moneyRound(item.fullAmount / selected.length)
+    }));
+
+    this.setState({
+      item: {
+        ...this.state.item,
+        owe: [...owe, ...rest]
+      }
+    });
+  }
+
+  splitOnYou(value) {}
+
+  userActiveChanged(userName, isActive) {
+    const { item } = this.state;
+
+    const selected = item.owe.filter(user => user.user === userName);
+    const rest = item.owe.filter(user => user.user !== userName);
+
+    const owe = selected.map(user => ({
+      user: user.user,
+      amount: user.user === userName ? (isActive ? 1 : 0) : user.amount
+    }));
+
+    this.setState(
+      {
+        item: {
+          ...this.state.item,
+          owe: [...owe, ...rest]
+        }
+      },
+      state => {
+        if (this.isEqual) {
+          this.splitEqually();
+        }
+      }
+    );
+  }
+
+  onUserAmtChanged(userName, value) {
+    if (!isFinite(value)) return;
+
+    const { item } = this.state;
+
+    const ower = item.owe.find(u => u.user === userName);
+    const rest = item.owe.filter(u => u.user !== userName);
+
+    ower.amount = value;
+
+    this.setState({
+      item: {
+        ...this.state.item,
+        owe: [ower, ...rest]
+      }
+    });
+  }
 
   //.dialog("option", "title", dialogType + " Transaction");
   //.dialog("open");
