@@ -11,30 +11,50 @@ export const DialogTypes = { NEW: "NEW", EDIT: "EDIT" };
 
 export default class TransactionDialog extends React.Component {
   componentWillReceiveProps(props) {
-    const { context, item, isOpen } = props;
+    const { context, item, isOpen, type } = props;
 
     if (!isOpen) return;
 
-    //{EntityType: "User", Id: "u#23ee7bc3", Name: "Igor"}
-    //owe
-    // {user: "Bob", amount: 34}
-
     const users = context.CurrentRoom.Users;
 
-    const owe = users.map(user => {
-      const ower = item.owe.find(u => u.user === user.Name);
-      return {
-        user: user.Name,
-        amount: ower ? ower.amount : 0
-      };
-    });
+    if (type === DialogTypes.NEW) {
+      item.payer = context.CurrentUser.Name;
+      item.fullAmount = 0;
+      item.description = "";
 
-    this.setState({
-      item: {
-        ...item,
-        owe
-      }
-    });
+      const owe = users.map(user => {
+        return {
+          user: user.Name,
+          amount: 0
+        };
+      });
+
+      this.setState({
+        item: {
+          ...item,
+          owe
+        }
+      });
+    } else if (type === DialogTypes.EDIT) {
+      //{EntityType: "User", Id: "u#23ee7bc3", Name: "Igor"}
+      //owe
+      // {user: "Bob", amount: 34}
+
+      const owe = users.map(user => {
+        const ower = item.owe.find(u => u.user === user.Name);
+        return {
+          user: user.Name,
+          amount: ower ? ower.amount : 0
+        };
+      });
+
+      this.setState({
+        item: {
+          ...item,
+          owe
+        }
+      });
+    }
   }
 
   render() {
@@ -45,55 +65,45 @@ export default class TransactionDialog extends React.Component {
     const { item } = this.state;
 
     return (
-      <Dialog isOpen={isOpen} className="transaction-dialog">
-        <input
-          id="transactionId"
-          name="transactionId"
-          type="hidden"
-          value={item.id}
-        />
-        <div className="details-form-field">
+      <Dialog isOpen={isOpen} className="transaction-dialog fl-col">
+        <label className="details-form-field fl-col">
+          Description:
+          <input
+            //contentEditable={true}
+            type="text"
+            defaultValue={item.description}
+          />
+        </label>
+
+        <div className="details-form-field fl-row">
           <label>
-            Amount:
+            Total
             <input
-              id="fullAmount"
-              name="fullAmount"
               type="number"
               min="0"
               value={item.fullAmount}
               onChange={event => this.totalChanged(+event.target.value)}
             />
           </label>
-        </div>
-        <div className="details-form-field">
-          <label>
-            Description:
-            <input
-              //contentEditable={true}
-              id="description"
-              name="description"
-              type="text"
-              defaultValue={item.description}
-            />
-          </label>
-        </div>
-        <div className="details-form-field">
-          <label>
+          <label className="fl-row fl-center">
+            ⚖️
             <input
               type="checkbox"
               onChange={event => this.splitEquallyChecked(event.target.checked)}
             />
-            Split equally
+            eq.Split
           </label>
         </div>
 
         <div className="details-form-field">
           <label>Users:</label>
-          {this.renderUsers(type, item)}
         </div>
-        <div className="details-form-field">
+
+        {this.renderUsers(type, item)}
+
+        <div className="fl-row controls">
           <button onClick={() => onClose(this.state.item)}>✅ Save</button>
-          <button onClick={() => onClose()}>Cancel</button>
+          <button onClick={() => onClose()}>✖️ Cancel</button>
         </div>
       </Dialog>
     );
@@ -106,7 +116,7 @@ export default class TransactionDialog extends React.Component {
       const hasValue = user.amount !== 0;
 
       return (
-        <div key={key}>
+        <label className="details-form-field fl-row fl-center" key={key}>
           <input
             type="checkbox"
             checked={hasValue}
@@ -114,6 +124,7 @@ export default class TransactionDialog extends React.Component {
               this.userActiveChanged(user.user, event.target.checked)
             }
           />
+
           {user.user}
           <InputProgress
             value={user.amount}
@@ -122,7 +133,7 @@ export default class TransactionDialog extends React.Component {
               this.onUserAmtChanged(user.user, +event.target.value)
             }
           />
-        </div>
+        </label>
       );
     });
   }
