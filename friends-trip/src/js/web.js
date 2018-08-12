@@ -26,15 +26,6 @@ function logout() {
   }
 }
 
-function addTransaction(item) {
-  //todo: @vm do not put item on server directly
-  // put it into grid/storage
-  // then ELSEWHERE try to sync with server, if online === ok
-
-  app.ajax("trans/addorupdate", item, "POST", () => gridLoadData());
-  return false;
-}
-
 //document.forms.transaction.onsubmit = function () {
 //    ajax('transaction/save', { AuthToken: CurrentUser().AuthToken }, 'POST', onSaved, onError);
 //    return false;
@@ -144,6 +135,7 @@ export default class Web extends React.Component {
     //hz
     var online = navigator.onLine;
 
+    //code duplicate
     gridLoadData({ filterByUserId: userId }).then(data => {
       app.context.Table = data.data;
       this.updateStateFromContext();
@@ -169,7 +161,7 @@ export default class Web extends React.Component {
     const getUserIdByName = name => room.Users.find(u => u.Name === name);
 
     var usersInfo = item.owe.map(user => ({
-      UserId: getUserIdByName(user.name),
+      UserId: getUserIdByName(user.user).Id,
       Amount: user.amount
     }));
 
@@ -181,7 +173,24 @@ export default class Web extends React.Component {
       OweUsers: usersInfo
     };
 
-    addTransaction(trans);
+    this.addTransaction(trans);
+  }
+
+  addTransaction(item) {
+    //todo: @vm do not put item on server directly
+    // put it into grid/storage
+    // then ELSEWHERE try to sync with server, if online === ok
+
+    app.ajax("trans/addorupdate", item, "POST", () => {
+      //code duplicate
+      gridLoadData({
+        filterByUserId: app.context.Settings.filterByUserId
+      }).then(data => {
+        app.context.Table = data.data;
+        this.updateStateFromContext();
+      });
+    });
+    return false;
   }
 
   closeDialog(data) {
