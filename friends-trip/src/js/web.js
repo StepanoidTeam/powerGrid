@@ -126,28 +126,9 @@ const renderRoomUsers = ({ room, selected }, onUserSelected) => {
   if (!room) return;
 
   return (
-    <div>
-      <span>
-        Room Id:
-        <span name="roomid" id="roomid">
-          {room.Id}
-        </span>
-      </span>
-
-      <span>
-        Name:
-        <span name="roomname" id="roomname">
-          {room.Name}
-        </span>
-      </span>
-
-      <div>
-        🔍 Filter by User Id:
-        {selected && (
-          <button onClick={() => onUserSelected("")}>clear❌</button>
-        )}
-      </div>
-      <ul id="room-users">
+    <div className="fl-row fl-center">
+      <div>🔍 Filter by </div>
+      <ul className="room-users fl-row">
         {room.Users.map((user, i) => (
           <li
             key={i}
@@ -157,36 +138,8 @@ const renderRoomUsers = ({ room, selected }, onUserSelected) => {
             {user.Name}
           </li>
         ))}
+        {selected && <li onClick={() => onUserSelected("")}>❌clear</li>}
       </ul>
-    </div>
-  );
-};
-
-const renderHeadBlock = user => {
-  if (!user) return null;
-
-  return (
-    <div className="head-block">
-      <div>
-        UserId:
-        <span name="userid" id="userid">
-          {user.Id}
-        </span>
-        🔑AuthToken:
-        <input
-          name="authToken"
-          id="authToken"
-          type="text"
-          value={user.AuthToken}
-          readOnly={true}
-          style={{ width: "600px" }}
-        />
-      </div>
-
-      <button className="btn-logout" type="button" onClick={logout}>
-        👤
-        <span>{user.Name}</span>❌
-      </button>
     </div>
   );
 };
@@ -257,7 +210,9 @@ export default class Web extends React.Component {
   render() {
     const context = this.state;
 
-    const { dialog } = context;
+    const { dialog, CurrentRoom: room, CurrentUser: user } = context;
+
+    if (!room || !user) return null;
 
     return (
       <div>
@@ -272,28 +227,37 @@ export default class Web extends React.Component {
           onClose={data => this.closeDialog(data)}
         />
 
-        {renderHeadBlock(context.CurrentUser)}
-        <div className="main-block">
-          <div id="transactionGrid">
-            <Grid
-              data={context.Table}
-              onItemSelected={item => this.openDialog(DialogTypes.EDIT, item)}
-            />
-          </div>
+        <div className="head-block fl-row">
+          <span>
+            ✈️
+            <span name="roomname" id="roomname">
+              {room.Name}
+            </span>
+          </span>
 
-          <div id="roomInfo">
-            <button onClick={() => this.openDialog(DialogTypes.NEW, {})}>
-              ✳️ Add 💰
-            </button>
+          <button onClick={() => this.openDialog(DialogTypes.NEW, {})}>
+            ✳️ Add 💰
+          </button>
 
-            {renderRoomUsers(
-              {
-                room: context.CurrentRoom,
-                selected: context.Settings.filterByUserId
-              },
-              this.filterBy
-            )}
-          </div>
+          {renderRoomUsers(
+            {
+              room: context.CurrentRoom,
+              selected: context.Settings.filterByUserId
+            },
+            this.filterBy
+          )}
+
+          <button className="btn-logout fl-row" type="button" onClick={logout}>
+            👤
+            <span>{user.Name}</span>❌
+          </button>
+        </div>
+
+        <div className="main-block fl-row">
+          <Grid
+            data={context.Table}
+            onItemSelected={item => this.openDialog(DialogTypes.EDIT, item)}
+          />
         </div>
       </div>
     );

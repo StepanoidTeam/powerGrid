@@ -35,10 +35,10 @@ export default class Grid extends React.Component {
   ];
 
   render() {
-    const { data = [], onItemSelected } = this.props;
+    const { data = [], className, onItemSelected } = this.props;
 
     return (
-      <table className="grid">
+      <table className={["grid", className].join(" ")}>
         <thead>
           <tr>
             {this.fields.filter(f => f.visible !== false).map((f, key) => (

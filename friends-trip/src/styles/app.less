@@ -10,6 +10,10 @@ body * {
   font-size: 20pt;
 }
 
+ul {
+  margin: 0;
+}
+
 .message {
   border: 1px solid lightgray;
   padding: 10px;
@@ -53,8 +57,6 @@ body * {
 }
 
 .head-block {
-  display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
 
@@ -62,22 +64,7 @@ body * {
   padding: 20px;
 }
 
-.main-block {
-  display: flex;
-  flex-direction: row;
-}
-
-#transactionGrid {
-  flex: 1 1 auto;
-  overflow: visible;
-}
-
-#roomInfo {
-  display: flex;
-  flex-direction: column;
-}
-
-#room-users {
+.room-users {
   padding: 0;
 
   li {
@@ -123,4 +110,8 @@ body * {
 
 .fl-center {
   align-items: center;
+}
+
+.fl-end {
+  justify-content: flex-end;
 }

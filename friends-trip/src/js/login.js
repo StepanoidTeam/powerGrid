@@ -20,28 +20,21 @@ const page = (
     <div id="app-log" />
     <span id="logs" />
     <Dialog isOpen={true} className="login-form">
-      <div className="pd-l-10">
+      <div className="fl-end fl-row">
         Username:
         <input type="text" id="username" name="username" />
       </div>
-      <div className="pd-l-10">
+      <div className="fl-end fl-row">
         Password:
         <input type="password" id="password" name="password" />
       </div>
-      <div className="pd-l-10">
-        <input
-          className="btn-login"
-          type="submit"
-          value="Login"
-          onClick={signin}
-        />
-        OR
-        <input
-          className="btn-register"
-          type="button"
-          value="Register me"
-          onClick={register}
-        />
+      <div className="fl-row controls">
+        <button className="btn-register" type="button" onClick={register}>
+          *️⃣ Register
+        </button>
+        <button className="btn-login" type="submit" onClick={signin}>
+          ✅ Login
+        </button>
       </div>
     </Dialog>
   </div>
