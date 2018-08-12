@@ -4,10 +4,6 @@ import moment from "moment";
 import "./grid.less";
 
 export default class Grid extends React.Component {
-  // pageSize = 10;
-  // pageIndex = 1;
-  // pageButtonCount = 10;
-
   oweRenderer = value => {
     return value.map((owe, key) => {
       return (
