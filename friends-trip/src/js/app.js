@@ -5,7 +5,7 @@ const config = {
   //wsUrl: "ws://pg-api.azurewebsites.net/api",
   httpUrl: "//pg-api.azurewebsites.net/api/",
   //httpUrl: 'http://localhost:5000/api/',
-  title: "Friends Trip v.0.1",
+
   routes: {
     Login: "login.html",
     Transactions: "index.html",
@@ -28,6 +28,23 @@ const app = {
     Table: []
   },
 
+  LS: {
+    Keys: {
+      SETTINGS: "current-settings",
+      USER: "current-user",
+      ROOM: "current-room"
+    },
+    get: key => {
+      const valueRaw = window.localStorage.getItem(key);
+      var value = JSON.parse(valueRaw);
+      return value || null;
+    },
+    set: (key, value) => {
+      const valueRaw = JSON.stringify(value);
+      window.localStorage.setItem(key, valueRaw);
+    }
+  },
+
   init({ onError, onLoading }) {
     this.onError = data => {
       console.log(data);
@@ -35,7 +52,6 @@ const app = {
     };
     this.onLoading = onLoading;
 
-    document.title = config.title;
     app.initContext();
     app.checkAuth(app.context.CurrentUser);
   },
@@ -96,13 +112,8 @@ const app = {
   // 	xhr.send(JSON.stringify(data));
   // },
 
-  getFromLocalStorage(key) {
-    var data = JSON.parse(window.localStorage.getItem(key));
-    return data || null;
-  },
-
   logout() {
-    window.localStorage.setItem("current-user", null);
+    app.LS.set(app.LS.Keys.USER, null);
     app.checkAuth(null);
   },
 
@@ -117,34 +128,31 @@ const app = {
   },
 
   initContext() {
-    var settings = app.getFromLocalStorage("current-settings");
+    var settings = app.LS.get(app.LS.Keys.SETTINGS);
     if (settings != null) app.context.Settings = settings;
 
-    var user = app.getFromLocalStorage("current-user");
+    var user = app.LS.get(app.LS.Keys.USER);
     app.context.CurrentUser = user;
-    var room = app.getFromLocalStorage("current-room");
+    var room = app.LS.get(app.LS.Keys.ROOM);
     if (room == null) app.context.CurrentRoom = app.EmptyRoom;
     else app.context.CurrentRoom = room;
   },
 
   saveSettings() {
-    window.localStorage.setItem(
-      "current-settings",
-      JSON.stringify(app.context.Settings)
-    );
+    app.LS.set(app.LS.Keys.SETTINGS, app.context.Settings);
   },
 
   onLoginDone(data) {
     var user = data.data;
 
-    window.localStorage.setItem("current-user", JSON.stringify(user));
+    app.LS.set(app.LS.Keys.USER, user);
     app.checkAuth(user);
     //location.href = config.routes.Transactions;
   },
 
   onGetRoomDone(data) {
     var room = data.data;
-    window.localStorage.setItem("current-room", JSON.stringify(room));
+    app.LS.set(app.LS.Keys.ROOM, room);
   },
 
   login(username, password) {
