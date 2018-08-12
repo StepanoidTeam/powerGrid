@@ -33,38 +33,25 @@ function logout() {
 
 // old shit upper ^ ^ ^
 
+const extractPullItems = response => {
+  //todo: get rid of data.data.data... shit
+  return response.data.pullResult.data.data;
+};
+
 const gridLoadData = ({ filterByUserId } = {}) => {
-  //filterByUserId = app.context.Settings.FilterByUserId;
-
-  var deferred = $.Deferred();
-
-  //todo: @vm ESLI error THEN do nothing
-  app.ajax(
-    "trans/sync",
-    {
+  //todo: @vm ESLI error THEN do nothing?
+  return app
+    .ajax("trans/sync", {
       //todo: sync old here from LS
       transactions: [],
       FilterByUserId: filterByUserId
-    },
-    "POST",
-    function(response) {
-      const { pullResult } = response.data;
-      //data: db.clients.slice(startIndex, startIndex + filter.pageSize),
-      //  itemsCount: db.clients.length
-      //return{
-      //data: result.data,
-      //itemsCount: result.totalCount
-      //};
-
-      console.log(pullResult.data.data);
-      deferred.resolve({
-        data: pullResult.data.data,
-        itemsCount: pullResult.data.totalCount
-      });
-    }
-  );
-
-  return deferred.promise();
+    })
+    .then(extractPullItems)
+    .then(items => {
+      return {
+        data: items //todo: get rid of data.data.data... shit
+      };
+    });
 };
 
 /// REACT starts from here v v v
@@ -185,29 +172,18 @@ export default class Web extends React.Component {
 
     this.checkOnline();
 
-    app.ajax(
-      "trans/sync",
-      {
-        transactions
-        // filterByUserId: "string",
+    app
+      .ajax("trans/sync", {
+        transactions,
+        filterByUserId: app.context.Settings.filterByUserId
         // pageIndex: 0,
         // pageSize: 0
-      },
-      "POST",
-      data => {
-        //code duplicate
-        gridLoadData({
-          filterByUserId: app.context.Settings.filterByUserId
-        }).then(data => {
-          app.context.Table = data.data;
-          this.updateStateFromContext();
-        });
-
-        app.context.Table = data.data;
+      })
+      .then(extractPullItems)
+      .then(items => {
+        app.context.Table = items;
         this.updateStateFromContext();
-      }
-    );
-    return false;
+      });
   }
 
   checkOnline() {

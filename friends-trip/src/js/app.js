@@ -56,17 +56,20 @@ const app = {
     app.checkAuth(app.context.CurrentUser);
   },
 
-  ajax(actionUrl, data, method, successCallback, errorCallback) {
-    var authKey =
+  ajax(actionUrl, data = {}, method = "POST") {
+    const authKey =
       app.context.CurrentUser == null
         ? null
         : app.context.CurrentUser.AuthToken;
-    var ajaxUrl = config.httpUrl + actionUrl;
+
+    const ajaxUrl = config.httpUrl + actionUrl;
+    const body = JSON.stringify(data);
+
     app.onLoading(true);
 
     return fetch(ajaxUrl, {
       method,
-      body: JSON.stringify(data),
+      body,
       headers: {
         authToken: authKey,
         "Content-Type": "application/json"
@@ -78,47 +81,17 @@ const app = {
         if (response.ok) {
           return response.json();
         }
-
-        //return response.json();
-        throw response; // new Error(`Network response was not ok. ${}`);
-      })
-      .then(data => {
-        console.log("fetch", data);
-        app.onLoading(false);
-        if (successCallback) successCallback(data);
+        throw response;
       })
       .catch(data => {
         console.log("fetch err", data);
-        // errorCallback(data);
         if (data.status === 401) {
           this.logout();
         }
         app.onError(data);
-      });
+      })
+      .finally(() => app.onLoading(false));
   },
-
-  // ajax1(actionUrl, data, method, successCallback, errorCallback) {
-  // 	//var ajaxUrl = config.httpUrl + actionUrl;
-
-  // 	method = method || "POST";
-  // 	var xhr = new XMLHttpRequest();
-  // 	xhr.open(method, config.httpUrl + actionUrl);
-  // 	xhr.setRequestHeader("Content-Type", "application/json");
-  // 	xhr.onload = function() {
-  // 		document.getElementById("logs").innerText = "test4";
-
-  // 		if (xhr.status === 200) {
-  // 			document.getElementById("logs").innerText = "test5";
-  // 			if (successCallback)
-  // 				successCallback(JSON.parse(xhr.responseText));
-  // 		} else {
-  // 			document.getElementById("logs").innerText = "test6";
-  // 			if (errorCallback) errorCallback(xhr);
-  // 			else app.onError(xhr);
-  // 		}
-  // 	};
-  // 	xhr.send(JSON.stringify(data));
-  // },
 
   logout() {
     app.LS.set(app.LS.Keys.USER, null);
@@ -128,7 +101,7 @@ const app = {
   checkAuth(user) {
     var curPage = location.pathname.toLowerCase();
     curPage = curPage.substring(curPage.lastIndexOf("/") + 1);
-    //document.getElementById("logs").innerText = "["+curPage+"]";
+
     if (user && curPage == config.routes.Login)
       location.href = config.routes.Transactions;
     else if (!user && curPage != config.routes.Login)
@@ -164,25 +137,15 @@ const app = {
   },
 
   login(username, password) {
-    app.ajax(
-      "auth/login",
-      { username: username, password: password },
-      "POST",
-      app.onLoginDone
-    );
+    app.ajax("auth/login", { username, password }).then(app.onLoginDone);
   },
 
   register(username, password) {
-    app.ajax(
-      "auth/register",
-      { username: username, password: password },
-      "POST",
-      app.onLoginDone
-    );
+    app.ajax("auth/register", { username, password }).then(app.onLoginDone);
   },
 
   loadCurrentRoom(callback) {
-    return app.ajax("room/status", {}, "POST", function(result) {
+    return app.ajax("room/status", {}).then(result => {
       app.onGetRoomDone(result);
       callback(result);
     });
