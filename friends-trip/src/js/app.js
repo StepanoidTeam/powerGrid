@@ -2,7 +2,7 @@
 
 const config = {
   //wsUrl: 'ws://localhost:5000',
-  wsUrl: "ws://pg-api.azurewebsites.net/api",
+  //wsUrl: "ws://pg-api.azurewebsites.net/api",
   httpUrl: "//pg-api.azurewebsites.net/api/",
   //httpUrl: 'http://localhost:5000/api/',
   title: "Friends Trip v.0.1",
@@ -12,19 +12,6 @@ const config = {
     Report: "report.html"
   }
 };
-
-//function jsonp(url, callback) {
-//    var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-//    window[callbackName] = function(data) {
-//        delete window[callbackName];
-//        document.body.removeChild(script);
-//        callback(data);
-//    };
-
-//    var script = document.createElement('script');
-//    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
-//    document.body.appendChild(script);
-//}
 
 const app = {
   EmptyRoom: {
@@ -41,12 +28,16 @@ const app = {
     Table: []
   },
 
-  generateUid() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+  init({ onError, onLoading }) {
+    this.onError = data => {
+      console.log(data);
+      onError(data);
+    };
+    this.onLoading = onLoading;
+
+    document.title = config.title;
+    app.initContext();
+    app.checkAuth(app.context.CurrentUser);
   },
 
   ajax(actionUrl, data, method, successCallback, errorCallback) {
@@ -55,7 +46,7 @@ const app = {
         ? null
         : app.context.CurrentUser.AuthToken;
     var ajaxUrl = config.httpUrl + actionUrl;
-    app.showLoading(true);
+    app.onLoading(true);
     return $.ajax({
       type: method,
       url: ajaxUrl,
@@ -76,7 +67,7 @@ const app = {
         app.onError(data);
       },
       complete: function() {
-        app.showLoading(false);
+        app.onLoading(false);
         console.log("ajax completed");
       }
     });
@@ -84,14 +75,14 @@ const app = {
 
   // ajax1(actionUrl, data, method, successCallback, errorCallback) {
   // 	//var ajaxUrl = config.httpUrl + actionUrl;
-  // 	app.showLoading(true);
+
   // 	method = method || "POST";
   // 	var xhr = new XMLHttpRequest();
   // 	xhr.open(method, config.httpUrl + actionUrl);
   // 	xhr.setRequestHeader("Content-Type", "application/json");
   // 	xhr.onload = function() {
   // 		document.getElementById("logs").innerText = "test4";
-  // 		app.showLoading(false);
+
   // 		if (xhr.status === 200) {
   // 			document.getElementById("logs").innerText = "test5";
   // 			if (successCallback)
@@ -105,12 +96,6 @@ const app = {
   // 	xhr.send(JSON.stringify(data));
   // },
 
-  showLoading(show) {
-    var loading = document.getElementById("loading");
-    if (show) loading.style.display = "block";
-    else loading.style.display = "none";
-  },
-
   getFromLocalStorage(key) {
     var data = JSON.parse(window.localStorage.getItem(key));
     return data || null;
@@ -119,24 +104,6 @@ const app = {
   logout() {
     window.localStorage.setItem("current-user", null);
     app.checkAuth(null);
-  },
-
-  init({ onError }) {
-    this.onError = data => {
-      //dunno logid for?
-      //var logId = app.generateUid();
-      console.log(data);
-      onError(data);
-    };
-    document.title = config.title;
-    app.initContext();
-    app.checkAuth(app.context.CurrentUser);
-
-    //add global loading component
-    var loading = document.createElement("div");
-    document.body.insertBefore(loading, document.body.firstChild);
-    loading.setAttribute("id", "loading");
-    loading.classList.add("loading");
   },
 
   checkAuth(user) {

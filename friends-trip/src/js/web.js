@@ -8,9 +8,9 @@ import Dialog from "../components/dialog/dialog";
 import TransactionDialog, {
   DialogTypes
 } from "../components/transaction-dialog/transaction-dialog.jsx";
+import Overlay from "../components/overlay/overlay.jsx";
 
 import "../styles/app.less";
-import { isObject } from "util";
 
 export function moneyRound(value) {
   return Math.round(value * 100) / 100;
@@ -40,13 +40,15 @@ const gridLoadData = ({ filterByUserId } = {}) => {
 
   //todo: @vm ESLI error THEN do nothing
   app.ajax(
-    "trans/list",
+    "trans/sync",
     {
+      //todo: sync old here from LS
+      transactions: [],
       FilterByUserId: filterByUserId
     },
     "POST",
     function(response) {
-      var result = response.data.data;
+      const { pullResult } = response.data;
       //data: db.clients.slice(startIndex, startIndex + filter.pageSize),
       //  itemsCount: db.clients.length
       //return{
@@ -54,10 +56,10 @@ const gridLoadData = ({ filterByUserId } = {}) => {
       //itemsCount: result.totalCount
       //};
 
-      console.log(result.data);
+      console.log(pullResult.data.data);
       deferred.resolve({
-        data: result.data,
-        itemsCount: result.totalCount
+        data: pullResult.data.data,
+        itemsCount: pullResult.data.totalCount
       });
     }
   );
@@ -77,7 +79,8 @@ export default class Web extends React.Component {
     Table: [],
     dialog: { isOpen: false },
     error: null,
-    isOnline: false
+    isOnline: false,
+    isLoading: false
   };
 
   onError(data) {
@@ -104,7 +107,10 @@ export default class Web extends React.Component {
 
     this.checkOnline();
 
-    app.init({ onError: data => this.onError(data) });
+    app.init({
+      onError: data => this.onError(data),
+      onLoading: value => this.setState({ isLoading: value })
+    });
     this.updateStateFromContext();
 
     console.log(app.context);
@@ -169,10 +175,10 @@ export default class Web extends React.Component {
       OweUsers: usersInfo
     };
 
-    this.syncItems(trans);
+    this.syncItems([trans]);
   }
 
-  syncItems(item) {
+  syncItems(transactions) {
     //todo: @vm do not put item on server directly
     // put it into grid/storage
     // then ELSEWHERE try to sync with server, if online === ok
@@ -182,13 +188,13 @@ export default class Web extends React.Component {
     app.ajax(
       "trans/sync",
       {
-        transactions: [item]
+        transactions
         // filterByUserId: "string",
         // pageIndex: 0,
         // pageSize: 0
       },
       "POST",
-      () => {
+      data => {
         //code duplicate
         gridLoadData({
           filterByUserId: app.context.Settings.filterByUserId
@@ -196,6 +202,9 @@ export default class Web extends React.Component {
           app.context.Table = data.data;
           this.updateStateFromContext();
         });
+
+        app.context.Table = data.data;
+        this.updateStateFromContext();
       }
     );
     return false;
@@ -227,6 +236,8 @@ export default class Web extends React.Component {
 
     return (
       <div>
+        <Overlay isOpen={context.isLoading}>⏳Loading...</Overlay>
+
         <span id="logs" />
 
         <div className="head-block fl-row">
@@ -237,31 +248,34 @@ export default class Web extends React.Component {
             </span>
           </span>
 
-          <span>status: {context.isOnline ? "🌐 online" : "🌑 offline"}</span>
+          <span>{context.isOnline ? "🌐 online" : "🌑 offline"}</span>
 
           <button onClick={() => this.openDialog(DialogTypes.NEW, {})}>
             ✳️ Add 💰
           </button>
 
-          <div className="fl-row fl-center">
-            <div>🔍 Filter by </div>
-            <ul className="room-users fl-row">
-              {room.Users.map((user, i) => (
-                <li
-                  key={i}
-                  className={selected === user.Id ? "selected" : undefined}
-                  onClick={() => this.filterBy(user.Id)}
-                >
-                  {user.Name}
-                </li>
-              ))}
-              {selected && <li onClick={() => this.filterBy("")}>❌clear</li>}
-            </ul>
-          </div>
+          <ul className="room-users fl-row">
+            {room.Users.map((user, i) => (
+              <li
+                key={i}
+                className={selected === user.Id ? "selected" : undefined}
+                onClick={() => this.filterBy(user.Id)}
+              >
+                🔍
+                {user.Name}
+              </li>
+            ))}
+            {selected && <li onClick={() => this.filterBy()}>❌clear</li>}
+          </ul>
 
-          <button className="btn-logout fl-row" type="button" onClick={logout}>
+          <button
+            onClick={() => prompt("your id", context.CurrentUser.AuthToken)}
+          >
             👤
-            <span>{user.Name}</span>❌
+            {user.Name}
+          </button>
+          <button className="btn-logout" type="button" onClick={logout}>
+            ❌
           </button>
         </div>
 
