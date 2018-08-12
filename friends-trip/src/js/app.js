@@ -49,13 +49,6 @@ const app = {
     });
   },
 
-  onError(data) {
-    var logTxt = "⛔️ ERROR";
-    var errModel = JSON.parse(data.responseText);
-    app.log(`${logTxt} - ${errModel.message || "kakoy-to bag"}`);
-    console.log(JSON.stringify(data));
-  },
-
   ajax(actionUrl, data, method, successCallback, errorCallback) {
     var authKey =
       app.context.CurrentUser == null
@@ -120,26 +113,18 @@ const app = {
     return data || null;
   },
 
-  log(text) {
-    var logBox = document.getElementById("app-log");
-    logBox.innerText = text;
-    logBox.style.display = "block";
-    var logId = app.generateUid();
-    logBox.logId = logId;
-    setTimeout(function() {
-      if (logId == logBox.logId) {
-        logBox.innerText = "";
-        logBox.style.display = "none";
-      }
-    }, 4000);
-  },
-
   logout() {
     window.localStorage.setItem("current-user", null);
     app.checkAuth(null);
   },
 
-  init() {
+  init({ onError }) {
+    this.onError = data => {
+      //dunno logid for?
+      //var logId = app.generateUid();
+      console.warn(data, logid);
+      onError(data);
+    };
     document.title = config.title;
     app.initContext();
     app.checkAuth(app.context.CurrentUser);

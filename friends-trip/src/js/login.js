@@ -15,33 +15,55 @@ function register() {
   app.register(username.value, password.value);
 }
 
-const page = (
-  <div>
-    <div id="app-log" />
-    <span id="logs" />
-    <Dialog isOpen={true} className="login-form">
-      <div className="fl-end fl-row">
-        Username:
-        <input type="text" id="username" name="username" />
-      </div>
-      <div className="fl-end fl-row">
-        Password:
-        <input type="password" id="password" name="password" />
-      </div>
-      <div className="fl-row controls">
-        <button className="btn-register" type="button" onClick={register}>
-          *️⃣ Register
-        </button>
-        <button className="btn-login" type="submit" onClick={signin}>
-          ✅ Login
-        </button>
-      </div>
-    </Dialog>
-  </div>
-);
+export default class Login extends React.Component {
+  state = { error: null };
 
-app.init();
+  constructor(props) {
+    super(props);
 
-ReactDOM.render(page, document.querySelector("#app"));
+    app.init({ onError: data => this.onError(data) });
+  }
+
+  onError(data) {
+    var logTxt = "⛔️ ERROR";
+    var errModel = JSON.parse(data.responseText);
+
+    this.setState({
+      error: `${logTxt} - ${errModel.message || "kakoy-to bag"}`
+    });
+
+    setTimeout(() => this.setState({ error: null }), 5000);
+  }
+
+  render() {
+    return (
+      <div>
+        <span id="logs" />
+        <Dialog isOpen={true} className="login-form">
+          <div className="fl-end fl-row">
+            Username:
+            <input type="text" id="username" name="username" />
+          </div>
+          <div className="fl-end fl-row">
+            Password:
+            <input type="password" id="password" name="password" />
+          </div>
+          <div className="fl-row controls">
+            <button className="btn-register" type="button" onClick={register}>
+              *️⃣ Register
+            </button>
+            <button className="btn-login" type="submit" onClick={signin}>
+              ✅ Login
+            </button>
+          </div>
+        </Dialog>
+
+        <Dialog isOpen={this.state.error}>{this.state.error}</Dialog>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Login />, document.querySelector("#app"));
 
 module.hot.accept();

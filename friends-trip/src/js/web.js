@@ -4,6 +4,7 @@ import $ from "jquery";
 
 import app from "./app.js";
 import Grid from "../components/grid/grid.jsx";
+import Dialog from "../components/dialog/dialog";
 import TransactionDialog, {
   DialogTypes
 } from "../components/transaction-dialog/transaction-dialog.jsx";
@@ -21,7 +22,6 @@ function logout() {
     )
   ) {
     app.logout();
-    //location.href = config.routes.Login;
   }
 }
 
@@ -122,28 +122,6 @@ const gridLoadData = ({
 
 /// REACT starts from here v v v
 
-const renderRoomUsers = ({ room, selected }, onUserSelected) => {
-  if (!room) return;
-
-  return (
-    <div className="fl-row fl-center">
-      <div>🔍 Filter by </div>
-      <ul className="room-users fl-row">
-        {room.Users.map((user, i) => (
-          <li
-            key={i}
-            className={selected === user.Id ? "selected" : undefined}
-            onClick={() => onUserSelected(user.Id)}
-          >
-            {user.Name}
-          </li>
-        ))}
-        {selected && <li onClick={() => onUserSelected("")}>❌clear</li>}
-      </ul>
-    </div>
-  );
-};
-
 export default class Web extends React.Component {
   state = {
     Settings: {
@@ -152,11 +130,19 @@ export default class Web extends React.Component {
     CurrentUser: null,
     CurrentRoom: null,
     Table: [],
-    dialog: { isOpen: false }
+    dialog: { isOpen: false },
+    error: null
   };
 
-  constructor(props) {
-    super(props);
+  onError(data) {
+    var logTxt = "⛔️ ERROR";
+    var errModel = JSON.parse(data.responseText);
+
+    this.setState({
+      error: `${logTxt} - ${errModel.message || "kakoy-to bag"}`
+    });
+
+    setTimeout(() => this.setState({ error: null }), 5000);
   }
 
   updateStateFromContext() {
@@ -165,7 +151,8 @@ export default class Web extends React.Component {
 
   componentDidMount() {
     // todo: run all init shit here
-    app.init();
+
+    app.init({ onError: data => this.onError(data) });
     this.updateStateFromContext();
 
     console.log(app.context);
@@ -212,11 +199,12 @@ export default class Web extends React.Component {
 
     const { dialog, CurrentRoom: room, CurrentUser: user } = context;
 
+    const selected = context.Settings.filterByUserId;
+
     if (!room || !user) return null;
 
     return (
       <div>
-        <div id="app-log" />
         <span id="logs" />
 
         <TransactionDialog
@@ -239,13 +227,21 @@ export default class Web extends React.Component {
             ✳️ Add 💰
           </button>
 
-          {renderRoomUsers(
-            {
-              room: context.CurrentRoom,
-              selected: context.Settings.filterByUserId
-            },
-            this.filterBy
-          )}
+          <div className="fl-row fl-center">
+            <div>🔍 Filter by </div>
+            <ul className="room-users fl-row">
+              {room.Users.map((user, i) => (
+                <li
+                  key={i}
+                  className={selected === user.Id ? "selected" : undefined}
+                  onClick={() => this.filterBy(user.Id)}
+                >
+                  {user.Name}
+                </li>
+              ))}
+              {selected && <li onClick={() => this.filterBy("")}>❌clear</li>}
+            </ul>
+          </div>
 
           <button className="btn-logout fl-row" type="button" onClick={logout}>
             👤
@@ -259,6 +255,8 @@ export default class Web extends React.Component {
             onItemSelected={item => this.openDialog(DialogTypes.EDIT, item)}
           />
         </div>
+
+        <Dialog isOpen={this.state.error}>{this.state.error}</Dialog>
       </div>
     );
   }
