@@ -72,17 +72,4 @@ export default class Grid extends React.Component {
       </table>
     );
   }
-
-  //todo: refac all that shit
-
-  //deleteConfirm: function (item) {
-  //return "The item \"" + item.Id + "\" will be removed. Are you sure?";
-  //},
-
-  // jQuery('#pager').on('change', function() {
-  //   var page = parseInt($(this).val(), 10);
-  //   gridLoadData();
-
-  //   $("#transactionGrid").jsGrid("openPage", page);
-  // });
 }
