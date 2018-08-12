@@ -33,13 +33,8 @@ function logout() {
 
 // old shit upper ^ ^ ^
 
-const gridLoadData = ({
-  filterByUserId,
-  pageIndex = 1,
-  pageSize = 10
-} = {}) => {
+const gridLoadData = ({ filterByUserId } = {}) => {
   //filterByUserId = app.context.Settings.FilterByUserId;
-  var startIndex = (pageIndex - 1) * pageSize;
 
   var deferred = $.Deferred();
 
@@ -47,9 +42,7 @@ const gridLoadData = ({
   app.ajax(
     "trans/list",
     {
-      FilterByUserId: filterByUserId,
-      PageIndex: pageIndex - 1,
-      PageSize: pageSize
+      FilterByUserId: filterByUserId
     },
     "POST",
     function(response) {
@@ -83,7 +76,8 @@ export default class Web extends React.Component {
     CurrentRoom: null,
     Table: [],
     dialog: { isOpen: false },
-    error: null
+    error: null,
+    isOnline: false
   };
 
   onError(data) {
@@ -107,6 +101,8 @@ export default class Web extends React.Component {
 
   componentDidMount() {
     // todo: run all init shit here
+
+    this.checkOnline();
 
     app.init({ onError: data => this.onError(data) });
     this.updateStateFromContext();
@@ -133,7 +129,7 @@ export default class Web extends React.Component {
     this.updateStateFromContext();
 
     //hz
-    var online = navigator.onLine;
+    this.checkOnline();
 
     //code duplicate
     gridLoadData({ filterByUserId: userId }).then(data => {
@@ -173,24 +169,40 @@ export default class Web extends React.Component {
       OweUsers: usersInfo
     };
 
-    this.addTransaction(trans);
+    this.syncItems(trans);
   }
 
-  addTransaction(item) {
+  syncItems(item) {
     //todo: @vm do not put item on server directly
     // put it into grid/storage
     // then ELSEWHERE try to sync with server, if online === ok
 
-    app.ajax("trans/addorupdate", item, "POST", () => {
-      //code duplicate
-      gridLoadData({
-        filterByUserId: app.context.Settings.filterByUserId
-      }).then(data => {
-        app.context.Table = data.data;
-        this.updateStateFromContext();
-      });
-    });
+    this.checkOnline();
+
+    app.ajax(
+      "trans/sync",
+      {
+        transactions: [item]
+        // filterByUserId: "string",
+        // pageIndex: 0,
+        // pageSize: 0
+      },
+      "POST",
+      () => {
+        //code duplicate
+        gridLoadData({
+          filterByUserId: app.context.Settings.filterByUserId
+        }).then(data => {
+          app.context.Table = data.data;
+          this.updateStateFromContext();
+        });
+      }
+    );
     return false;
+  }
+
+  checkOnline() {
+    this.setState({ isOnline: navigator.onLine });
   }
 
   closeDialog(data) {
@@ -217,14 +229,6 @@ export default class Web extends React.Component {
       <div>
         <span id="logs" />
 
-        <TransactionDialog
-          isOpen={dialog.isOpen}
-          type={dialog.type}
-          item={dialog.item}
-          context={context}
-          onClose={data => this.closeDialog(data)}
-        />
-
         <div className="head-block fl-row">
           <span>
             ✈️
@@ -232,6 +236,8 @@ export default class Web extends React.Component {
               {room.Name}
             </span>
           </span>
+
+          <span>status: {context.isOnline ? "🌐 online" : "🌑 offline"}</span>
 
           <button onClick={() => this.openDialog(DialogTypes.NEW, {})}>
             ✳️ Add 💰
@@ -265,6 +271,14 @@ export default class Web extends React.Component {
             onItemSelected={item => this.openDialog(DialogTypes.EDIT, item)}
           />
         </div>
+
+        <TransactionDialog
+          isOpen={dialog.isOpen}
+          type={dialog.type}
+          item={dialog.item}
+          context={context}
+          onClose={data => this.closeDialog(data)}
+        />
 
         <Dialog isOpen={this.state.error}>{this.state.error}</Dialog>
       </div>
