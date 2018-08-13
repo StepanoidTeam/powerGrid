@@ -25,22 +25,16 @@ function logout() {
   }
 }
 
-//document.forms.transaction.onsubmit = function () {
-//    ajax('transaction/save', { AuthToken: CurrentUser().AuthToken }, 'POST', onSaved, onError);
-//    return false;
-//};
-
 // old shit upper ^ ^ ^
 
 const extractPullItems = response => {
-  //todo: get rid of data.data.data... shit
   return response.data.pullResult.transactions;
 };
 
 const gridLoadData = ({ filterByUserId } = {}) => {
   //todo: @vm ESLI error THEN do nothing?
   return app
-    .ajax("trans/sync", {
+    .sync({
       //todo: sync old here from LS
       transactions: [],
       FilterByUserId: filterByUserId
@@ -48,7 +42,7 @@ const gridLoadData = ({ filterByUserId } = {}) => {
     .then(extractPullItems)
     .then(items => {
       return {
-        data: items //todo: get rid of data.data.data... shit
+        data: items
       };
     });
 };
@@ -169,7 +163,7 @@ export default class Web extends React.Component {
 
     this.checkOnline();
     app
-      .ajax("trans/sync", {
+      .sync({
         transactions,
         //get list
         ...app.context.Settings

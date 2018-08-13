@@ -58,7 +58,7 @@ export default class TransactionDialog extends React.Component {
   }
 
   render() {
-    const { isOpen, type, onClose, context } = this.props;
+    const { isOpen, type, onClose } = this.props;
 
     if (!isOpen) return null;
 
