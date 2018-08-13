@@ -11,14 +11,12 @@ export const DialogTypes = { NEW: "NEW", EDIT: "EDIT" };
 
 export default class TransactionDialog extends React.Component {
   componentWillReceiveProps(props) {
-    const { context, item, isOpen, type } = props;
+    const { users, payer, item, isOpen, type } = props;
 
     if (!isOpen) return;
 
-    const users = context.CurrentRoom.Users;
-
     if (type === DialogTypes.NEW) {
-      item.payer = context.CurrentUser.Name;
+      item.payer = payer;
       item.fullAmount = 0;
       item.description = "";
 
