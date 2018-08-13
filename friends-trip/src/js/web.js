@@ -34,7 +34,7 @@ function logout() {
 
 const extractPullItems = response => {
   //todo: get rid of data.data.data... shit
-  return response.data.pullResult.data.data;
+  return response.data.pullResult.transactions;
 };
 
 const gridLoadData = ({ filterByUserId } = {}) => {
