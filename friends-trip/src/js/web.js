@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import app from "./app.js";
+import app, { GIT } from "./app.js";
 import Grid from "../components/grid/grid.jsx";
 import Dialog from "../components/dialog/dialog";
 import TransactionDialog, {
@@ -27,10 +27,6 @@ function logout() {
 
 // old shit upper ^ ^ ^
 
-const extractPullItems = response => {
-  return response.data.pullResult.transactions;
-};
-
 const gridLoadData = ({ filterByUserId } = {}) => {
   //todo: @vm ESLI error THEN do nothing?
   return app
@@ -39,10 +35,9 @@ const gridLoadData = ({ filterByUserId } = {}) => {
       transactions: [],
       FilterByUserId: filterByUserId
     })
-    .then(extractPullItems)
-    .then(items => {
+    .then(data => {
       return {
-        data: items
+        data: data.pullResult.transactions
       };
     });
 };
@@ -96,7 +91,9 @@ export default class Web extends React.Component {
 
     gridLoadData({ filterByUserId: app.context.Settings.filterByUserId }).then(
       data => {
-        app.context.Table = data.data;
+        //replace all table content
+        GIT.merge(app.context.Table, data.data);
+
         this.updateStateFromContext();
       }
     );
@@ -106,7 +103,6 @@ export default class Web extends React.Component {
 
   filterBy = userId => {
     app.context.Settings.filterByUserId = userId;
-    app.saveSettings();
 
     this.updateStateFromContext();
 
@@ -116,7 +112,9 @@ export default class Web extends React.Component {
     //code duplicate
     this.setState({ isLoading: true });
     gridLoadData({ filterByUserId: userId }).then(data => {
-      app.context.Table = data.data;
+      //replace all table content
+      GIT.merge(app.context.Table, data.data);
+
       this.updateStateFromContext();
     });
   };
@@ -170,9 +168,11 @@ export default class Web extends React.Component {
         // pageIndex: 0,
         // pageSize: 0
       })
-      .then(extractPullItems)
-      .then(items => {
-        app.context.Table = items;
+
+      .then(data => {
+        //replace all table content
+        GIT.merge(app.context.Table, data.pullResult.transactions);
+
         this.updateStateFromContext();
       });
   }
@@ -198,7 +198,7 @@ export default class Web extends React.Component {
 
     const selected = context.Settings.filterByUserId;
 
-    if (!room || !user) return null;
+    if (!room || !room.Users || !user) return null;
 
     return (
       <div>
@@ -234,12 +234,15 @@ export default class Web extends React.Component {
             {selected && <li onClick={() => this.filterBy()}>❌clear</li>}
           </ul>
 
-          <button
-            onClick={() => prompt("your id", context.CurrentUser.AuthToken)}
-          >
+          <button onClick={() => prompt("your id", user.AuthToken)}>
             👤
             {user.Name}
           </button>
+
+          <button>⬇️ pull</button>
+          <button>⬆️ push</button>
+          <button>🈲 merge</button>
+
           <button className="btn-logout" type="button" onClick={logout}>
             ❌
           </button>
@@ -253,10 +256,11 @@ export default class Web extends React.Component {
         </div>
 
         <TransactionDialog
+          users={room.Users}
+          payer={user.Name}
           isOpen={dialog.isOpen}
           type={dialog.type}
           item={dialog.item}
-          context={context}
           onClose={data => this.closeDialog(data)}
         />
 

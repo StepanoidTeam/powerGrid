@@ -1,4 +1,6 @@
-﻿const config = {
+﻿import Store, { clearStore } from "./store";
+
+const config = {
   httpUrl: "//pg-api.azurewebsites.net/api/",
   //httpUrl: 'http://localhost:5000/api/',
 
@@ -9,48 +11,56 @@
   }
 };
 
+export const GIT = {
+  //API
+  push() {
+    //send new to server
+  },
+
+  pull() {
+    //get all from server
+  },
+
+  merge(oldValues, newValues) {
+    //merge local + server
+
+    // total replace for now
+    return oldValues.splice(0, oldValues.length + 1, ...newValues);
+  }
+};
+
 const app = {
-  EmptyRoom: {
-    Id: "",
-    Name: ""
-  },
-
-  context: {
-    Settings: {
-      filterByUserId: ""
-    },
-    CurrentUser: null,
-    CurrentRoom: null,
-    Table: []
-  },
-
-  LS: {
-    Keys: {
-      SETTINGS: "current-settings",
-      USER: "current-user",
-      ROOM: "current-room"
-    },
-    get: key => {
-      const valueRaw = window.localStorage.getItem(key);
-      var value = JSON.parse(valueRaw);
-      return value || null;
-    },
-    set: (key, value) => {
-      const valueRaw = JSON.stringify(value);
-      window.localStorage.setItem(key, valueRaw);
-    }
-  },
+  //todo: remove this
+  context: {},
 
   init() {
-    app.initContext();
-    app.checkAuth(app.context.CurrentUser);
+    //todo: remove context prosloyka
+    app.context.CurrentUser = new Store(`current-user`, {});
+    app.context.CurrentRoom = new Store(`current-room`, {
+      Id: "",
+      Name: ""
+    });
+    app.context.Settings = new Store(`current-settings`, {
+      filterByUserId: ""
+    });
+
+    app.checkAuth();
+    //todo: if empty room - redir to login?
+    const prefix = app.context.CurrentRoom.Id;
+    app.context.Table = new Store(`${prefix}:transactions`, []);
+  },
+
+  isLogged() {
+    return !!app.context.CurrentUser.Id;
+  },
+
+  logger(data) {
+    console.log(data);
+    return data;
   },
 
   ajax(actionUrl, data = {}, method = "POST") {
-    const authKey =
-      app.context.CurrentUser == null
-        ? null
-        : app.context.CurrentUser.AuthToken;
+    const authKey = app.context.CurrentUser.AuthToken || null;
 
     const ajaxUrl = config.httpUrl + actionUrl;
     const body = JSON.stringify(data);
@@ -71,6 +81,8 @@ const app = {
         }
         throw response;
       })
+      .then(response => response.data)
+      .then(app.logger)
       .catch(response => {
         console.log("fetch err", response);
 
@@ -83,50 +95,45 @@ const app = {
           console.log("errorModel", errorModel);
           throw errorModel;
         });
-      })
-      .finally(data => {});
+      });
   },
 
-  logout() {
-    app.LS.set(app.LS.Keys.USER, null);
-    app.checkAuth(null);
-  },
-
-  checkAuth(user) {
+  checkAuth() {
     var curPage = location.pathname.toLowerCase();
     curPage = curPage.substring(curPage.lastIndexOf("/") + 1);
 
-    if (user && curPage == config.routes.Login)
+    //ROUTING
+    if (app.isLogged() && curPage === config.routes.Login) {
       location.href = config.routes.Transactions;
-    else if (!user && curPage != config.routes.Login)
+    } else if (!app.isLogged() && curPage !== config.routes.Login) {
       location.href = config.routes.Login;
+    }
   },
 
-  initContext() {
-    var settings = app.LS.get(app.LS.Keys.SETTINGS);
-    if (settings != null) app.context.Settings = settings;
-
-    var user = app.LS.get(app.LS.Keys.USER);
-    app.context.CurrentUser = user;
-    var room = app.LS.get(app.LS.Keys.ROOM);
-    if (room == null) app.context.CurrentRoom = app.EmptyRoom;
-    else app.context.CurrentRoom = room;
+  onLoginDone(user) {
+    Object.assign(app.context.CurrentUser, user);
+    //do we need to?
+    app.checkAuth();
   },
 
-  saveSettings() {
-    app.LS.set(app.LS.Keys.SETTINGS, app.context.Settings);
+  //sync mapper
+  extractPullItems(response) {
+    return response.data.pullResult.transactions;
   },
 
-  onLoginDone(data) {
-    var user = data.data;
-
-    app.LS.set(app.LS.Keys.USER, user);
-    app.checkAuth(user);
-    //location.href = config.routes.Transactions;
+  //auth mapper
+  extractUser(response) {
+    return response.data;
   },
 
   sync(data) {
     return app.ajax("trans/sync", data);
+  },
+
+  logout() {
+    clearStore(app.context.CurrentUser);
+
+    app.checkAuth();
   },
 
   login(user) {
@@ -138,9 +145,8 @@ const app = {
   },
 
   loadCurrentRoom() {
-    return app.ajax("room/status").then(result => {
-      const room = result.data;
-      app.LS.set(app.LS.Keys.ROOM, room);
+    return app.ajax("room/status").then(room => {
+      Object.assign(app.context.CurrentRoom, room);
     });
   }
 };
