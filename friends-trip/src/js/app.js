@@ -79,12 +79,18 @@ const app = {
         }
         throw response;
       })
-      .catch(data => {
-        console.log("fetch err", data);
-        if (data.status === 401) {
+      .catch(response => {
+        console.log("fetch err", response);
+
+        //todo: check if actual
+        if (response.status === 401) {
           this.logout();
         }
-        app.onError(data);
+
+        return response.json().then(errorModel => {
+          console.log("errorModel", errorModel);
+          throw errorModel;
+        });
       })
       .finally(() => app.onLoading(false));
   },
@@ -127,12 +133,16 @@ const app = {
     //location.href = config.routes.Transactions;
   },
 
-  login(username, password) {
-    app.ajax("auth/login", { username, password }).then(app.onLoginDone);
+  sync(data) {
+    return app.ajax("trans/sync", data);
   },
 
-  register(username, password) {
-    app.ajax("auth/register", { username, password }).then(app.onLoginDone);
+  login(user) {
+    return app.ajax("auth/login", user).then(app.onLoginDone);
+  },
+
+  register(user) {
+    return app.ajax("auth/register", user).then(app.onLoginDone);
   },
 
   loadCurrentRoom() {

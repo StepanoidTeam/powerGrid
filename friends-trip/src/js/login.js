@@ -8,7 +8,10 @@ import Overlay from "../components/overlay/overlay.jsx";
 import "../styles/app.less";
 
 export default class Login extends React.Component {
-  state = { error: null };
+  state = {
+    errorModel: false,
+    user: { username: "", password: "" }
+  };
 
   constructor(props) {
     super(props);
@@ -19,45 +22,63 @@ export default class Login extends React.Component {
     });
   }
 
-  signin() {
-    app.login(username.value, password.value);
-  }
+  signin = () => {
+    app.login(this.state.user).catch(this.onError);
+  };
 
-  register() {
-    app.register(username.value, password.value);
-  }
+  register = () => {
+    app.register(this.state.user).catch(this.onError);
+  };
 
-  onError(data) {
-    var logTxt = "⛔️ ERROR";
-    var errModel = data.responseJSON
-      ? data.responseJSON
-      : data.message
-        ? data.message
-        : data.status
-          ? { message: `${data.status} - ${data.statusText}` }
-          : {};
-
+  onError = errorModel => {
     this.setState({
-      error: `${logTxt} - ${errModel.message || "kakoy-to bag"}`
+      errorModel
     });
 
-    setTimeout(() => this.setState({ error: null }), 5000);
+    setTimeout(() => this.setState({ errorModel: false }), 5000);
+  };
+
+  onUsernameChange(username) {
+    this.setState(prevState => ({
+      user: {
+        ...prevState.user,
+        username
+      }
+    }));
+  }
+
+  onPasswordChange(password) {
+    this.setState(prevState => ({
+      user: {
+        ...prevState.user,
+        password
+      }
+    }));
   }
 
   render() {
+    const { errorModel = false } = this.state;
+
     return (
       <div>
         <Overlay isOpen={this.state.isLoading}>⏳Loading...</Overlay>
 
-        <span id="logs" />
         <Dialog isOpen={true} className="login-form">
           <div className="fl-end fl-row">
             Username:
-            <input type="text" id="username" name="username" />
+            <input
+              type="text"
+              value={this.state.user.username}
+              onChange={event => this.onUsernameChange(event.target.value)}
+            />
           </div>
           <div className="fl-end fl-row">
             Password:
-            <input type="password" id="password" name="password" />
+            <input
+              type="password"
+              value={this.state.user.password}
+              onChange={event => this.onPasswordChange(event.target.value)}
+            />
           </div>
           <div className="fl-row controls">
             <button
@@ -73,7 +94,10 @@ export default class Login extends React.Component {
           </div>
         </Dialog>
 
-        <Dialog isOpen={this.state.error}>{this.state.error}</Dialog>
+        <Dialog isOpen={errorModel}>
+          ⛔️
+          {errorModel.message || "kakoy-to bag"}
+        </Dialog>
       </div>
     );
   }
