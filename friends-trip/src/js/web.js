@@ -80,6 +80,7 @@ export default class Web extends React.Component {
 
   updateStateFromContext() {
     this.setState(app.context);
+    this.setState({ isLoading: false });
   }
 
   componentDidMount() {
@@ -87,13 +88,11 @@ export default class Web extends React.Component {
 
     this.checkOnline();
 
-    app.init({
-      onError: data => this.onError(data),
-      onLoading: value => this.setState({ isLoading: value })
-    });
+    app.init();
     this.updateStateFromContext();
 
-    app.loadCurrentRoom().then(() => this.updateStateFromContext());
+    this.setState({ isLoading: true });
+    app.loadCurrentRoom();
 
     gridLoadData({ filterByUserId: app.context.Settings.filterByUserId }).then(
       data => {
@@ -115,6 +114,7 @@ export default class Web extends React.Component {
     this.checkOnline();
 
     //code duplicate
+    this.setState({ isLoading: true });
     gridLoadData({ filterByUserId: userId }).then(data => {
       app.context.Table = data.data;
       this.updateStateFromContext();
@@ -194,7 +194,7 @@ export default class Web extends React.Component {
   render() {
     const context = this.state;
 
-    const { dialog, CurrentRoom: room, CurrentUser: user } = context;
+    const { isLoading, dialog, CurrentRoom: room, CurrentUser: user } = context;
 
     const selected = context.Settings.filterByUserId;
 
@@ -202,7 +202,7 @@ export default class Web extends React.Component {
 
     return (
       <div>
-        <Overlay isOpen={context.isLoading}>⏳Loading...</Overlay>
+        <Overlay isOpen={isLoading}>⏳Loading...</Overlay>
 
         <span id="logs" />
 

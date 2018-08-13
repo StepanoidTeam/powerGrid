@@ -41,13 +41,7 @@ const app = {
     }
   },
 
-  init({ onError, onLoading }) {
-    this.onError = data => {
-      console.log(data);
-      onError(data);
-    };
-    this.onLoading = onLoading;
-
+  init() {
     app.initContext();
     app.checkAuth(app.context.CurrentUser);
   },
@@ -60,8 +54,6 @@ const app = {
 
     const ajaxUrl = config.httpUrl + actionUrl;
     const body = JSON.stringify(data);
-
-    app.onLoading(true);
 
     return fetch(ajaxUrl, {
       method,
@@ -92,7 +84,7 @@ const app = {
           throw errorModel;
         });
       })
-      .finally(() => app.onLoading(false));
+      .finally(data => {});
   },
 
   logout() {

@@ -9,6 +9,7 @@ import "../styles/app.less";
 
 export default class Login extends React.Component {
   state = {
+    isLoading: false,
     errorModel: false,
     user: { username: "", password: "" }
   };
@@ -16,18 +17,23 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
 
-    app.init({
-      onError: data => this.onError(data),
-      onLoading: value => this.setState({ isLoading: value })
-    });
+    app.init();
   }
 
   signin = () => {
-    app.login(this.state.user).catch(this.onError);
+    this.setState({ isLoading: true });
+    app
+      .login(this.state.user)
+      .catch(this.onError)
+      .finally(() => this.setState({ isLoading: false }));
   };
 
   register = () => {
-    app.register(this.state.user).catch(this.onError);
+    this.setState({ isLoading: true });
+    app
+      .register(this.state.user)
+      .catch(this.onError)
+      .finally(() => this.setState({ isLoading: false }));
   };
 
   onError = errorModel => {
@@ -35,7 +41,7 @@ export default class Login extends React.Component {
       errorModel
     });
 
-    setTimeout(() => this.setState({ errorModel: false }), 5000);
+    setTimeout(() => this.setState({ errorModel: false }), 4000);
   };
 
   onUsernameChange(username) {
@@ -57,12 +63,10 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const { errorModel = false } = this.state;
+    const { errorModel = false, isLoading } = this.state;
 
     return (
       <div>
-        <Overlay isOpen={this.state.isLoading}>⏳Loading...</Overlay>
-
         <Dialog isOpen={true} className="login-form">
           <div className="fl-end fl-row">
             Username:
@@ -93,6 +97,8 @@ export default class Login extends React.Component {
             </button>
           </div>
         </Dialog>
+
+        <Overlay isOpen={isLoading}>⏳Loading...</Overlay>
 
         <Dialog isOpen={errorModel}>
           ⛔️
