@@ -3,7 +3,7 @@ import debounce from "lodash/debounce";
 export default class Store {
   save = debounce(value => {
     this.setItem(this.key, value);
-  }, 0);
+  }, 500);
 
   handler = {
     get: (target, property) => {

@@ -87,6 +87,10 @@ const app = {
       .catch(response => {
         console.log("fetch err", response);
 
+        if (response instanceof TypeError) {
+          throw response;
+        }
+
         //todo: check if actual
         if (response.status === 401) {
           this.logout();
