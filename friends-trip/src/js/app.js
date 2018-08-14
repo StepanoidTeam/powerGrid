@@ -33,7 +33,7 @@ const app = {
   //todo: remove this
   context: {},
 
-  init() {
+  init({ updateIsLogged }) {
     //todo: remove context prosloyka
     app.context.CurrentUser = new Store(`current-user`, {});
     app.context.CurrentRoom = new Store(`current-room`, {
@@ -44,7 +44,8 @@ const app = {
       filterBy: null
     });
 
-    app.checkAuth();
+    app.updateIsLogged = updateIsLogged;
+    app.updateIsLogged();
     //todo: if empty room - redir to login?
     const prefix = app.context.CurrentRoom.Id;
     app.context.Table = new Store(`${prefix}:transactions`, []);
@@ -98,22 +99,10 @@ const app = {
       });
   },
 
-  checkAuth() {
-    var curPage = location.pathname.toLowerCase();
-    curPage = curPage.substring(curPage.lastIndexOf("/") + 1);
-
-    //ROUTING
-    if (app.isLogged() && curPage === config.routes.Login) {
-      location.href = config.routes.Transactions;
-    } else if (!app.isLogged() && curPage !== config.routes.Login) {
-      location.href = config.routes.Login;
-    }
-  },
-
   onLoginDone(user) {
     Object.assign(app.context.CurrentUser, user);
     //do we need to?
-    app.checkAuth();
+    app.updateIsLogged();
   },
 
   //sync mapper
@@ -133,7 +122,7 @@ const app = {
   logout() {
     clearStore(app.context.CurrentUser);
 
-    app.checkAuth();
+    app.updateIsLogged();
   },
 
   login(user) {

@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
 import app from "./app.js";
 import Dialog from "../components/dialog/dialog.jsx";
@@ -16,8 +15,6 @@ export default class Login extends React.Component {
 
   constructor(props) {
     super(props);
-
-    app.init();
   }
 
   signin = () => {
@@ -108,7 +105,3 @@ export default class Login extends React.Component {
     );
   }
 }
-
-ReactDOM.render(<Login />, document.querySelector("#app"));
-
-module.hot.accept();

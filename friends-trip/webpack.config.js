@@ -6,6 +6,7 @@ const title = "🏝 Friends Trip";
 
 module.exports = {
   entry: {
+    index: "./src/index.js",
     app: "./src/js/app.js",
     login: "./src/js/login.js",
     web: "./src/js/web.js"
@@ -19,14 +20,7 @@ module.exports = {
       title: `${title}`,
       filename: "index.html",
       template: "src/index.html",
-      chunks: ["web", "runtime", "vendors"]
-    }),
-
-    new HtmlWebpackPlugin({
-      title: `${title} - Login`,
-      filename: "login.html",
-      template: "src/login.html",
-      chunks: ["login", "runtime", "vendors"]
+      chunks: ["index", "web", "login", "runtime", "vendors"]
     })
   ],
   output: {

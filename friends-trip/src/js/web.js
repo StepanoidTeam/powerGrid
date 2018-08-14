@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
 import app, { GIT } from "./app.js";
 import Grid from "../components/grid/grid.jsx";
@@ -71,7 +70,6 @@ export default class Web extends React.Component {
 
     this.checkOnline();
 
-    app.init();
     this.updateStateFromContext();
 
     this.setState({ isLoading: true });
@@ -348,7 +346,3 @@ export default class Web extends React.Component {
     );
   }
 }
-
-ReactDOM.render(<Web />, document.querySelector("#app"));
-
-module.hot.accept();
