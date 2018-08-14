@@ -10,6 +10,8 @@ import InputProgress from "../input-progress/input-progress";
 export const DialogTypes = { NEW: "NEW", EDIT: "EDIT" };
 
 export default class TransactionDialog extends React.Component {
+  state = { splitEqually: true, item: null };
+
   componentWillReceiveProps(props) {
     const { users, payer, item, isOpen, type } = props;
 
@@ -28,6 +30,7 @@ export default class TransactionDialog extends React.Component {
       });
 
       this.setState({
+        splitEqually: true,
         item: {
           ...item,
           owe
@@ -38,6 +41,7 @@ export default class TransactionDialog extends React.Component {
       //owe
       // {user: "Bob", amount: 34}
 
+      //todo: move mapping/restore outside
       const owe = users.map(user => {
         const ower = item.owe.find(u => u.user === user.Name);
         return {
@@ -47,6 +51,7 @@ export default class TransactionDialog extends React.Component {
       });
 
       this.setState({
+        splitEqually: false,
         item: {
           ...item,
           owe
@@ -57,17 +62,15 @@ export default class TransactionDialog extends React.Component {
 
   render() {
     const { isOpen, type, onClose } = this.props;
+    const { item, splitEqually } = this.state;
 
-    if (!isOpen) return null;
-
-    const { item } = this.state;
+    if (!isOpen || !item) return null;
 
     return (
       <Dialog isOpen={isOpen} className="transaction-dialog fl-col">
         <label className="details-form-field fl-col">
           Description:
           <input
-            //contentEditable={true}
             type="text"
             defaultValue={item.description}
             onChange={event => this.descriptionChanged(event.target.value)}
@@ -80,6 +83,7 @@ export default class TransactionDialog extends React.Component {
             <input
               type="number"
               min="0"
+              max="100000"
               value={item.fullAmount}
               onChange={event => this.totalChanged(+event.target.value)}
             />
@@ -88,6 +92,7 @@ export default class TransactionDialog extends React.Component {
             ⚖️
             <input
               type="checkbox"
+              checked={splitEqually}
               onChange={event => this.splitEquallyChecked(event.target.checked)}
             />
             eq.Split
@@ -108,7 +113,20 @@ export default class TransactionDialog extends React.Component {
     );
   }
 
-  //shit below --- v v v
+  //todo: validate diag form
+  // $("#detailsForm").validate({
+  //   rules: {
+  //     //description: "required",
+  //     fullAmount: { required: true }
+  //   },
+  //   messages: {
+  //     // name: "Please enter name",
+  //     fullAmount: "Please enter valid amount"
+  //   },
+  //   submitHandler: function(event) {
+  //     formSubmitHandler(event);
+  //   }
+  // });
 
   renderUsers(type, item) {
     return item.owe.sort((u1, u2) => u1.user > u2.user).map((user, key) => {
@@ -157,17 +175,16 @@ export default class TransactionDialog extends React.Component {
         }
       },
       state => {
-        if (this.isEqual) {
+        if (this.state.splitEqually) {
           this.splitEqually();
         }
       }
     );
   }
 
-  isEqual = false;
-
   splitEquallyChecked(value) {
-    this.isEqual = value;
+    this.setState({ splitEqually: value });
+
     if (value) {
       this.splitEqually();
     }
@@ -193,8 +210,6 @@ export default class TransactionDialog extends React.Component {
     });
   }
 
-  splitOnYou(value) {}
-
   userActiveChanged(userName, isActive) {
     const { item } = this.state;
 
@@ -214,7 +229,7 @@ export default class TransactionDialog extends React.Component {
         }
       },
       state => {
-        if (this.isEqual) {
+        if (this.state.splitEqually) {
           this.splitEqually();
         }
       }
@@ -238,23 +253,4 @@ export default class TransactionDialog extends React.Component {
       }
     });
   }
-
-  //.dialog("option", "title", dialogType + " Transaction");
-  //.dialog("open");
-
-  //todo: validate diag form
-
-  // $("#detailsForm").validate({
-  //   rules: {
-  //     //description: "required",
-  //     fullAmount: { required: true }
-  //   },
-  //   messages: {
-  //     // name: "Please enter name",
-  //     fullAmount: "Please enter valid amount"
-  //   },
-  //   submitHandler: function(event) {
-  //     formSubmitHandler(event);
-  //   }
-  // });
 }
