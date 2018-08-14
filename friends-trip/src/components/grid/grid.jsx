@@ -15,12 +15,12 @@ export default class Grid extends React.Component {
   };
 
   dateRenderer = value => {
-    var localTime = moment
-      .utc(value)
-      .local()
-      .format("ddd DD MMM-YY HH:mm");
+    // var localTime = moment
+    //   .utc(value)
+    //   .local()
+    //   .format("ddd DD MMM-YY HH:mm");
 
-    return localTime;
+    return value;
   };
 
   fields = [
