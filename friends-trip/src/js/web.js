@@ -114,11 +114,6 @@ export default class Web extends React.Component {
     return CurrentRoom.Users.find(u => u.Name === name).Id;
   }
 
-  getUserNameById(id) {
-    const { CurrentRoom } = this.state;
-    return CurrentRoom.Users.find(u => u.Id === id).Name;
-  }
-
   mapItemToTransaction(item) {
     const usersInfo = item.owe.map(user => ({
       UserId: this.getUserIdByName(user.user),
