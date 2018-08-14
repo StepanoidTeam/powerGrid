@@ -3,44 +3,37 @@ import React from "react";
 import "./grid.less";
 
 export default class Grid extends React.Component {
-  oweRenderer = value => {
-    return value.map((owe, key) => {
+  oweRenderer = item => {
+    return item.owe.map((ower, key) => {
       return (
-        <div key={key} className={"pd-b-20"}>
-          {owe.user} : {owe.amount}
+        <div key={key} className={"pd-b-10"}>
+          {ower.user} : {ower.amount}
         </div>
       );
     });
   };
 
-  dateRenderer = value => {
-    // var localTime = moment
-    //   .utc(value)
-    //   .local()
-    //   .format("ddd DD MMM-YY HH:mm");
+  // item = {
+  //   description: "test SW",
+  //   fullAmount: 20,
+  //   id: "transact#82bd0598",
+  //   owe: (3)[({}, {})],
+  //   payer: "Bob",
+  //   time: "14-08-2018 10:20:16",
+  //   version: 636698388167781600
+  // };
 
-    return value;
+  statusRenderer = item => {
+    return !item.id ? "✳️" : item.isDirty ? "✴️" : "⏺";
   };
 
   fields = [
-    {
-      name: "time",
-      type: "text",
-      width: 80,
-      title: "Time",
-      renderer: this.dateRenderer
-    },
-    { name: "description", type: "text", width: 100, title: "Description" },
-    { name: "payer", type: "text", width: 100, title: "Payer" },
-    { name: "fullAmount", type: "number", width: 80, title: "Amount" },
-
-    {
-      name: "owe",
-      type: "text",
-      width: 150,
-      title: "Owe",
-      renderer: this.oweRenderer
-    }
+    { title: "❔", value: this.statusRenderer },
+    { title: "Time", value: item => item.time },
+    { title: "Description", value: item => item.description },
+    { title: "Payer", value: item => item.payer },
+    { title: "Amount", value: item => item.fullAmount },
+    { title: "Owe", value: this.oweRenderer }
   ];
 
   render() {
@@ -51,9 +44,7 @@ export default class Grid extends React.Component {
         <thead>
           <tr>
             {this.fields.map((f, key) => (
-              <td key={key} style={{ width: `${f.width}px` }}>
-                {f.title}
-              </td>
+              <td key={key}>{f.title}</td>
             ))}
           </tr>
         </thead>
@@ -61,9 +52,7 @@ export default class Grid extends React.Component {
           {data.map((item, key) => (
             <tr key={key} onClick={() => onItemSelected(item)}>
               {this.fields.map((f, key2) => (
-                <td key={key2}>
-                  {f.renderer ? f.renderer(item[f.name]) : item[f.name]}
-                </td>
+                <td key={key2}>{f.value(item)}</td>
               ))}
             </tr>
           ))}
