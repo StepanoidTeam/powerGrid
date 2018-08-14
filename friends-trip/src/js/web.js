@@ -27,13 +27,12 @@ function logout() {
 
 // old shit upper ^ ^ ^
 
-const gridLoadData = ({ filterByUserId } = {}) => {
+const gridLoadData = () => {
   //todo: @vm ESLI error THEN do nothing?
   return app
     .sync({
       //todo: sync old here from LS
-      transactions: [],
-      FilterByUserId: filterByUserId
+      transactions: []
     })
     .then(data => {
       return {
@@ -47,7 +46,7 @@ const gridLoadData = ({ filterByUserId } = {}) => {
 export default class Web extends React.Component {
   state = {
     Settings: {
-      filterByUserId: ""
+      filterBy: null
     },
     CurrentUser: null,
     CurrentRoom: null,
@@ -89,48 +88,40 @@ export default class Web extends React.Component {
     this.setState({ isLoading: true });
     app.loadCurrentRoom();
 
-    gridLoadData({ filterByUserId: app.context.Settings.filterByUserId }).then(
-      data => {
-        //replace all table content
-        GIT.merge(app.context.Table, data.data);
-
-        this.updateStateFromContext();
-      }
-    );
-  }
-
-  componentDidUpdate() {}
-
-  filterBy = userId => {
-    app.context.Settings.filterByUserId = userId;
-
-    this.updateStateFromContext();
-
-    //hz
-    this.checkOnline();
-
-    //code duplicate
-    this.setState({ isLoading: true });
-    gridLoadData({ filterByUserId: userId }).then(data => {
+    gridLoadData().then(data => {
       //replace all table content
       GIT.merge(app.context.Table, data.data);
 
       this.updateStateFromContext();
     });
+  }
+
+  componentDidUpdate() {}
+
+  filterBy = userName => {
+    app.context.Settings.filterBy = userName;
+
+    this.updateStateFromContext();
   };
 
   openDialog(type, item) {
     this.setState({ dialog: { isOpen: true, type, item } });
   }
 
-  mapItemToTransaction(item) {
+  //todo: get rid of that shit
+  getUserIdByName(name) {
     const { CurrentRoom } = this.state;
+    return CurrentRoom.Users.find(u => u.Name === name).Id;
+  }
 
-    const getUserIdByName = name =>
-      CurrentRoom.Users.find(u => u.Name === name).Id;
+  getUserNameById(id) {
+    const { CurrentRoom } = this.state;
+    return CurrentRoom.Users.find(u => u.Id === id).Name;
+  }
 
+  mapItemToTransaction(item) {
     const usersInfo = item.owe.map(user => ({
-      UserId: getUserIdByName(user.user),
+      UserId: this.getUserIdByName(user.user),
       Amount: user.amount
     }));
 
@@ -196,9 +187,13 @@ export default class Web extends React.Component {
 
     const { isLoading, dialog, CurrentRoom: room, CurrentUser: user } = context;
 
-    const selected = context.Settings.filterByUserId;
+    const filterBy = context.Settings.filterBy;
 
     if (!room || !room.Users || !user) return null;
+
+    const filteredTransactions = filterBy
+      ? context.Table.filter(trans => trans.payer === filterBy)
+      : context.Table;
 
     return (
       <div>
@@ -224,14 +219,14 @@ export default class Web extends React.Component {
             {room.Users.map((user, i) => (
               <li
                 key={i}
-                className={selected === user.Id ? "selected" : undefined}
-                onClick={() => this.filterBy(user.Id)}
+                className={filterBy === user.Name ? "selected" : undefined}
+                onClick={() => this.filterBy(user.Name)}
               >
                 🔍
                 {user.Name}
               </li>
             ))}
-            {selected && <li onClick={() => this.filterBy()}>❌clear</li>}
+            {filterBy && <li onClick={() => this.filterBy()}>❌clear</li>}
           </ul>
 
           <button onClick={() => prompt("your id", user.AuthToken)}>
@@ -250,7 +245,7 @@ export default class Web extends React.Component {
 
         <div className="main-block fl-row">
           <Grid
-            data={context.Table}
+            data={filteredTransactions}
             onItemSelected={item => this.openDialog(DialogTypes.EDIT, item)}
           />
         </div>

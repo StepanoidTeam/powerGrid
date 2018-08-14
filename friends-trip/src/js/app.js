@@ -41,7 +41,7 @@ const app = {
       Name: ""
     });
     app.context.Settings = new Store(`current-settings`, {
-      filterByUserId: ""
+      filterBy: null
     });
 
     app.checkAuth();

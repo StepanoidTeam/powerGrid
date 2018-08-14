@@ -61,7 +61,7 @@ export default class Grid extends React.Component {
         <tbody>
           {data.map((item, key) => (
             <tr key={key} onClick={() => onItemSelected(item)}>
-              {this.fields.filter(f => f.visible !== false).map((f, key2) => (
+              {this.fields.map((f, key2) => (
                 <td key={key2}>
                   {f.renderer ? f.renderer(item[f.name]) : item[f.name]}
                 </td>
