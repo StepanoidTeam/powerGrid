@@ -1,6 +1,8 @@
 const webpack = require("webpack");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
+//const PwaManifestWebpackPlugin = require("pwa-manifest-webpack-plugin");
 
 const title = "🏝 Friends Trip";
 
@@ -21,6 +23,28 @@ module.exports = {
       filename: "index.html",
       template: "src/index.html",
       chunks: ["index", "web", "login", "runtime", "vendors"]
+    }),
+
+    //todo: create manifest, and somehow attach it to page
+    // new PwaManifestWebpackPlugin({
+    //   name: "Todos",
+    //   description: "a todo demo of pwa",
+
+    //   includeDirectory: true,
+    //   filename: `app-manifest.json`,
+    //   icons: [
+    //     {
+    //       ios: true,
+    //       sizes: [512, 36, 48, 192],
+    //       destination: "dist",
+    //       src: "./src/styles/cake.png"
+    //     }
+    //   ]
+    // }),
+
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true
     })
   ],
   output: {
