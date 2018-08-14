@@ -1,4 +1,5 @@
 import React from "react";
+import _remove from "lodash/remove";
 
 import app, { GIT } from "./app.js";
 import Grid from "../components/grid/grid.jsx";
@@ -61,6 +62,7 @@ export default class Web extends React.Component {
   }
 
   updateStateFromContext() {
+    console.warn("remove that shit");
     this.setState(app.context);
     this.setState({ isLoading: false });
   }
@@ -76,16 +78,9 @@ export default class Web extends React.Component {
     app.loadCurrentRoom();
 
     //on page start
-    this.pull()
-      .then(data => {
-        return data.pullResult.transactions;
-      })
-      .then(transactions => {
-        //replace all table content
-        //GIT.merge(app.context.Table, transactions);
-
-        this.updateStateFromContext();
-      });
+    this.gitpull().then(() => {
+      this.updateStateFromContext();
+    });
   }
 
   componentDidUpdate() {}
@@ -120,7 +115,7 @@ export default class Web extends React.Component {
     };
   }
 
-  saveClient(item) {
+  commitChange(item) {
     if (
       item.id &&
       !confirm("It's old transaction, are you sure you want to change it?")
@@ -128,55 +123,63 @@ export default class Web extends React.Component {
       return;
     }
 
-    //put at 0
-    app.context.Table.unshift(item);
+    item.isDirty = true;
 
-    // const transaction = this.mapItemToTransaction(item);
-    // this.syncTransactions([transaction]);
+    if (item.id) {
+      //edited
+      //todo: replace in store
+      _remove(app.context.Table, { id: item.id });
+      app.context.Table.unshift(item);
+    } else {
+      //new
+      //todo: put in store
+      app.context.Table.unshift(item);
+    }
   }
 
-  pull = () => {
+  gitpull = () => {
     return app
       .sync({
         transactions: []
       })
       .then(data => {
         this.setState({ lastPull: data.pullResult });
-        //console.log()
         return data;
       });
   };
 
-  push = () => {
+  onPullClick = () => {
+    this.gitpull();
+  };
+
+  onPushClick = () => {
     const { Table: head, lastPull: pull } = this.state;
 
-    const pullVer = pull.version;
-    const headVer = head[0].version;
+    const allDirty = head.filter(t => t.isDirty);
 
-    //    if (pullVer < headVer) {
-    //can push
+    console.group("DIFF:");
+    console.log("✳️new", allDirty.filter(t => !t.id));
+    console.log("✴️edited", allDirty.filter(t => t.id));
+    console.groupEnd();
 
-    const endIndex = head.findIndex(t => t.version === pullVer);
-    const diff = head.slice(0, endIndex);
-    console.log("diff by ver.", endIndex, diff);
-
-    //send to server
-    const diff2 = head.filter(
-      t => t.id === undefined || t.time === undefined || t.version === undefined
-    );
-    console.log("diff2 no id/ver/time", diff2);
-
-    const transToPush = diff.map(item => this.mapItemToTransaction(item));
-    this.syncTransactions(transToPush);
-
-    // }
+    const transToPush = allDirty.map(item => this.mapItemToTransaction(item));
+    this.gitpush(transToPush);
   };
 
-  merge = () => {
-    console.log("MERGE: no impl.");
+  onMergeClick = () => {
+    const { Table: head, lastPull: pull } = this.state;
+
+    const tnew = head.filter(t => !t.id && t.isDirty);
+    const tedited = head.filter(t => t.id && t.isDirty);
+
+    pull.transactions;
+
+    head;
+
+    console.log("MERGE:");
   };
 
-  override = () => {
+  onOverrideClick = () => {
     const { Table: head, lastPull: pull } = this.state;
 
     //const pullVer = pull.version;
@@ -192,7 +195,7 @@ export default class Web extends React.Component {
     // }
   };
 
-  syncTransactions(transactions) {
+  gitpush(transactions) {
     //todo: @vm do not put item on server directly
     // put it into grid/storage
     // then ELSEWHERE try to sync with server, if online === ok
@@ -223,7 +226,7 @@ export default class Web extends React.Component {
     console.log("dialog", item);
 
     if (item) {
-      this.saveClient(item);
+      this.commitChange(item);
     }
 
     this.setState({ dialog: { isOpen: false } });
@@ -309,10 +312,10 @@ export default class Web extends React.Component {
           className="
         fl-row"
         >
-          <button onClick={this.pull}>⬇️ pull</button>
-          <button onClick={this.push}>⬆️ push</button>
-          <button onClick={this.merge}>🈲 merge</button>
-          <button onClick={this.override}>🈲 override</button>
+          <button onClick={this.onPullClick}>⬇️ pull</button>
+          <button onClick={this.onPushClick}>⬆️ push</button>
+          <button onClick={this.onMergeClick}>🈲 merge</button>
+          <button onClick={this.onOverrideClick}>🈲 override</button>
         </div>
         <div className="fl-col">
           <span>
