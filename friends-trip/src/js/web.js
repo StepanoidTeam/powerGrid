@@ -91,10 +91,6 @@ export default class Web extends React.Component {
     this.updateStateFromContext();
   };
 
-  openDialog(type, item) {
-    this.setState({ dialog: { isOpen: true, type, item } });
-  }
-
   //todo: get rid of that shit
   getUserIdByName(name) {
     const { CurrentRoom } = this.state;
@@ -132,6 +128,10 @@ export default class Web extends React.Component {
       app.context.Table.unshift(item);
     } else {
       //new
+      //adhoc to remove prev edited NEW record
+      _remove(app.context.Table, { fakeid: item.fakeid });
+      //to deal with next edit for new item
+      item.fakeid = +new Date();
       //todo: put in store
       app.context.Table.unshift(item);
     }
@@ -252,6 +252,10 @@ export default class Web extends React.Component {
 
   checkOnline() {
     this.setState({ isOnline: navigator.onLine });
+  }
+
+  openDialog(type, item) {
+    this.setState({ dialog: { isOpen: true, type, item } });
   }
 
   closeDialog(item) {
