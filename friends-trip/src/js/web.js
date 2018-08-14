@@ -115,7 +115,7 @@ export default class Web extends React.Component {
     };
   }
 
-  commitChange(item) {
+  gitcommitChange(item) {
     if (
       item.id &&
       !confirm("It's old transaction, are you sure you want to change it?")
@@ -148,35 +148,90 @@ export default class Web extends React.Component {
       });
   };
 
-  onPullClick = () => {
-    this.gitpull();
-  };
+  gitmerge(head, pull) {
+    const toadd = [];
 
-  onPushClick = () => {
-    const { Table: head, lastPull: pull } = this.state;
+    pull.forEach(tfresh => {
+      const told = head.find(t => t.id === tfresh.id);
 
+      if (!told) {
+        //not found - add new
+        toadd.push(tfresh);
+      } else {
+        //found
+        if (!told.isDirty) {
+          //pure - can be updated
+          _remove(head, { id: tfresh.id });
+          toadd.push(tfresh);
+        } else {
+          //modified - merge conflict!
+          //todo: something with that
+          if (tfresh.version > told.version) {
+            //fresher
+            console.group("MERGE conflict:");
+            console.log("old", told);
+            console.log("new", tfresh);
+            console.groupEnd();
+            //dunno what to do
+          } else {
+            //samever, modified
+            //just keep as is
+          }
+        }
+      }
+    });
+
+    //push all new to head
+    head.unshift(...toadd);
+  }
+
+  gitpush(head) {
     const allDirty = head.filter(t => t.isDirty);
 
+    //remove from LS all changes, send to server,
+
+    _remove(head, t => t.isDirty);
+    //debug
     console.group("DIFF:");
     console.log("✳️new", allDirty.filter(t => !t.id));
     console.log("✴️edited", allDirty.filter(t => t.id));
     console.groupEnd();
 
     const transToPush = allDirty.map(item => this.mapItemToTransaction(item));
-    this.gitpush(transToPush);
+
+    app
+      .sync({
+        transactions: transToPush
+      })
+      .then(response => {
+        console.log("Push response", response);
+        if (response.pushResult.length === 0) {
+          console.log("PUSH Success, no Errors");
+        } else {
+          //todo: then if any errors - put back to LS from response
+          console.warn("PUSH conflicts", response.pushResult);
+        }
+        return response;
+      });
+  }
+
+  onPullClick = () => {
+    this.gitpull();
+  };
+
+  onPushClick = () => {
+    const { Table: head } = this.state;
+    this.checkOnline();
+
+    this.gitpush(head);
   };
 
   onMergeClick = () => {
     const { Table: head, lastPull: pull } = this.state;
 
-    const tnew = head.filter(t => !t.id && t.isDirty);
-    const tedited = head.filter(t => t.id && t.isDirty);
-
-    pull.transactions;
-
-    head;
-
     console.log("MERGE:");
+    this.gitmerge(head, pull.transactions);
+    this.updateStateFromContext();
   };
 
   onOverrideClick = () => {
@@ -195,29 +250,6 @@ export default class Web extends React.Component {
     // }
   };
 
-  gitpush(transactions) {
-    //todo: @vm do not put item on server directly
-    // put it into grid/storage
-    // then ELSEWHERE try to sync with server, if online === ok
-
-    this.checkOnline();
-    app
-      .sync({
-        transactions,
-        //get list
-        ...app.context.Settings
-        // pageIndex: 0,
-        // pageSize: 0
-      })
-
-      .then(data => {
-        //replace all table content
-        GIT.merge(app.context.Table, data.pullResult.transactions);
-
-        this.updateStateFromContext();
-      });
-  }
-
   checkOnline() {
     this.setState({ isOnline: navigator.onLine });
   }
@@ -226,7 +258,7 @@ export default class Web extends React.Component {
     console.log("dialog", item);
 
     if (item) {
-      this.commitChange(item);
+      this.gitcommitChange(item);
     }
 
     this.setState({ dialog: { isOpen: false } });
