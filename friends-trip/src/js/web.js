@@ -27,20 +27,6 @@ function logout() {
 
 // old shit upper ^ ^ ^
 
-const gridLoadData = () => {
-  //todo: @vm ESLI error THEN do nothing?
-  return app
-    .sync({
-      //todo: sync old here from LS
-      transactions: []
-    })
-    .then(data => {
-      return {
-        data: data.pullResult.transactions
-      };
-    });
-};
-
 /// REACT starts from here v v v
 
 export default class Web extends React.Component {
@@ -54,7 +40,10 @@ export default class Web extends React.Component {
     dialog: { isOpen: false },
     error: null,
     isOnline: false,
-    isLoading: false
+    isLoading: false,
+    //debug
+    lastPull: null,
+    mergedTrans: []
   };
 
   onError(data) {
@@ -88,12 +77,17 @@ export default class Web extends React.Component {
     this.setState({ isLoading: true });
     app.loadCurrentRoom();
 
-    gridLoadData().then(data => {
-      //replace all table content
-      GIT.merge(app.context.Table, data.data);
+    //on page start
+    this.pull()
+      .then(data => {
+        return data.pullResult.transactions;
+      })
+      .then(transactions => {
+        //replace all table content
+        //GIT.merge(app.context.Table, transactions);
 
-      this.updateStateFromContext();
-    });
+        this.updateStateFromContext();
+      });
   }
 
   componentDidUpdate() {}
@@ -136,9 +130,69 @@ export default class Web extends React.Component {
       return;
     }
 
-    const transaction = this.mapItemToTransaction(item);
-    this.syncTransactions([transaction]);
+    //put at 0
+    app.context.Table.unshift(item);
+
+    // const transaction = this.mapItemToTransaction(item);
+    // this.syncTransactions([transaction]);
   }
+
+  pull = () => {
+    return app
+      .sync({
+        transactions: []
+      })
+      .then(data => {
+        this.setState({ lastPull: data.pullResult });
+        //console.log()
+        return data;
+      });
+  };
+
+  push = () => {
+    const { Table: head, lastPull: pull } = this.state;
+
+    const pullVer = pull.version;
+    const headVer = head[0].version;
+
+    //    if (pullVer < headVer) {
+    //can push
+
+    const endIndex = head.findIndex(t => t.version === pullVer);
+    const diff = head.slice(0, endIndex);
+    console.log("diff by ver.", endIndex, diff);
+
+    //send to server
+    const diff2 = head.filter(
+      t => t.id === undefined || t.time === undefined || t.version === undefined
+    );
+    console.log("diff2 no id/ver/time", diff2);
+
+    const transToPush = diff.map(item => this.mapItemToTransaction(item));
+    this.syncTransactions(transToPush);
+
+    // }
+  };
+
+  merge = () => {
+    console.log("MERGE: no impl.");
+  };
+
+  override = () => {
+    const { Table: head, lastPull: pull } = this.state;
+
+    //const pullVer = pull.version;
+    //    const headVer = head[0].version;
+
+    // if (pullVer > headVer) {
+    //   //can merge
+    console.log("merge: just overrides local with pull/master");
+    GIT.merge(head, pull.transactions);
+
+    this.updateStateFromContext();
+
+    // }
+  };
 
   syncTransactions(transactions) {
     //todo: @vm do not put item on server directly
@@ -180,15 +234,34 @@ export default class Web extends React.Component {
   render() {
     const context = this.state;
 
-    const { isLoading, dialog, CurrentRoom: room, CurrentUser: user } = context;
+    const {
+      lastPull,
+      isLoading,
+      dialog,
+      CurrentRoom: room,
+      CurrentUser: user,
+      Table: transactions
+    } = context;
 
     const filterBy = context.Settings.filterBy;
 
-    if (!room || !room.Users || !user) return null;
+    if (!room || !room.Users || !user || !transactions) return null;
 
     const filteredTransactions = filterBy
-      ? context.Table.filter(trans => trans.payer === filterBy)
-      : context.Table;
+      ? transactions.filter(trans => trans.payer === filterBy)
+      : transactions;
+
+    const pullVer = lastPull ? lastPull.version : "no data";
+    const headVer = transactions[0] ? transactions[0].version : "no data";
+
+    const compareVerMessage =
+      pullVer === headVer
+        ? "✅up to date"
+        : pullVer > headVer
+          ? "🈲need MERGE"
+          : pullVer < headVer
+            ? "⬆️need PUSH"
+            : "no data";
 
     return (
       <div>
@@ -229,13 +302,29 @@ export default class Web extends React.Component {
             {user.Name}
           </button>
 
-          <button>⬇️ pull</button>
-          <button>⬆️ push</button>
-          <button>🈲 merge</button>
-
           <button className="btn-logout" type="button" onClick={logout}>
             ❌
           </button>
+        </div>
+
+        <div
+          className="
+        fl-row"
+        >
+          <button onClick={this.pull}>⬇️ pull</button>
+          <button onClick={this.push}>⬆️ push</button>
+          <button onClick={this.merge}>🈲 merge</button>
+          <button onClick={this.override}>🈲 override</button>
+        </div>
+        <div className="fl-col">
+          <span>
+            last pull:
+            {pullVer}({lastPull && lastPull.transactions.length})
+          </span>
+          <span>
+            HEAD: {headVer}({transactions.length})
+          </span>
+          <span>{compareVerMessage}</span>
         </div>
 
         <div className="main-block fl-row">
