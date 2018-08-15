@@ -108,9 +108,9 @@ export default class Web extends React.Component {
     }));
 
     return {
-      Id: item.id, //null when new
-      Description: item.description,
-      Amount: item.fullAmount,
+      id: item.id, //null when new
+      description: item.description,
+      amount: item.fullAmount,
       OweUsers: usersInfo
     };
   }
