@@ -245,6 +245,7 @@ export default class Web extends React.Component {
   }
 
   onPullClick = () => {
+    this.checkOnline();
     this.setState({ isLoading: true });
     this.gitpull().finally(() => {
       this.setState({ isLoading: false });
@@ -252,6 +253,7 @@ export default class Web extends React.Component {
   };
 
   onPushClick = () => {
+    this.checkOnline();
     const { Table: head } = this.state;
     this.setState({ isLoading: true });
     this.gitpush(head).finally(() => {
@@ -339,7 +341,7 @@ export default class Web extends React.Component {
             </span>
           </span>
 
-          <span>{context.isOnline ? "🌐 online" : "🌑 offline"}</span>
+          <span>{context.isOnline ? "🌐online" : "🚫offline"}</span>
 
           <button onClick={() => this.openDialog(DialogTypes.NEW, {})}>
             {MARK.NEW} Add 💰
