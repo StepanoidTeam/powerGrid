@@ -53,16 +53,13 @@ export default class Web extends React.Component {
     mergedTrans: []
   };
 
-  onError(data) {
-    var logTxt = "⛔️ ERROR";
-    var errModel = data.responseJSON
-      ? data.responseJSON
-      : data.status
-        ? { message: `${data.status} - ${data.statusText}` }
-        : {};
+  onError(errorModel) {
+    this.showError(`⛔️${errorModel.message || "kakoy-to bag"}`);
+  }
 
+  showError(errorData) {
     this.setState({
-      error: `${logTxt} - ${errModel.message || "kakoy-to bag"}`
+      error: errorData
     });
 
     setTimeout(() => this.setState({ error: null }), 5000);
@@ -175,10 +172,18 @@ export default class Web extends React.Component {
           //todo: something with that
           if (tfresh.version > told.version) {
             //fresher
-            console.group("MERGE conflict:");
-            console.log("old", told);
-            console.log("new", tfresh);
-            console.groupEnd();
+            console.warn("MERGE conflict", "head", told, "pull", tfresh);
+
+            this.showError(
+              <div className="fl-col">
+                <span>⚠️MERGE conflict:</span>
+                <span>HEAD</span>
+                <textarea defaultValue={JSON.stringify(told)} />
+                <span>pull</span>
+                <textarea defaultValue={JSON.stringify(tfresh)} />
+              </div>
+            );
+
             //dunno what to do
           } else {
             //samever, modified
@@ -217,7 +222,6 @@ export default class Web extends React.Component {
         transactions: transToPush
       })
       .then(response => {
-        console.log("Push response", response);
         if (response.pushResult.length === 0) {
           console.log("PUSH Success, no Errors");
         } else {
@@ -280,28 +284,30 @@ export default class Web extends React.Component {
       dialog,
       CurrentRoom: room,
       CurrentUser: user,
-      Table: transactions
+      Table: head
     } = context;
 
     const filterBy = context.Settings.filterBy;
 
-    if (!room || !room.Users || !user || !transactions) return null;
+    if (!room || !room.Users || !user || !head) return null;
 
     const filteredTransactions = filterBy
-      ? transactions.filter(trans => trans.payer === filterBy)
-      : transactions;
+      ? head.filter(trans => trans.payer === filterBy)
+      : head;
 
     const pullVer = lastPull ? lastPull.version : "no data";
-    const headVer = transactions[0] ? transactions[0].version : "no data";
+    const headVer = head[0] ? head[0].version : "no data";
+    const headIsDirty = head[0] && head[0].isDirty;
 
-    const compareVerMessage =
-      pullVer === headVer
-        ? "✅up to date"
-        : pullVer > headVer
-          ? "🈲need MERGE"
-          : pullVer < headVer
-            ? "⬆️need PUSH"
-            : "no data";
+    //suggestion works very subjectively
+    const suggestAction =
+      pullVer > headVer
+        ? headIsDirty
+          ? "⬆️need PUSH"
+          : "🈲need MERGE"
+        : headIsDirty
+          ? "⬆️need PUSH"
+          : "✅UP2DATE";
 
     return (
       <div>
@@ -358,13 +364,12 @@ export default class Web extends React.Component {
         </div>
         <div className="fl-col">
           <span>
-            last pull:
-            {pullVer}({lastPull && lastPull.transactions.length})
+            PULL: [{lastPull && lastPull.transactions.length}] {pullVer}
           </span>
           <span>
-            HEAD: {headVer}({transactions.length})
+            HEAD: [{head.length}] {headVer}
           </span>
-          <span>{compareVerMessage}</span>
+          <span>{suggestAction}</span>
         </div>
 
         <div className="main-block fl-row">
