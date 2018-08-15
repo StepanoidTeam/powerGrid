@@ -138,6 +138,7 @@ const app = {
   },
 
   loadCurrentRoom() {
+    //todo: handle offline error
     return app.ajax("room/status").then(room => {
       Object.assign(app.context.CurrentRoom, room);
     });

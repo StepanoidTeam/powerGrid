@@ -57,12 +57,12 @@ export default class Web extends React.Component {
     this.showError(`⛔️${errorModel.message || "kakoy-to bag"}`);
   }
 
-  showError(errorData) {
+  showError(errorData, timeout = 3000) {
     this.setState({
       error: errorData
     });
 
-    setTimeout(() => this.setState({ error: null }), 5000);
+    setTimeout(() => this.setState({ error: null }), timeout);
   }
 
   updateStateFromContext() {
@@ -115,6 +115,12 @@ export default class Web extends React.Component {
     };
   }
 
+  offlineError = error => {
+    this.showError(`seems offline ${error}`, 1000);
+    this.checkOnline();
+    return error;
+  };
+
   gitcommitChange(item) {
     if (
       item.id &&
@@ -149,8 +155,43 @@ export default class Web extends React.Component {
       .then(data => {
         this.setState({ lastPull: data.pullResult });
         return data;
-      });
+      })
+      .catch(this.offlineError);
   };
+
+  gitpush(head) {
+    //remove from LS all changes, send to server,
+    const allDirty = head.filter(t => t.isDirty);
+    _remove(head, t => t.isDirty);
+
+    //debug
+    console.group("DIFF:");
+    console.log(`${MARK.NEW}new`, allDirty.filter(t => !t.id));
+    console.log(`${MARK.EDIT}edited`, allDirty.filter(t => t.id));
+    console.groupEnd();
+
+    const transToPush = allDirty.map(item => this.mapItemToTransaction(item));
+
+    return app
+      .sync({
+        transactions: transToPush
+      })
+      .then(response => {
+        if (response.pushResult.length === 0) {
+          console.log("PUSH Success, no Errors");
+        } else {
+          //todo: then if any errors - put back to LS from response
+          console.warn("PUSH conflicts", response.pushResult);
+        }
+        return response;
+      })
+      .catch(error => {
+        //rollback
+        head.unshift(...allDirty);
+        throw error;
+      })
+      .catch(this.offlineError);
+  }
 
   gitmerge(head, pull) {
     const toadd = [];
@@ -203,51 +244,26 @@ export default class Web extends React.Component {
     head.push(...sorted);
   }
 
-  gitpush(head) {
-    const allDirty = head.filter(t => t.isDirty);
-
-    //remove from LS all changes, send to server,
-
-    _remove(head, t => t.isDirty);
-    //debug
-    console.group("DIFF:");
-    console.log(`${MARK.NEW}new`, allDirty.filter(t => !t.id));
-    console.log(`${MARK.EDIT}edited`, allDirty.filter(t => t.id));
-    console.groupEnd();
-
-    const transToPush = allDirty.map(item => this.mapItemToTransaction(item));
-
-    app
-      .sync({
-        transactions: transToPush
-      })
-      .then(response => {
-        if (response.pushResult.length === 0) {
-          console.log("PUSH Success, no Errors");
-        } else {
-          //todo: then if any errors - put back to LS from response
-          console.warn("PUSH conflicts", response.pushResult);
-        }
-        return response;
-      });
-  }
-
   onPullClick = () => {
-    this.gitpull();
+    this.setState({ isLoading: true });
+    this.gitpull().finally(() => {
+      this.setState({ isLoading: false });
+    });
   };
 
   onPushClick = () => {
     const { Table: head } = this.state;
-    this.checkOnline();
-
-    this.gitpush(head);
+    this.setState({ isLoading: true });
+    this.gitpush(head).finally(() => {
+      this.setState({ isLoading: false });
+    });
   };
 
   onMergeClick = () => {
     const { Table: head, lastPull: pull } = this.state;
 
     console.log("MERGE:");
-    this.gitmerge(head, pull.transactions);
+    this.gitmerge(head, pull ? pull.transactions : []);
     this.updateStateFromContext();
   };
 
