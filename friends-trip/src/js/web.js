@@ -1,5 +1,6 @@
 import React from "react";
 import _remove from "lodash/remove";
+import _sortBy from "lodash/sortBy";
 
 import app, { GIT } from "./app.js";
 import Grid from "../components/grid/grid.jsx";
@@ -183,6 +184,12 @@ export default class Web extends React.Component {
 
     //push all new to head
     head.unshift(...toadd);
+    //sort head - dirty first, then date asc
+    const sorted = _sortBy(head.splice(0), [
+      "isDirty",
+      item => Date.parse(Date(item.time))
+    ]);
+    head.push(...sorted);
   }
 
   gitpush(head) {
@@ -234,20 +241,10 @@ export default class Web extends React.Component {
     this.updateStateFromContext();
   };
 
-  onOverrideClick = () => {
+  onEmptyClick = () => {
     const { Table: head, lastPull: pull } = this.state;
-
-    //const pullVer = pull.version;
-    //    const headVer = head[0].version;
-
-    // if (pullVer > headVer) {
-    //   //can merge
-    console.log("merge: just overrides local with pull/master");
-    GIT.merge(head, pull.transactions);
-
+    head.splice(0);
     this.updateStateFromContext();
-
-    // }
   };
 
   checkOnline() {
@@ -349,9 +346,9 @@ export default class Web extends React.Component {
         fl-row"
         >
           <button onClick={this.onPullClick}>⬇️ pull</button>
+          <button onClick={this.onMergeClick}>Ⓜ️ merge</button>
           <button onClick={this.onPushClick}>⬆️ push</button>
-          <button onClick={this.onMergeClick}>🈲 merge</button>
-          <button onClick={this.onOverrideClick}>🈲 override</button>
+          <button onClick={this.onEmptyClick}>🗑 empty head</button>
         </div>
         <div className="fl-col">
           <span>
