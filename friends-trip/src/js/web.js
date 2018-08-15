@@ -12,6 +12,12 @@ import Overlay from "../components/overlay/overlay.jsx";
 
 import "../styles/app.less";
 
+export const MARK = {
+  EDIT: "🌗",
+  NEW: "🌕",
+  OLD: "🌑"
+};
+
 export function moneyRound(value) {
   return Math.round(value * 100) / 100;
 }
@@ -200,8 +206,8 @@ export default class Web extends React.Component {
     _remove(head, t => t.isDirty);
     //debug
     console.group("DIFF:");
-    console.log("✳️new", allDirty.filter(t => !t.id));
-    console.log("✴️edited", allDirty.filter(t => t.id));
+    console.log(`${MARK.NEW}new`, allDirty.filter(t => !t.id));
+    console.log(`${MARK.EDIT}edited`, allDirty.filter(t => t.id));
     console.groupEnd();
 
     const transToPush = allDirty.map(item => this.mapItemToTransaction(item));
@@ -314,7 +320,7 @@ export default class Web extends React.Component {
           <span>{context.isOnline ? "🌐 online" : "🌑 offline"}</span>
 
           <button onClick={() => this.openDialog(DialogTypes.NEW, {})}>
-            ✳️ Add 💰
+            {MARK.NEW} Add 💰
           </button>
 
           <ul className="room-users fl-row">

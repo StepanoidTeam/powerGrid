@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./grid.less";
+import { MARK } from "../../js/web";
 
 export default class Grid extends React.Component {
   oweRenderer = item => {
@@ -24,7 +25,7 @@ export default class Grid extends React.Component {
   // };
 
   statusRenderer = item => {
-    return !item.id ? "✳️" : item.isDirty ? "✴️" : "⏺";
+    return !item.id ? MARK.NEW : item.isDirty ? MARK.EDIT : MARK.OLD;
   };
 
   fields = [
