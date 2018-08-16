@@ -48,7 +48,7 @@ const app = {
     app.updateIsLogged();
     //todo: if empty room - redir to login?
     const prefix = app.context.CurrentRoom.Id;
-    app.context.Table = new Store(`${prefix}:transactions`, []);
+    app.context.head = new Store(`${prefix}:transactions`, []);
   },
 
   isLogged() {

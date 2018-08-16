@@ -43,19 +43,26 @@ export default class Web extends React.Component {
     },
     CurrentUser: null,
     CurrentRoom: null,
-    Table: [],
+    head: [],
     dialog: { isOpen: false },
     error: null,
     isOnline: false,
     isLoading: false,
     //debug
-    lastPull: null,
-    mergedTrans: []
+    lastPull: null
   };
 
-  onError(errorModel) {
-    this.showError(`⛔️${errorModel.message || "kakoy-to bag"}`);
-  }
+  offlineErrorHandler = error => {
+    //todo: check and handle ONLY offline error
+    //todo: re-raise others
+    this.showError(`seems offline ${error}`, 1000);
+    this.checkOnline();
+    return error;
+  };
+
+  unknownErrorHandler = errorModel => {
+    this.showError(`⛔️${errorModel || "kakoy-to bag"}`);
+  };
 
   showError(errorData, timeout = 3000) {
     this.setState({
@@ -101,12 +108,6 @@ export default class Web extends React.Component {
     return CurrentRoom.Users.find(u => u.Name === name).Id;
   }
 
-  offlineError = error => {
-    this.showError(`seems offline ${error}`, 1000);
-    this.checkOnline();
-    return error;
-  };
-
   gitcommitChange(item) {
     if (
       item.id &&
@@ -120,29 +121,41 @@ export default class Web extends React.Component {
     if (item.id) {
       //edited
       //todo: replace in store
-      _remove(app.context.Table, { id: item.id });
-      app.context.Table.unshift(item);
+      _remove(app.context.head, { id: item.id });
+      app.context.head.unshift(item);
     } else {
       //new
       //adhoc to remove prev edited NEW record
-      _remove(app.context.Table, { fakeid: item.fakeid });
+      _remove(app.context.head, { fakeid: item.fakeid });
       //to deal with next edit for new item
       item.fakeid = +new Date();
       //todo: put in store
-      app.context.Table.unshift(item);
+      app.context.head.unshift(item);
     }
   }
 
   gitpull = () => {
-    return app
-      .sync({
-        transactions: []
-      })
-      .then(data => {
-        this.setState({ lastPull: data.pullResult });
-        return data;
-      })
-      .catch(this.offlineError);
+    return (
+      app
+        .sync({
+          transactions: []
+        })
+        .then(response => {
+          this.setState({ lastPull: response.pullResult });
+          return response;
+        })
+        .then(response => {
+          //todo:  call merge here
+
+          const { head } = this.state;
+
+          this.gitmerge(head, response.pullResult.transactions);
+
+          return response;
+        })
+        //.catch(this.offlineErrorHandler)
+        .catch(this.unknownErrorHandler)
+    );
   };
 
   gitpush(head) {
@@ -154,58 +167,62 @@ export default class Web extends React.Component {
     console.group("DIFF:");
     console.log(`${MARK.NEW}new`, allDirty.filter(t => !t.id));
     console.log(`${MARK.EDIT}edited`, allDirty.filter(t => t.id));
+    console.log(JSON.stringify(allDirty));
     console.groupEnd();
 
-    return app
-      .sync({
-        transactions: allDirty
-      })
-      .then(response => {
-        if (response.pushResult.length === 0) {
-          console.log("PUSH Success, no Errors");
-        } else {
-          //todo: then if any errors - put back to LS from response
-          console.warn("PUSH conflicts", response.pushResult);
-        }
-        return response;
-      })
-      .catch(error => {
-        //rollback
-        head.unshift(...allDirty);
-        throw error;
-      })
-      .catch(this.offlineError);
+    return (
+      app
+        .sync({
+          transactions: allDirty
+        })
+        .then(response => {
+          if (response.pushResult.length === 0) {
+            console.log("PUSH Success, no Errors");
+          } else {
+            //todo: then if any errors - put back to LS from response
+            throw new Error("PUSH conflicts", response.pushResult);
+          }
+          return response;
+        })
+        .catch(error => {
+          //rollback
+          head.unshift(...allDirty);
+          throw error;
+        })
+        //.catch(this.offlineErrorHandler)
+        .catch(this.unknownErrorHandler)
+    );
   }
 
-  gitmerge(head, pull) {
+  gitmerge(head, pull = []) {
     const toadd = [];
 
-    pull.forEach(tfresh => {
-      const told = head.find(t => t.id === tfresh.id);
+    pull.forEach(tpull => {
+      const thead = head.find(t => t.id === tpull.id);
 
-      if (!told) {
+      if (!thead) {
         //not found - add new
-        toadd.push(tfresh);
+        toadd.push(tpull);
       } else {
         //found
-        if (!told.isDirty) {
+        if (!thead.isDirty) {
           //pure - can be updated
-          _remove(head, { id: tfresh.id });
-          toadd.push(tfresh);
+          _remove(head, { id: thead.id });
+          toadd.push(tpull);
         } else {
           //modified - merge conflict!
           //todo: something with that
-          if (tfresh.version > told.version) {
+          if (tpull.version > thead.version) {
             //fresher
-            console.warn("MERGE conflict", "head", told, "pull", tfresh);
+            console.warn("MERGE conflict", "head", thead, "pull", tpull);
 
             this.showError(
               <div className="fl-col">
                 <span>⚠️MERGE conflict:</span>
                 <span>HEAD</span>
-                <textarea defaultValue={JSON.stringify(told)} />
+                <textarea defaultValue={JSON.stringify(thead)} />
                 <span>pull</span>
-                <textarea defaultValue={JSON.stringify(tfresh)} />
+                <textarea defaultValue={JSON.stringify(tpull)} />
               </div>
             );
 
@@ -232,29 +249,23 @@ export default class Web extends React.Component {
     this.checkOnline();
     this.setState({ isLoading: true });
     this.gitpull().finally(() => {
+      this.updateStateFromContext();
       this.setState({ isLoading: false });
     });
   };
 
   onPushClick = () => {
     this.checkOnline();
-    const { Table: head } = this.state;
+    const { head } = this.state;
     this.setState({ isLoading: true });
     this.gitpush(head).finally(() => {
+      this.updateStateFromContext();
       this.setState({ isLoading: false });
     });
   };
 
-  onMergeClick = () => {
-    const { Table: head, lastPull: pull } = this.state;
-
-    console.log("MERGE:");
-    this.gitmerge(head, pull ? pull.transactions : []);
-    this.updateStateFromContext();
-  };
-
   onEmptyClick = () => {
-    const { Table: head, lastPull: pull } = this.state;
+    const { head } = this.state;
     head.splice(0);
     this.updateStateFromContext();
   };
@@ -286,7 +297,7 @@ export default class Web extends React.Component {
       dialog,
       CurrentRoom: room,
       CurrentUser: user,
-      Table: head
+      head
     } = context;
 
     const filterBy = context.Settings.filterBy;
@@ -359,8 +370,7 @@ export default class Web extends React.Component {
           className="
         fl-row"
         >
-          <button onClick={this.onPullClick}>⬇️ pull</button>
-          <button onClick={this.onMergeClick}>Ⓜ️ merge</button>
+          <button onClick={this.onPullClick}>⬇️Ⓜ️ pull-merge</button>
           <button onClick={this.onPushClick}>⬆️ push</button>
           <button onClick={this.onEmptyClick}>🗑 empty head</button>
         </div>
