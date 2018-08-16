@@ -1,4 +1,5 @@
 import React from "react";
+import _uniqBy from "lodash/uniqBy";
 
 import { moneyRound } from "../../js/web";
 import Dialog from "../dialog/dialog";
@@ -13,48 +14,41 @@ export default class TransactionDialog extends React.Component {
   state = { splitEqually: true, item: null };
 
   componentWillReceiveProps(props) {
-    const { users, payer, item, isOpen, type } = props;
+    const { users, creditor, item, isOpen, type } = props;
 
     if (!isOpen) return;
 
     if (type === DialogTypes.NEW) {
-      item.payer = payer;
-      item.fullAmount = 0;
-      item.description = "";
+      const newItem = {
+        creditorName: creditor.Name,
+        creditorId: creditor.Id,
+        fullAmount: 0,
+        description: "",
 
-      const owe = users.map(user => {
-        return {
-          user: user.Name,
+        debtors: users.map(user => ({
+          userId: user.Id,
+          userName: user.Name,
           amount: 0
-        };
-      });
+        }))
+      };
 
       this.setState({
         splitEqually: true,
-        item: {
-          ...item,
-          owe
-        }
+        item: newItem
       });
     } else if (type === DialogTypes.EDIT) {
-      //{EntityType: "User", Id: "u#23ee7bc3", Name: "Igor"}
-      //owe
-      // {user: "Bob", amount: 34}
-
-      //todo: move mapping/restore outside
-      const owe = users.map(user => {
-        const ower = item.owe.find(u => u.user === user.Name);
-        return {
-          user: user.Name,
-          amount: ower ? ower.amount : 0
-        };
-      });
+      //restore missing debtors - for old transactions only
+      const zeroDebtors = users.map(user => ({
+        userId: user.Id,
+        userName: user.Name,
+        amount: 0
+      }));
 
       this.setState({
         splitEqually: false,
         item: {
           ...item,
-          owe
+          debtors: _uniqBy([...item.debtors, ...zeroDebtors], "userName")
         }
       });
     }
@@ -103,7 +97,7 @@ export default class TransactionDialog extends React.Component {
           <label>Users:</label>
         </div>
 
-        {this.renderUsers(type, item)}
+        {this.renderDebtors(item)}
 
         <div className="fl-row controls">
           <button onClick={() => onClose(this.state.item)}>✅ Save</button>
@@ -128,31 +122,33 @@ export default class TransactionDialog extends React.Component {
   //   }
   // });
 
-  renderUsers(type, item) {
-    return item.owe.sort((u1, u2) => u1.user > u2.user).map((user, key) => {
-      const hasValue = user.amount !== 0;
+  renderDebtors(item) {
+    return item.debtors
+      .sort((d1, d2) => d1.userName > d2.userName)
+      .map((debtor, key) => {
+        const hasValue = debtor.amount !== 0;
 
-      return (
-        <label className="details-form-field fl-row fl-center" key={key}>
-          <input
-            type="checkbox"
-            checked={hasValue}
-            onChange={event =>
-              this.userActiveChanged(user.user, event.target.checked)
-            }
-          />
+        return (
+          <label className="details-form-field fl-row fl-center" key={key}>
+            <input
+              type="checkbox"
+              checked={hasValue}
+              onChange={event =>
+                this.debtorActiveChanged(debtor, event.target.checked)
+              }
+            />
 
-          {user.user}
-          <InputProgress
-            value={user.amount}
-            max={item.fullAmount}
-            onChange={event =>
-              this.onUserAmtChanged(user.user, +event.target.value)
-            }
-          />
-        </label>
-      );
-    });
+            {debtor.userName}
+            <InputProgress
+              value={debtor.amount}
+              max={item.fullAmount}
+              onChange={event =>
+                this.onDebtorAmountChanged(debtor, +event.target.value)
+              }
+            />
+          </label>
+        );
+      });
   }
 
   descriptionChanged(value) {
@@ -174,7 +170,7 @@ export default class TransactionDialog extends React.Component {
           fullAmount: value
         }
       },
-      state => {
+      () => {
         if (this.state.splitEqually) {
           this.splitEqually();
         }
@@ -194,63 +190,34 @@ export default class TransactionDialog extends React.Component {
   splitEqually() {
     const { item } = this.state;
 
-    const selected = item.owe.filter(user => user.amount > 0);
-    const rest = item.owe.filter(user => user.amount === 0);
+    const selected = item.debtors.filter(debtor => debtor.amount > 0);
 
-    const owe = selected.map(user => ({
-      user: user.user,
-      amount: moneyRound(item.fullAmount / selected.length)
-    }));
+    selected.forEach(debtor => {
+      debtor.amount = moneyRound(item.fullAmount / selected.length);
+    });
 
-    this.setState({
-      item: {
-        ...this.state.item,
-        owe: [...owe, ...rest]
+    this.setState({ item });
+  }
+
+  debtorActiveChanged(debtor, isActive) {
+    const { item } = this.state;
+
+    debtor.amount = isActive ? 1 : 0;
+
+    this.setState({ item }, () => {
+      if (this.state.splitEqually) {
+        this.splitEqually();
       }
     });
   }
 
-  userActiveChanged(userName, isActive) {
-    const { item } = this.state;
-
-    const selected = item.owe.filter(user => user.user === userName);
-    const rest = item.owe.filter(user => user.user !== userName);
-
-    const owe = selected.map(user => ({
-      user: user.user,
-      amount: user.user === userName ? (isActive ? 1 : 0) : user.amount
-    }));
-
-    this.setState(
-      {
-        item: {
-          ...this.state.item,
-          owe: [...owe, ...rest]
-        }
-      },
-      state => {
-        if (this.state.splitEqually) {
-          this.splitEqually();
-        }
-      }
-    );
-  }
-
-  onUserAmtChanged(userName, value) {
+  onDebtorAmountChanged(debtor, value) {
     if (!isFinite(value)) return;
 
     const { item } = this.state;
 
-    const ower = item.owe.find(u => u.user === userName);
-    const rest = item.owe.filter(u => u.user !== userName);
+    debtor.amount = value;
 
-    ower.amount = value;
-
-    this.setState({
-      item: {
-        ...this.state.item,
-        owe: [ower, ...rest]
-      }
-    });
+    this.setState({ item });
   }
 }

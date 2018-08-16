@@ -4,25 +4,30 @@ import "./grid.less";
 import { MARK } from "../../js/web";
 
 export default class Grid extends React.Component {
-  oweRenderer = item => {
-    return item.owe.map((ower, key) => {
-      return (
-        <div key={key} className={"pd-b-10"}>
-          {ower.user} : {ower.amount}
-        </div>
-      );
-    });
-  };
+  debtorsRenderer = item =>
+    item.debtors.map((debtor, key) => (
+      <div key={key} className={"pd-b-10"}>
+        {debtor.userName} : {debtor.amount}
+      </div>
+    ));
 
-  // item = {
-  //   description: "test SW",
-  //   fullAmount: 20,
-  //   id: "transact#82bd0598",
-  //   owe: (3)[({}, {})],
-  //   payer: "Bob",
-  //   time: "14-08-2018 10:20:16",
-  //   version: 636698388167781600
-  // };
+  /** /
+  item = {
+    description: "Ddd3",
+    fullAmount: 555,
+    id: "transact#4c2f749c",
+    debtors: [
+      {
+        amount: 555,
+        userId: "u#69f71a1a",
+        userName: "Bob"
+      }
+    ],
+    creditorId: "u#69f71a1a",
+    creditorName: "Bob",
+    time: "15-08-2018 11:14:54",
+    version: 636699284948233700
+  }; /**/
 
   statusRenderer = item => {
     return !item.id ? MARK.NEW : item.isDirty ? MARK.EDIT : MARK.OLD;
@@ -32,9 +37,9 @@ export default class Grid extends React.Component {
     { title: "❔", value: this.statusRenderer },
     { title: "Time", value: item => item.time },
     { title: "Description", value: item => item.description },
-    { title: "Payer", value: item => item.payer },
+    { title: "Payer", value: item => item.creditorName },
     { title: "Amount", value: item => item.fullAmount },
-    { title: "Owe", value: this.oweRenderer }
+    { title: "Debtors", value: this.debtorsRenderer }
   ];
 
   render() {

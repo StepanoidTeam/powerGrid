@@ -101,20 +101,6 @@ export default class Web extends React.Component {
     return CurrentRoom.Users.find(u => u.Name === name).Id;
   }
 
-  mapItemToTransaction(item) {
-    const usersInfo = item.owe.map(user => ({
-      UserId: this.getUserIdByName(user.user),
-      Amount: user.amount
-    }));
-
-    return {
-      id: item.id, //null when new
-      description: item.description,
-      amount: item.fullAmount,
-      OweUsers: usersInfo
-    };
-  }
-
   offlineError = error => {
     this.showError(`seems offline ${error}`, 1000);
     this.checkOnline();
@@ -170,11 +156,9 @@ export default class Web extends React.Component {
     console.log(`${MARK.EDIT}edited`, allDirty.filter(t => t.id));
     console.groupEnd();
 
-    const transToPush = allDirty.map(item => this.mapItemToTransaction(item));
-
     return app
       .sync({
-        transactions: transToPush
+        transactions: allDirty
       })
       .then(response => {
         if (response.pushResult.length === 0) {
@@ -310,7 +294,7 @@ export default class Web extends React.Component {
     if (!room || !room.Users || !user || !head) return null;
 
     const filteredTransactions = filterBy
-      ? head.filter(trans => trans.payer === filterBy)
+      ? head.filter(trans => trans.creditorName === filterBy)
       : head;
 
     const pullVer = lastPull ? lastPull.version : "no data";
@@ -399,7 +383,7 @@ export default class Web extends React.Component {
 
         <TransactionDialog
           users={room.Users}
-          payer={user.Name}
+          creditor={user}
           isOpen={dialog.isOpen}
           type={dialog.type}
           item={dialog.item}
