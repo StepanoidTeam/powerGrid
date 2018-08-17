@@ -47,9 +47,7 @@ export default class Web extends React.Component {
     dialog: { isOpen: false },
     error: null,
     isOnline: false,
-    isLoading: false,
-    //debug
-    lastPull: null
+    isLoading: false
   };
 
   offlineErrorHandler = error => {
@@ -89,8 +87,9 @@ export default class Web extends React.Component {
     app.loadCurrentRoom();
 
     //on page start
-    this.gitpull().then(() => {
+    this.gitpush().then(() => {
       this.updateStateFromContext();
+      this.setState({ isLoading: false });
     });
   }
 
@@ -132,33 +131,17 @@ export default class Web extends React.Component {
       //todo: put in store
       app.context.head.unshift(item);
     }
+
+    this.setState({ isLoading: true });
+
+    this.gitpush().finally(() => {
+      this.updateStateFromContext();
+      this.setState({ isLoading: false });
+    });
   }
 
-  gitpull = () => {
-    return (
-      app
-        .sync({
-          transactions: []
-        })
-        .then(response => {
-          this.setState({ lastPull: response.pullResult });
-          return response;
-        })
-        .then(response => {
-          //todo:  call merge here
-
-          const { head } = this.state;
-
-          this.gitmerge(head, response.pullResult.transactions);
-
-          return response;
-        })
-        //.catch(this.offlineErrorHandler)
-        .catch(this.unknownErrorHandler)
-    );
-  };
-
-  gitpush(head) {
+  gitpush() {
+    const { head } = this.state;
     //remove from LS all changes, send to server,
     const allDirty = head.filter(t => t.isDirty);
     _remove(head, t => t.isDirty);
@@ -182,6 +165,12 @@ export default class Web extends React.Component {
             //todo: then if any errors - put back to LS from response
             throw new Error("PUSH conflicts", response.pushResult);
           }
+          return response;
+        })
+        .then(response => {
+          const { head } = this.state;
+          this.gitmerge(head, response.pullResult.transactions);
+
           return response;
         })
         .catch(error => {
@@ -243,22 +232,15 @@ export default class Web extends React.Component {
       item => Date.parse(Date(item.time))
     ]);
     head.push(...sorted);
-  }
 
-  onPullClick = () => {
-    this.checkOnline();
-    this.setState({ isLoading: true });
-    this.gitpull().finally(() => {
-      this.updateStateFromContext();
-      this.setState({ isLoading: false });
-    });
-  };
+    console.log("MERGE done");
+  }
 
   onPushClick = () => {
     this.checkOnline();
-    const { head } = this.state;
     this.setState({ isLoading: true });
-    this.gitpush(head).finally(() => {
+
+    this.gitpush().finally(() => {
       this.updateStateFromContext();
       this.setState({ isLoading: false });
     });
@@ -292,7 +274,6 @@ export default class Web extends React.Component {
     const context = this.state;
 
     const {
-      lastPull,
       isLoading,
       dialog,
       CurrentRoom: room,
@@ -308,19 +289,11 @@ export default class Web extends React.Component {
       ? head.filter(trans => trans.creditorName === filterBy)
       : head;
 
-    const pullVer = lastPull ? lastPull.version : "no data";
     const headVer = head[0] ? head[0].version : "no data";
     const headIsDirty = head[0] && head[0].isDirty;
 
     //suggestion works very subjectively
-    const suggestAction =
-      pullVer > headVer
-        ? headIsDirty
-          ? "⬆️need PUSH"
-          : "🈲need MERGE"
-        : headIsDirty
-          ? "⬆️need PUSH"
-          : "✅UP2DATE";
+    const suggestAction = headIsDirty ? "⬆️need SYNC/SOLVE" : "✅UP2DATE";
 
     return (
       <div>
@@ -370,14 +343,10 @@ export default class Web extends React.Component {
           className="
         fl-row"
         >
-          <button onClick={this.onPullClick}>⬇️Ⓜ️ pull-merge</button>
-          <button onClick={this.onPushClick}>⬆️ push</button>
+          <button onClick={this.onPushClick}>⬆️⬇️Ⓜ️ sync</button>
           <button onClick={this.onEmptyClick}>🗑 empty head</button>
         </div>
         <div className="fl-col">
-          <span>
-            PULL: [{lastPull && lastPull.transactions.length}] {pullVer}
-          </span>
           <span>
             HEAD: [{head.length}] {headVer}
           </span>
