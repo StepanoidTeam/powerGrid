@@ -1,6 +1,6 @@
 self.__precacheManifest = [
   {
-    "revision": "e0cacb50c8ade91f6fcc",
+    "revision": "ffddfc99a68686cf0410",
     "url": "web.js"
   },
   {
@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "login.js"
   },
   {
-    "revision": "53b3e0689505fa894d2c",
+    "revision": "42030a9e11882c9dddd7",
     "url": "index.js"
   },
   {
