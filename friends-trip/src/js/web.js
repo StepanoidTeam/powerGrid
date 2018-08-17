@@ -4,14 +4,12 @@ import _sortBy from "lodash/sortBy";
 
 import app, { GIT, NetworkError } from "./app.js";
 import Grid from "../components/grid/grid.jsx";
-import Dialog from "../components/dialog/dialog";
 import TransactionDialog, {
   DialogTypes
 } from "../components/transaction-dialog/transaction-dialog.jsx";
 import Overlay from "../components/overlay/overlay.jsx";
 
-import { Fab, Typography } from "rmwc";
-import { Button, ButtonIcon } from "rmwc/Button";
+import { Fab } from "rmwc";
 import {
   Chip,
   ChipIcon,
@@ -24,8 +22,6 @@ import {
 import { LinearProgress } from "rmwc/LinearProgress";
 
 import { Snackbar } from "rmwc/Snackbar";
-
-import { SimpleDialog } from "rmwc/Dialog";
 
 import {
   Toolbar,
@@ -80,7 +76,8 @@ export default class Web extends React.Component {
     isOnline: false,
     isLoading: false,
     drawerOpen: false,
-    lastError: false
+    errorModel: false,
+    isError: false
   };
 
   offlineErrorHandler = error => {
@@ -103,8 +100,14 @@ export default class Web extends React.Component {
 
   showError(errorData) {
     this.setState({
-      lastError: errorData.toString()
+      errorModel: errorData.toString(),
+      isError: true
     });
+
+    setTimeout(
+      () => this.setState({ errorModel: false, isError: false }),
+      1500
+    );
   }
 
   updateStateFromContext() {
@@ -344,7 +347,7 @@ export default class Web extends React.Component {
             <ToolbarSection alignEnd>
               <ToolbarIcon
                 use="face"
-                onClick={() => prompt("authKey", user.AuthToken)}
+                onClick={() => prompt(`[${user.Name}] authKey`, user.AuthToken)}
               />
 
               <ToolbarIcon use={cloudIcon} onClick={this.onPushClick} />
@@ -352,10 +355,10 @@ export default class Web extends React.Component {
               <ToolbarIcon use="exit_to_app" onClick={logout} />
             </ToolbarSection>
           </ToolbarRow>
+          <LinearProgress determinate={!isLoading} />
         </Toolbar>
         <ToolbarFixedAdjust />
         <ToolbarFixedAdjust />
-        <LinearProgress determinate={!isLoading} />
 
         <Overlay isOpen={isLoading}>⏳Loading...</Overlay>
 
@@ -421,8 +424,8 @@ export default class Web extends React.Component {
         />
 
         <Snackbar
-          show={this.state.lastError}
-          message={<div>{this.state.lastError}</div>}
+          show={this.state.isError}
+          message={<div>{this.state.errorModel}</div>}
           alignStart
         />
       </div>
