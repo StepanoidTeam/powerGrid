@@ -9,10 +9,16 @@ import InputProgress from "../input-progress/input-progress";
 
 import { SimpleDialog } from "rmwc/Dialog";
 
+import { Typography } from "rmwc/Typography";
+
+import { Button, ButtonIcon } from "rmwc/Button";
+
 export const DialogTypes = { NEW: "NEW", EDIT: "EDIT" };
 import { Checkbox } from "rmwc/Checkbox";
 import { Switch } from "rmwc/Switch";
 import { TextField } from "rmwc/TextField";
+import Overlay from "../overlay/overlay";
+import { Elevation } from "../../../node_modules/rmwc";
 
 export default class TransactionDialog extends React.Component {
   state = { splitEqually: true, item: null };
@@ -65,48 +71,68 @@ export default class TransactionDialog extends React.Component {
     if (!isOpen || !item) return null;
 
     return (
-      <SimpleDialog
-        title="Create/Edit Transaction"
-        open={isOpen}
-        onClose={() => onClose()}
-        onAccept={() => onClose(this.state.item)}
-        onCancel={() => onClose()}
-      >
-        <TextField
-          outlined
-          label="Description"
-          value={item.description}
-          onChange={event => this.descriptionChanged(event.target.value)}
-        />
+      <Overlay open={isOpen}>
+        <Elevation
+          z="2"
+          className="fl-col"
+          style={{ backgroundColor: "white" }}
+        >
+          <div className="fl-col controls">
+            <Typography use="headline5" className="login-splash">
+              Transaction
+            </Typography>
 
-        <div className="details-form-field fl-row">
-          <TextField
-            outlined
-            label="Total"
-            value={item.fullAmount}
-            onChange={event => this.totalChanged(+event.target.value)}
-            type="number"
-            min="0"
-            max="100000"
-          />
+            <TextField
+              outlined
+              label="Description"
+              value={item.description}
+              onChange={event => this.descriptionChanged(event.target.value)}
+            />
 
-          <label className="fl-row fl-center">
-            ⚖️
-            <Switch
-              checked={splitEqually}
-              onChange={event => this.splitEquallyChecked(event.target.checked)}
-            >
-              eq.Split
-            </Switch>
-          </label>
-        </div>
+            <div className="fl-row">
+              <TextField
+                outlined
+                label="Total"
+                value={item.fullAmount}
+                onChange={event => this.totalChanged(+event.target.value)}
+                type="number"
+                min="0"
+                max="100000"
+              />
 
-        <div className="details-form-field">
-          <label>Users:</label>
-        </div>
+              <label className="fl-row fl-center">
+                ⚖️eq.Split
+                <Switch
+                  checked={splitEqually}
+                  onChange={event =>
+                    this.splitEquallyChecked(event.target.checked)
+                  }
+                />
+              </label>
+            </div>
 
-        {this.renderDebtors(item)}
-      </SimpleDialog>
+            <div>
+              <label>Users:</label>
+              {this.renderDebtors(item)}
+            </div>
+
+            <div className="fl-row controls">
+              <Button type="button" onClick={() => onClose()}>
+                <ButtonIcon use="clear" />
+                Cancel
+              </Button>
+              <Button
+                raised
+                type="submit"
+                onClick={() => onClose(this.state.item)}
+              >
+                <ButtonIcon use="save" />
+                Save
+              </Button>
+            </div>
+          </div>
+        </Elevation>
+      </Overlay>
     );
   }
 
@@ -132,24 +158,23 @@ export default class TransactionDialog extends React.Component {
         const hasValue = debtor.amount !== 0;
 
         return (
-          <label className="details-form-field fl-row fl-center" key={key}>
+          <div className="fl-row fl-center" key={key}>
             <Checkbox
               checked={hasValue}
               onChange={event =>
                 this.debtorActiveChanged(debtor, event.target.checked)
               }
-            >
-              {debtor.userName}
-            </Checkbox>
+            />
 
             <InputProgress
+              label={`${debtor.userName}'s debt`}
               value={debtor.amount}
               max={item.fullAmount}
               onChange={event =>
                 this.onDebtorAmountChanged(debtor, +event.target.value)
               }
             />
-          </label>
+          </div>
         );
       });
   }
