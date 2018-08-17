@@ -7,6 +7,8 @@ import { MARK } from "../../js/web";
 
 import "./grid.less";
 
+const currency = "💶"; //"€";
+
 function getDateObj(utcDate = null) {
   const date = new Date(utcDate);
 
@@ -19,7 +21,8 @@ function getDateObj(utcDate = null) {
 export default class Grid extends React.Component {
   debtorsRenderer(item) {
     return item.debtors
-      .map(debtor => `${debtor.userName}:${debtor.amount}`)
+      .filter(debtor => debtor.amount !== 0)
+      .map(debtor => `${debtor.userName}: ${debtor.amount}${currency}`)
       .join(", ");
   }
 
@@ -55,7 +58,9 @@ export default class Grid extends React.Component {
               </div>
 
               <div className="fl-col fl-end ml-auto">
-                <Typography use="headline5">{`${item.fullAmount}€`}</Typography>
+                <Typography use="headline5">{`${
+                  item.fullAmount
+                }${currency}`}</Typography>
                 <Typography use="caption">by {item.creditorName}</Typography>
                 <span />
               </div>
