@@ -364,10 +364,7 @@ export default class Web extends React.Component {
           open={this.state.drawerOpen}
           onClose={this.toggleDrawer}
         >
-          <DrawerHeader>
-            <Button onClick={this.toggleDrawer}>x</Button>
-            DrawerHeader
-          </DrawerHeader>
+          <DrawerHeader>DrawerHeader</DrawerHeader>
           <DrawerContent>
             <ListItem>
               <ListItemText>Cookies</ListItemText>
