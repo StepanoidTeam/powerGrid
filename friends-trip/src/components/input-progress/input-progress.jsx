@@ -1,10 +1,12 @@
 import React from "react";
 
+import { TextField } from "rmwc/TextField";
+
 import "./input-progress.less";
 
 export default class InputProgress extends React.Component {
   render() {
-    const { value, max, className, onChange } = this.props;
+    const { label, value, max, className, onChange } = this.props;
 
     return (
       <div className={["input-progress", className].join(" ")}>
@@ -14,12 +16,13 @@ export default class InputProgress extends React.Component {
             width: `${(value / max) * 100}%`
           }}
         />
-        <input
-          type="number"
+        <TextField
+          outlined
+          label={label}
           min={0}
           max={max}
-          onChange={onChange}
           value={value}
+          onChange={onChange}
         />
       </div>
     );
