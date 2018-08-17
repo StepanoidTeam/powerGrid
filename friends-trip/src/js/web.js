@@ -10,7 +10,7 @@ import TransactionDialog, {
 } from "../components/transaction-dialog/transaction-dialog.jsx";
 import Overlay from "../components/overlay/overlay.jsx";
 
-import { Fab } from "rmwc";
+import { Fab, Typography } from "rmwc";
 import { Button, ButtonIcon } from "rmwc/Button";
 import {
   Chip,
@@ -20,6 +20,8 @@ import {
   ChipSet,
   SimpleChip
 } from "rmwc/Chip";
+
+import { LinearProgress } from "rmwc/LinearProgress";
 
 import { Snackbar } from "rmwc/Snackbar";
 
@@ -35,12 +37,16 @@ import {
   ToolbarMenuIcon
 } from "rmwc/Toolbar";
 
+import { Drawer, DrawerHeader, DrawerContent } from "rmwc/Drawer";
+
+import { ListItem, ListItemText } from "rmwc/List";
+
 import "../styles/app.less";
 
 export const MARK = {
-  EDIT: "🌗",
-  NEW: "🌕",
-  OLD: "🌑"
+  EDIT: "edit",
+  NEW: "new",
+  OLD: "old"
 };
 
 export function moneyRound(value) {
@@ -72,7 +78,9 @@ export default class Web extends React.Component {
     dialog: { isOpen: false },
     error: null,
     isOnline: false,
-    isLoading: false
+    isLoading: false,
+    drawerOpen: false,
+    lastError: false
   };
 
   offlineErrorHandler = error => {
@@ -171,8 +179,8 @@ export default class Web extends React.Component {
 
     //debug
     console.group("DIFF:");
-    console.log(`${MARK.NEW}new`, allDirty.filter(t => !t.id));
-    console.log(`${MARK.EDIT}edited`, allDirty.filter(t => t.id));
+    console.log(`${MARK.NEW}`, allDirty.filter(t => !t.id));
+    console.log(`${MARK.EDIT}`, allDirty.filter(t => t.id));
     console.log(JSON.stringify(allDirty));
     console.groupEnd();
 
@@ -249,8 +257,8 @@ export default class Web extends React.Component {
     head.unshift(...toadd);
     //sort head - dirty first, then date asc
     const sorted = _sortBy(head.splice(0), [
-      "isDirty",
-      item => Date.parse(Date(item.time))
+      "isDirty"
+      //item => new Date(item.time)
     ]);
     head.push(...sorted);
 
@@ -292,6 +300,10 @@ export default class Web extends React.Component {
     this.setState({ dialog: { isOpen: false } });
   }
 
+  toggleDrawer = () => {
+    this.setState({ drawerOpen: !this.state.drawerOpen });
+  };
+
   render() {
     const context = this.state;
 
@@ -323,13 +335,18 @@ export default class Web extends React.Component {
       <div>
         <Toolbar fixed>
           <ToolbarRow>
-            <ToolbarMenuIcon use="menu" />
+            <ToolbarMenuIcon use="menu" onClick={() => this.toggleDrawer()} />
             <ToolbarTitle>
               ✈️
               {room.Name}
             </ToolbarTitle>
 
             <ToolbarSection alignEnd>
+              <ToolbarIcon
+                use="face"
+                onClick={() => prompt("authKey", user.AuthToken)}
+              />
+
               <ToolbarIcon use={cloudIcon} onClick={this.onPushClick} />
               <ToolbarIcon use="delete_forever" onClick={this.onEmptyClick} />
               <ToolbarIcon use="exit_to_app" onClick={logout} />
@@ -338,8 +355,31 @@ export default class Web extends React.Component {
         </Toolbar>
         <ToolbarFixedAdjust />
         <ToolbarFixedAdjust />
+        <LinearProgress determinate={!isLoading} />
 
         <Overlay isOpen={isLoading}>⏳Loading...</Overlay>
+
+        <Drawer
+          temporary
+          open={this.state.drawerOpen}
+          onClose={this.toggleDrawer}
+        >
+          <DrawerHeader>
+            <Button onClick={this.toggleDrawer}>x</Button>
+            DrawerHeader
+          </DrawerHeader>
+          <DrawerContent>
+            <ListItem>
+              <ListItemText>Cookies</ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>Pizza</ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>Icecream</ListItemText>
+            </ListItem>
+          </DrawerContent>
+        </Drawer>
 
         <span id="logs" />
 
