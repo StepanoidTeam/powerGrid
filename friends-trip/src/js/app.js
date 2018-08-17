@@ -109,11 +109,6 @@ const app = {
     app.updateIsLogged();
   },
 
-  //sync mapper
-  extractPullItems(response) {
-    return response.data.pullResult.transactions;
-  },
-
   //auth mapper
   extractUser(response) {
     return response.data;
