@@ -224,6 +224,16 @@ export default class TransactionDialog extends React.Component {
       debtor.amount = moneyRound(item.fullAmount / selected.length);
     });
 
+    const totalDebt = selected.length
+      ? selected.reduce((sum, debtor) => sum + debtor.amount, 0)
+      : 0;
+
+    if (totalDebt > 0 && totalDebt < item.fullAmount) {
+      const nickelback = +(item.fullAmount - totalDebt).toFixed(2);
+
+      selected[0].amount += nickelback;
+    }
+
     this.setState({ item });
   }
 
