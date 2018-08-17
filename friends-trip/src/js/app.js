@@ -1,5 +1,11 @@
 ﻿import Store, { clearStore } from "./store";
 
+export class NetworkError extends Error {
+  constructor(value) {
+    super(value);
+  }
+}
+
 const config = {
   httpUrl: "//pg-api.azurewebsites.net/api/",
   //httpUrl: 'http://localhost:5000/api/',
@@ -56,7 +62,7 @@ const app = {
   },
 
   logger(data) {
-    console.log(data);
+    console.log("logger", data);
     return data;
   },
 
@@ -84,19 +90,17 @@ const app = {
       })
       .then(response => response.data)
       .then(app.logger)
-      .catch(response => {
-        console.log("fetch err", response);
-
-        if (response instanceof TypeError) {
-          throw response;
+      .catch(error => {
+        if (error instanceof TypeError) {
+          throw new NetworkError(error);
         }
 
         //todo: check if actual
-        if (response.status === 401) {
+        if (error.status === 401) {
           this.logout();
         }
 
-        return response.json().then(errorModel => {
+        return error.json().then(errorModel => {
           console.log("errorModel", errorModel);
           throw errorModel;
         });

@@ -4,6 +4,10 @@ import app from "./app.js";
 import Dialog from "../components/dialog/dialog.jsx";
 import Overlay from "../components/overlay/overlay.jsx";
 
+import { SimpleDialog } from "rmwc/Dialog";
+import { Snackbar } from "rmwc/Snackbar";
+import { TextField } from "rmwc/TextField";
+
 import "../styles/app.less";
 
 export default class Login extends React.Component {
@@ -38,7 +42,7 @@ export default class Login extends React.Component {
       errorModel
     });
 
-    setTimeout(() => this.setState({ errorModel: false }), 4000);
+    //setTimeout(() => this.setState({ errorModel: false }), 4000);
   };
 
   onUsernameChange(username) {
@@ -64,23 +68,29 @@ export default class Login extends React.Component {
 
     return (
       <div>
-        <Dialog isOpen={true} className="login-form">
-          <div className="fl-end fl-row">
-            Username:
-            <input
-              type="text"
-              value={this.state.user.username}
-              onChange={event => this.onUsernameChange(event.target.value)}
-            />
-          </div>
-          <div className="fl-end fl-row">
-            Password:
-            <input
-              type="password"
-              value={this.state.user.password}
-              onChange={event => this.onPasswordChange(event.target.value)}
-            />
-          </div>
+        <SimpleDialog
+          title="Error"
+          body={this.state.error}
+          open={true}
+          onClose={() => onClose()}
+          //onAccept={() => onClose(this.state.item)}
+          // onCancel={() => onClose()}
+        >
+          <TextField
+            outlined
+            label="Username"
+            value={this.state.user.username}
+            onChange={event => this.onUsernameChange(event.target.value)}
+          />
+
+          <TextField
+            outlined
+            label="Password"
+            type="password"
+            value={this.state.user.password}
+            onChange={event => this.onPasswordChange(event.target.value)}
+          />
+
           <div className="fl-row controls">
             <button
               className="btn-register"
@@ -93,14 +103,15 @@ export default class Login extends React.Component {
               ✅ Login
             </button>
           </div>
-        </Dialog>
+        </SimpleDialog>
 
         <Overlay isOpen={isLoading}>⏳Loading...</Overlay>
 
-        <Dialog isOpen={errorModel}>
-          ⛔️
-          {errorModel.message || "kakoy-to bag"}
-        </Dialog>
+        <Snackbar
+          show={errorModel}
+          message={<div>⛔{errorModel.message || "kakoy-to bag"}</div>}
+          alignStart
+        />
       </div>
     );
   }

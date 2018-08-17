@@ -2,13 +2,17 @@ import React from "react";
 import _uniqBy from "lodash/uniqBy";
 
 import { moneyRound } from "../../js/web";
-import Dialog from "../dialog/dialog";
 
 import "./transaction-dialog.less";
 
 import InputProgress from "../input-progress/input-progress";
 
+import { SimpleDialog } from "rmwc/Dialog";
+
 export const DialogTypes = { NEW: "NEW", EDIT: "EDIT" };
+import { Checkbox } from "rmwc/Checkbox";
+import { Switch } from "rmwc/Switch";
+import { TextField } from "rmwc/TextField";
 
 export default class TransactionDialog extends React.Component {
   state = { splitEqually: true, item: null };
@@ -61,35 +65,39 @@ export default class TransactionDialog extends React.Component {
     if (!isOpen || !item) return null;
 
     return (
-      <Dialog isOpen={isOpen} className="transaction-dialog fl-col">
-        <label className="details-form-field fl-col">
-          Description:
-          <input
-            type="text"
-            defaultValue={item.description}
-            onChange={event => this.descriptionChanged(event.target.value)}
-          />
-        </label>
+      <SimpleDialog
+        title="Create/Edit Transaction"
+        open={isOpen}
+        onClose={() => onClose()}
+        onAccept={() => onClose(this.state.item)}
+        onCancel={() => onClose()}
+      >
+        <TextField
+          outlined
+          label="Description"
+          value={item.description}
+          onChange={event => this.descriptionChanged(event.target.value)}
+        />
 
         <div className="details-form-field fl-row">
-          <label>
-            Total
-            <input
-              type="number"
-              min="0"
-              max="100000"
-              value={item.fullAmount}
-              onChange={event => this.totalChanged(+event.target.value)}
-            />
-          </label>
+          <TextField
+            outlined
+            label="Total"
+            value={item.fullAmount}
+            onChange={event => this.totalChanged(+event.target.value)}
+            type="number"
+            min="0"
+            max="100000"
+          />
+
           <label className="fl-row fl-center">
             ⚖️
-            <input
-              type="checkbox"
+            <Switch
               checked={splitEqually}
               onChange={event => this.splitEquallyChecked(event.target.checked)}
-            />
-            eq.Split
+            >
+              eq.Split
+            </Switch>
           </label>
         </div>
 
@@ -98,12 +106,7 @@ export default class TransactionDialog extends React.Component {
         </div>
 
         {this.renderDebtors(item)}
-
-        <div className="fl-row controls">
-          <button onClick={() => onClose(this.state.item)}>✅ Save</button>
-          <button onClick={() => onClose()}>✖️ Cancel</button>
-        </div>
-      </Dialog>
+      </SimpleDialog>
     );
   }
 
@@ -130,15 +133,15 @@ export default class TransactionDialog extends React.Component {
 
         return (
           <label className="details-form-field fl-row fl-center" key={key}>
-            <input
-              type="checkbox"
+            <Checkbox
               checked={hasValue}
               onChange={event =>
                 this.debtorActiveChanged(debtor, event.target.checked)
               }
-            />
+            >
+              {debtor.userName}
+            </Checkbox>
 
-            {debtor.userName}
             <InputProgress
               value={debtor.amount}
               max={item.fullAmount}

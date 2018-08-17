@@ -2,13 +2,38 @@ import React from "react";
 import _remove from "lodash/remove";
 import _sortBy from "lodash/sortBy";
 
-import app, { GIT } from "./app.js";
+import app, { GIT, NetworkError } from "./app.js";
 import Grid from "../components/grid/grid.jsx";
 import Dialog from "../components/dialog/dialog";
 import TransactionDialog, {
   DialogTypes
 } from "../components/transaction-dialog/transaction-dialog.jsx";
 import Overlay from "../components/overlay/overlay.jsx";
+
+import { Fab } from "rmwc";
+import { Button, ButtonIcon } from "rmwc/Button";
+import {
+  Chip,
+  ChipIcon,
+  ChipText,
+  ChipCheckmark,
+  ChipSet,
+  SimpleChip
+} from "rmwc/Chip";
+
+import { Snackbar } from "rmwc/Snackbar";
+
+import { SimpleDialog } from "rmwc/Dialog";
+
+import {
+  Toolbar,
+  ToolbarRow,
+  ToolbarTitle,
+  ToolbarFixedAdjust,
+  ToolbarSection,
+  ToolbarIcon,
+  ToolbarMenuIcon
+} from "rmwc/Toolbar";
 
 import "../styles/app.less";
 
@@ -53,21 +78,25 @@ export default class Web extends React.Component {
   offlineErrorHandler = error => {
     //todo: check and handle ONLY offline error
     //todo: re-raise others
-    this.showError(`seems offline ${error}`, 1000);
-    this.checkOnline();
-    return error;
+
+    if (error instanceof NetworkError) {
+      this.showError(`seems offline ${error}`, 1000);
+      this.checkOnline();
+      return error;
+    }
+
+    throw error;
   };
 
   unknownErrorHandler = errorModel => {
+    console.warn(errorModel);
     this.showError(`⛔️${errorModel || "kakoy-to bag"}`);
   };
 
-  showError(errorData, timeout = 3000) {
+  showError(errorData) {
     this.setState({
-      error: errorData
+      lastError: errorData.toString()
     });
-
-    setTimeout(() => this.setState({ error: null }), timeout);
   }
 
   updateStateFromContext() {
@@ -81,13 +110,13 @@ export default class Web extends React.Component {
 
     this.checkOnline();
 
-    this.updateStateFromContext();
-
     this.setState({ isLoading: true });
     app.loadCurrentRoom();
 
+    this.updateStateFromContext();
+
     //on page start
-    this.gitpush().then(() => {
+    this.gitpush().finally(() => {
       this.updateStateFromContext();
       this.setState({ isLoading: false });
     });
@@ -108,13 +137,6 @@ export default class Web extends React.Component {
   }
 
   gitcommitChange(item) {
-    if (
-      item.id &&
-      !confirm("It's old transaction, are you sure you want to change it?")
-    ) {
-      return;
-    }
-
     item.isDirty = true;
 
     if (item.id) {
@@ -134,6 +156,7 @@ export default class Web extends React.Component {
 
     this.setState({ isLoading: true });
 
+    //after commit
     this.gitpush().finally(() => {
       this.updateStateFromContext();
       this.setState({ isLoading: false });
@@ -153,34 +176,32 @@ export default class Web extends React.Component {
     console.log(JSON.stringify(allDirty));
     console.groupEnd();
 
-    return (
-      app
-        .sync({
-          transactions: allDirty
-        })
-        .then(response => {
-          if (response.pushResult.length === 0) {
-            console.log("PUSH Success, no Errors");
-          } else {
-            //todo: then if any errors - put back to LS from response
-            throw new Error("PUSH conflicts", response.pushResult);
-          }
-          return response;
-        })
-        .then(response => {
-          const { head } = this.state;
-          this.gitmerge(head, response.pullResult.transactions);
+    return app
+      .sync({
+        transactions: allDirty
+      })
+      .then(response => {
+        if (response.pushResult.length === 0) {
+          console.log("PUSH Success, no Errors");
+        } else {
+          //todo: then if any errors - put back to LS from response
+          throw new Error("PUSH conflicts", response.pushResult);
+        }
+        return response;
+      })
+      .then(response => {
+        const { head } = this.state;
+        this.gitmerge(head, response.pullResult.transactions);
 
-          return response;
-        })
-        .catch(error => {
-          //rollback
-          head.unshift(...allDirty);
-          throw error;
-        })
-        //.catch(this.offlineErrorHandler)
-        .catch(this.unknownErrorHandler)
-    );
+        return response;
+      })
+      .catch(error => {
+        //rollback
+        head.unshift(...allDirty);
+        throw error;
+      })
+      .catch(this.offlineErrorHandler)
+      .catch(this.unknownErrorHandler);
   }
 
   gitmerge(head, pull = []) {
@@ -240,6 +261,7 @@ export default class Web extends React.Component {
     this.checkOnline();
     this.setState({ isLoading: true });
 
+    //on sync
     this.gitpush().finally(() => {
       this.updateStateFromContext();
       this.setState({ isLoading: false });
@@ -289,69 +311,61 @@ export default class Web extends React.Component {
       ? head.filter(trans => trans.creditorName === filterBy)
       : head;
 
-    const headVer = head[0] ? head[0].version : "no data";
-    const headIsDirty = head[0] && head[0].isDirty;
-
     //suggestion works very subjectively
-    const suggestAction = headIsDirty ? "⬆️need SYNC/SOLVE" : "✅UP2DATE";
+    const headIsDirty = head[0] && head[0].isDirty;
+    const cloudIcon = context.isOnline
+      ? headIsDirty
+        ? "cloud_upload"
+        : "cloud_download"
+      : "cloud_off";
 
     return (
       <div>
+        <Toolbar fixed>
+          <ToolbarRow>
+            <ToolbarMenuIcon use="menu" />
+            <ToolbarTitle>
+              ✈️
+              {room.Name}
+            </ToolbarTitle>
+
+            <ToolbarSection alignEnd>
+              <ToolbarIcon use={cloudIcon} onClick={this.onPushClick} />
+              <ToolbarIcon use="delete_forever" onClick={this.onEmptyClick} />
+              <ToolbarIcon use="exit_to_app" onClick={logout} />
+            </ToolbarSection>
+          </ToolbarRow>
+        </Toolbar>
+        <ToolbarFixedAdjust />
+        <ToolbarFixedAdjust />
+
         <Overlay isOpen={isLoading}>⏳Loading...</Overlay>
 
         <span id="logs" />
 
         <div className="head-block fl-row">
-          <span>
-            ✈️
-            <span name="roomname" id="roomname">
-              {room.Name}
-            </span>
-          </span>
-
-          <span>{context.isOnline ? "🌐online" : "🚫offline"}</span>
-
-          <button onClick={() => this.openDialog(DialogTypes.NEW, {})}>
-            {MARK.NEW} Add 💰
-          </button>
-
-          <ul className="room-users fl-row">
-            {room.Users.map((user, i) => (
-              <li
-                key={i}
-                className={filterBy === user.Name ? "selected" : undefined}
-                onClick={() => this.filterBy(user.Name)}
-              >
-                🔍
-                {user.Name}
-              </li>
-            ))}
-            {filterBy && <li onClick={() => this.filterBy()}>❌clear</li>}
-          </ul>
-
-          <button onClick={() => prompt("your id", user.AuthToken)}>
-            👤
-            {user.Name}
-          </button>
-
-          <button className="btn-logout" type="button" onClick={logout}>
-            ❌
-          </button>
+          <ChipSet filter>
+            {room.Users.map((user, i) => {
+              const isSelected = filterBy === user.Name;
+              return (
+                <SimpleChip
+                  key={i}
+                  selected={isSelected}
+                  onClick={() => this.filterBy(isSelected ? "" : user.Name)}
+                  checkmark
+                  leadingIcon="search"
+                  text={user.Name}
+                />
+              );
+            })}
+          </ChipSet>
         </div>
 
-        <div
-          className="
-        fl-row"
-        >
-          <button onClick={this.onPushClick}>⬆️⬇️Ⓜ️ sync</button>
-          <button onClick={this.onEmptyClick}>🗑 empty head</button>
-        </div>
-        <div className="fl-col">
-          <span>
-            HEAD: [{head.length}] {headVer}
-          </span>
-          <span>{suggestAction}</span>
-        </div>
+        <Fab
+          icon="note_add"
+          className="fab-add-transaction"
+          onClick={() => this.openDialog(DialogTypes.NEW, {})}
+        />
 
         <div className="main-block fl-row">
           <Grid
@@ -369,7 +383,11 @@ export default class Web extends React.Component {
           onClose={data => this.closeDialog(data)}
         />
 
-        <Dialog isOpen={this.state.error}>{this.state.error}</Dialog>
+        <Snackbar
+          show={this.state.lastError}
+          message={<div>{this.state.lastError}</div>}
+          alignStart
+        />
       </div>
     );
   }
