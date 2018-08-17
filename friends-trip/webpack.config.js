@@ -60,8 +60,9 @@ module.exports = {
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
+
       {
-        test: /\.less$/,
+        test: /\.(less|css)$/,
         use: [
           {
             loader: "style-loader"
@@ -76,6 +77,17 @@ module.exports = {
             loader: "less-loader",
             options: {
               sourceMap: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        use: [
+          {
+            loader: "url-loader",
+            options: {
+              limit: 12000
             }
           }
         ]

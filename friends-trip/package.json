@@ -21,6 +21,7 @@
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^1.0.0",
     "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "http-server": "^0.11.1",
     "less": "^3.8.1",
@@ -28,7 +29,7 @@
     "pwa-manifest-webpack-plugin": "^1.0.5",
     "react-hot-loader": "^4.3.4",
     "style-loader": "^0.22.1",
-    "url-loader": "^1.0.1",
+    "url-loader": "^1.1.0",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.5",
@@ -36,7 +37,9 @@
   },
   "dependencies": {
     "lodash": "^4.17.10",
+    "material-design-icons": "^3.0.1",
     "react": "^16.4.2",
-    "react-dom": "^16.4.2"
+    "react-dom": "^16.4.2",
+    "rmwc": "^1.8.3"
   }
 }
