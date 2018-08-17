@@ -5,6 +5,8 @@ import Web from "./js/web";
 import Login from "./js/login";
 import app from "./js/app";
 
+import "material-components-web/dist/material-components-web.css";
+
 class App extends React.Component {
   state = { isLogged: false };
 
