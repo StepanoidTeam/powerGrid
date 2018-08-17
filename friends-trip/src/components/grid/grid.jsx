@@ -1,115 +1,69 @@
 import React from "react";
 
-import "./grid.less";
-import { MARK } from "../../js/web";
-
-import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryText,
-  ListItemGraphic,
-  ListItemMeta,
-  SimpleListItem,
-  ListItemRoot
-} from "rmwc/List";
-
+import { Typography } from "rmwc/Typography";
 import { Ripple } from "rmwc/Ripple";
 
-// export const shitDateToUTC = (shitDate = "") => {
-//   const day = shitDate.slice(0, 2);
-//   const month = shitDate.slice(3, 5);
-//   const year = shitDate.slice(7, 11);
-//   const time = shitDate.slice(13, 20);
+import { MARK } from "../../js/web";
 
-//   return { day, month, year, time };
-// };
+import "./grid.less";
 
 function getDateObj(utcDate = null) {
   const date = new Date(utcDate);
 
-  const [week, month, day, year] = date.toUTCString().split(/\,*\s/);
+  const [week, day, month, year] = date.toUTCString().split(/\,*\s/);
   const [hh, mm, ss] = date.toTimeString().split(/[:\s]/);
 
   return { week, month, day, year, hh, mm, ss };
 }
 
 export default class Grid extends React.Component {
-  debtorsRenderer = item =>
-    item.debtors.map((debtor, key) => (
-      <div key={key} className={"pd-b-10"}>
-        {debtor.userName} : {debtor.amount}
-      </div>
-    ));
+  debtorsRenderer(item) {
+    return item.debtors
+      .map(debtor => `${debtor.userName}:${debtor.amount}`)
+      .join(", ");
+  }
 
-  statusRenderer = item => {
-    return !item.id ? MARK.NEW : item.isDirty ? MARK.EDIT : MARK.OLD;
-  };
+  statusRenderer(item) {
+    const status = !item.id ? MARK.NEW : item.isDirty ? MARK.EDIT : MARK.OLD;
+    return <span className={`status ${status}`} />;
+  }
 
-  timeRenderer = item => {
-    const status = this.statusRenderer(item);
+  timeRenderer(item) {
+    const { week, month, day, hh, mm } = getDateObj(item.time);
 
-    const { week, month, day, year, hh, mm, ss } = getDateObj(item.time);
-
-    return (
-      <div>
-        <span className={`status ${status}`} />
-        {week}
-        <br />
-        {`${month} ${day}`}
-        <br />
-        {`${hh}:${mm}`}
-      </div>
-    );
-  };
-
-  fields = [
-    { title: "Time", value: this.timeRenderer },
-    { title: "Description", value: item => item.description },
-    {
-      title: "Payer",
-      value: item => `${item.creditorName}:${item.fullAmount}`
-    },
-
-    { title: "Debtors", value: this.debtorsRenderer }
-  ];
+    return `${week} ${month} ${day} ${hh}:${mm}`;
+  }
 
   render() {
-    const { data = [], className, onItemSelected } = this.props;
+    const { data = [], onItemSelected } = this.props;
 
     return (
-      // <div className="grid">
-      //   <Ripple>
-      //     <p>Standard Ripple</p>
-      //   </Ripple>
+      <div className="grid">
+        {data.map((item, key) => (
+          <Ripple key={key} onClick={() => onItemSelected(item)}>
+            <div className="grid-row fl-row">
+              <div className="fl-col">
+                <Typography use="caption">{this.timeRenderer(item)}</Typography>
+                <Typography use="headline5">
+                  {this.statusRenderer(item)}
+                  {item.description}
+                </Typography>
 
-      //   <Ripple>
-      //     <p>Standard Ripple</p>
-      //   </Ripple>
+                <Typography use="caption">
+                  {this.debtorsRenderer(item)}
+                </Typography>
+              </div>
 
-      //   <Ripple>
-      //     <p>Standard Ripple</p>
-      //   </Ripple>
-      // </div>
-
-      <table className={["grid", className].join(" ")}>
-        <thead>
-          <tr>
-            {this.fields.map((f, key) => (
-              <td key={key}>{f.title}</td>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, key) => (
-            <tr key={key} onClick={() => onItemSelected(item)}>
-              {this.fields.map((f, key2) => (
-                <td key={key2}>{f.value(item)}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              <div className="fl-col fl-end ml-auto">
+                <Typography use="headline5">{`${item.fullAmount}€`}</Typography>
+                <Typography use="caption">by {item.creditorName}</Typography>
+                <span />
+              </div>
+              <div className="mdc-list-divider" role="separator" />
+            </div>
+          </Ripple>
+        ))}
+      </div>
     );
   }
 }
