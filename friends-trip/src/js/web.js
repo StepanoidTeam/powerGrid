@@ -9,15 +9,8 @@ import TransactionDialog, {
 } from "../components/transaction-dialog/transaction-dialog.jsx";
 import Overlay from "../components/overlay/overlay.jsx";
 
-import { Fab } from "rmwc";
-import {
-  Chip,
-  ChipIcon,
-  ChipText,
-  ChipCheckmark,
-  ChipSet,
-  SimpleChip
-} from "rmwc/Chip";
+import { Fab, Typography } from "rmwc";
+import { ChipSet, SimpleChip } from "rmwc/Chip";
 
 import { LinearProgress } from "rmwc/LinearProgress";
 
