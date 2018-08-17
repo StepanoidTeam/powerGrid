@@ -14,4 +14,28 @@
       background-color: rgba(100, 148, 237, 0.2);
     }
   }
+
+  p {
+    padding: 20px;
+  }
+}
+
+.status {
+  @size: 10px;
+  display: inline-block;
+  width: @size;
+  height: @size;
+  margin: 2px;
+  border-radius: 50%;
+
+  &.new {
+    background-color: green;
+  }
+  &.edit {
+    background-color: gold;
+  }
+
+  &.old {
+    background-color: cornflowerblue;
+  }
 }
