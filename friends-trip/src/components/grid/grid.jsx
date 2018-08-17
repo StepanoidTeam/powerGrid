@@ -3,6 +3,37 @@ import React from "react";
 import "./grid.less";
 import { MARK } from "../../js/web";
 
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryText,
+  ListItemGraphic,
+  ListItemMeta,
+  SimpleListItem,
+  ListItemRoot
+} from "rmwc/List";
+
+import { Ripple } from "rmwc/Ripple";
+
+// export const shitDateToUTC = (shitDate = "") => {
+//   const day = shitDate.slice(0, 2);
+//   const month = shitDate.slice(3, 5);
+//   const year = shitDate.slice(7, 11);
+//   const time = shitDate.slice(13, 20);
+
+//   return { day, month, year, time };
+// };
+
+function getDateObj(utcDate = null) {
+  const date = new Date(utcDate);
+
+  const [week, month, day, year] = date.toUTCString().split(/\,*\s/);
+  const [hh, mm, ss] = date.toTimeString().split(/[:\s]/);
+
+  return { week, month, day, year, hh, mm, ss };
+}
+
 export default class Grid extends React.Component {
   debtorsRenderer = item =>
     item.debtors.map((debtor, key) => (
@@ -11,34 +42,35 @@ export default class Grid extends React.Component {
       </div>
     ));
 
-  /** /
-  item = {
-    description: "Ddd3",
-    fullAmount: 555,
-    id: "transact#4c2f749c",
-    debtors: [
-      {
-        amount: 555,
-        userId: "u#69f71a1a",
-        userName: "Bob"
-      }
-    ],
-    creditorId: "u#69f71a1a",
-    creditorName: "Bob",
-    time: "15-08-2018 11:14:54",
-    version: 636699284948233700
-  }; /**/
-
   statusRenderer = item => {
     return !item.id ? MARK.NEW : item.isDirty ? MARK.EDIT : MARK.OLD;
   };
 
+  timeRenderer = item => {
+    const status = this.statusRenderer(item);
+
+    const { week, month, day, year, hh, mm, ss } = getDateObj(item.time);
+
+    return (
+      <div>
+        <span className={`status ${status}`} />
+        {week}
+        <br />
+        {`${month} ${day}`}
+        <br />
+        {`${hh}:${mm}`}
+      </div>
+    );
+  };
+
   fields = [
-    { title: "❔", value: this.statusRenderer },
-    { title: "Time", value: item => item.time },
+    { title: "Time", value: this.timeRenderer },
     { title: "Description", value: item => item.description },
-    { title: "Payer", value: item => item.creditorName },
-    { title: "Amount", value: item => item.fullAmount },
+    {
+      title: "Payer",
+      value: item => `${item.creditorName}:${item.fullAmount}`
+    },
+
     { title: "Debtors", value: this.debtorsRenderer }
   ];
 
@@ -46,6 +78,20 @@ export default class Grid extends React.Component {
     const { data = [], className, onItemSelected } = this.props;
 
     return (
+      // <div className="grid">
+      //   <Ripple>
+      //     <p>Standard Ripple</p>
+      //   </Ripple>
+
+      //   <Ripple>
+      //     <p>Standard Ripple</p>
+      //   </Ripple>
+
+      //   <Ripple>
+      //     <p>Standard Ripple</p>
+      //   </Ripple>
+      // </div>
+
       <table className={["grid", className].join(" ")}>
         <thead>
           <tr>
