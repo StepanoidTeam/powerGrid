@@ -1,18 +1,8 @@
-.transaction-dialog {
-  .fl-row {
-    align-items: center;
-  }
+.dialog-main-content {
+  overflow: scroll;
+  max-height: 60vh;
 
-  label {
-    user-select: none;
-    cursor: pointer;
-  }
-
-  input[type="number"] {
-    width: 150px;
-  }
-
-  input[type="checkbox"] {
-    transform: scale(1.5);
+  & > * {
+    flex: 0 0 auto;
   }
 }

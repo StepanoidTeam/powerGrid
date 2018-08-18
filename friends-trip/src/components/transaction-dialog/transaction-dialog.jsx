@@ -82,37 +82,36 @@ export default class TransactionDialog extends React.Component {
               Transaction
             </Typography>
 
-            <TextField
-              outlined
-              label="Description"
-              value={item.description}
-              onChange={event => this.descriptionChanged(event.target.value)}
-            />
-
-            <div className="fl-row">
+            <div className="fl-col dialog-main-content">
               <TextField
                 outlined
-                label="Total"
-                value={item.fullAmount}
-                onChange={event => this.totalChanged(+event.target.value)}
-                type="number"
-                min="0"
-                max="100000"
+                label="Description"
+                value={item.description}
+                onChange={event => this.descriptionChanged(event.target.value)}
               />
 
-              <label className="fl-row fl-center">
-                ⚖️eq.Split
-                <Switch
-                  checked={splitEqually}
-                  onChange={event =>
-                    this.splitEquallyChecked(event.target.checked)
-                  }
+              <div className="fl-row">
+                <TextField
+                  outlined
+                  label="Total"
+                  value={item.fullAmount}
+                  onChange={event => this.totalChanged(+event.target.value)}
+                  type="number"
+                  min="0"
+                  max="100000"
                 />
-              </label>
-            </div>
 
-            <div>
-              <label>Users:</label>
+                <label className="fl-row fl-center">
+                  ⚖️eq.Split
+                  <Switch
+                    checked={splitEqually}
+                    onChange={event =>
+                      this.splitEquallyChecked(event.target.checked)
+                    }
+                  />
+                </label>
+              </div>
+
               {this.renderDebtors(item)}
             </div>
 
