@@ -118,12 +118,18 @@ const app = {
     return response.data;
   },
 
+  getReport() {
+    return app.ajax("trans/report");
+  },
+
   sync(data) {
     return app.ajax("trans/sync", data);
   },
 
   logout() {
     clearStore(app.context.CurrentUser);
+    //todo: clear store immediately?
+    localStorage.clear();
 
     app.updateIsLogged();
   },

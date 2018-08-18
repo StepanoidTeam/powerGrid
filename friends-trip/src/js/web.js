@@ -304,6 +304,19 @@ export default class Web extends React.Component {
   }
 
   toggleReportDialog = () => {
+    if (!this.state.reportIsShown) {
+      app
+        .getReport()
+        .then(response => response.data)
+        .then(userReports => {
+          const currentUserReport = userReports.find(
+            urep => urep.user === this.state.CurrentUser.Name
+          );
+
+          this.setState({ report: currentUserReport });
+        });
+    }
+
     this.setState({ reportIsShown: !this.state.reportIsShown });
   };
 
@@ -371,18 +384,10 @@ export default class Web extends React.Component {
           open={this.state.drawerOpen}
           onClose={this.toggleDrawer}
         >
-          <DrawerHeader>DrawerHeader</DrawerHeader>
+          <DrawerHeader>Menu</DrawerHeader>
           <DrawerContent>
-            <ListItem>
-              <ListItemText onClick={() => this.toggleReportDialog}>
-                Report
-              </ListItemText>
-            </ListItem>
-            <ListItem>
-              <ListItemText>Pizza</ListItemText>
-            </ListItem>
-            <ListItem>
-              <ListItemText>Icecream</ListItemText>
+            <ListItem onClick={() => this.toggleReportDialog()}>
+              <ListItemText>Report</ListItemText>
             </ListItem>
           </DrawerContent>
         </Drawer>
@@ -393,8 +398,25 @@ export default class Web extends React.Component {
             className="fl-col"
             style={{ backgroundColor: "white" }}
           >
-            Report
-            <Button onClick={() => this.toggleReportDialog}>Close</Button>
+            <div className="fl-col controls">
+              <Typography use="headline5" className="login-splash">
+                Report
+              </Typography>
+
+              {this.state.report &&
+                this.state.report.balances.map((bal, i) => {
+                  return (
+                    <div key={i}>
+                      {bal.owe > 0
+                        ? `${bal.user} owe to you`
+                        : `You owe to ${bal.user}`}
+                      {`: ${Math.abs(bal.owe)}`}
+                    </div>
+                  );
+                })}
+
+              <Button onClick={() => this.toggleReportDialog()}>Close</Button>
+            </div>
           </Elevation>
         </Overlay>
 
