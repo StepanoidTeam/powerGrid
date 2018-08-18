@@ -71,7 +71,7 @@ export default class TransactionDialog extends React.Component {
     if (!isOpen || !item) return null;
 
     return (
-      <Overlay open={isOpen}>
+      <Overlay isOpen={isOpen}>
         <Elevation
           z="2"
           className="fl-col"

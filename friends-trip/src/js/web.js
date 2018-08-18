@@ -9,7 +9,9 @@ import TransactionDialog, {
 } from "../components/transaction-dialog/transaction-dialog.jsx";
 import Overlay from "../components/overlay/overlay.jsx";
 
-import { Fab, Typography } from "rmwc";
+import { Fab, Typography, Button } from "rmwc";
+import { Elevation } from "rmwc/Elevation";
+
 import { ChipSet, SimpleChip } from "rmwc/Chip";
 
 import { LinearProgress } from "rmwc/LinearProgress";
@@ -70,7 +72,8 @@ export default class Web extends React.Component {
     isLoading: false,
     drawerOpen: false,
     errorModel: false,
-    isError: false
+    isError: false,
+    reportIsShown: false
   };
 
   offlineErrorHandler = error => {
@@ -189,6 +192,10 @@ export default class Web extends React.Component {
           console.log("PUSH Success, no Errors");
         } else {
           //todo: then if any errors - put back to LS from response
+          response.pushResult.forEach(conflicted => {
+            allDirty[conflicted.index - 1].error = conflicted.message;
+          });
+
           throw new Error("PUSH conflicts", response.pushResult);
         }
         return response;
@@ -296,6 +303,10 @@ export default class Web extends React.Component {
     this.setState({ dialog: { isOpen: false } });
   }
 
+  toggleReportDialog = () => {
+    this.setState({ reportIsShown: !this.state.reportIsShown });
+  };
+
   toggleDrawer = () => {
     this.setState({ drawerOpen: !this.state.drawerOpen });
   };
@@ -363,7 +374,9 @@ export default class Web extends React.Component {
           <DrawerHeader>DrawerHeader</DrawerHeader>
           <DrawerContent>
             <ListItem>
-              <ListItemText>Cookies</ListItemText>
+              <ListItemText onClick={() => this.toggleReportDialog}>
+                Report
+              </ListItemText>
             </ListItem>
             <ListItem>
               <ListItemText>Pizza</ListItemText>
@@ -373,6 +386,17 @@ export default class Web extends React.Component {
             </ListItem>
           </DrawerContent>
         </Drawer>
+
+        <Overlay isOpen={this.state.reportIsShown}>
+          <Elevation
+            z="2"
+            className="fl-col"
+            style={{ backgroundColor: "white" }}
+          >
+            Report
+            <Button onClick={() => this.toggleReportDialog}>Close</Button>
+          </Elevation>
+        </Overlay>
 
         <span id="logs" />
 

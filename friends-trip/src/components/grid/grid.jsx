@@ -55,12 +55,23 @@ export default class Grid extends React.Component {
                 <Typography use="caption">
                   {this.debtorsRenderer(item)}
                 </Typography>
+
+                <Typography use="caption" className="error">
+                  {item.error}
+                </Typography>
               </div>
 
               <div className="fl-col fl-end ml-auto">
-                <Typography use="headline5">{`${
-                  item.fullAmount
-                }${currency}`}</Typography>
+                <Typography
+                  use="headline5"
+                  onClick={e => {
+                    prompt("Transaction id", item.id);
+                    e.stopPropagation();
+                  }}
+                >
+                  {item.fullAmount}
+                  {currency}
+                </Typography>
                 <Typography use="caption">by {item.creditorName}</Typography>
                 <span />
               </div>
