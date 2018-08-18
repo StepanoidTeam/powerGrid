@@ -96,9 +96,6 @@ export default class TransactionDialog extends React.Component {
                   label="Total"
                   value={item.fullAmount}
                   onChange={event => this.totalChanged(+event.target.value)}
-                  type="number"
-                  min="0"
-                  max="100000"
                 />
 
                 <label className="fl-row fl-center">
