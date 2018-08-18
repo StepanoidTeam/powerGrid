@@ -1,4 +1,5 @@
 ﻿import Store, { clearStore } from "./store";
+import { fakeReport } from "./fakeReport";
 
 export class NetworkError extends Error {
   constructor(value) {
@@ -16,6 +17,8 @@ const config = {
     Report: "report.html"
   }
 };
+
+export const currency = "💶"; //"€";
 
 export const GIT = {
   //API
@@ -55,6 +58,8 @@ const app = {
     //todo: if empty room - redir to login?
     const prefix = app.context.CurrentRoom.Id;
     app.context.head = new Store(`${prefix}:transactions`, []);
+    app.context.transactionLogs = new Store(`${prefix}:transactionLogs`, {});
+    app.context.report = new Store(`${prefix}:report`, fakeReport);
   },
 
   isLogged() {
@@ -119,7 +124,25 @@ const app = {
   },
 
   getReport() {
-    return app.ajax("trans/report");
+    return app
+      .ajax("trans/report")
+      .then(response => response.data)
+      .then(userReports => {
+        const currentUserReport = userReports.find(
+          urep => urep.user === app.context.CurrentUser.Name
+        );
+
+        Object.assign(app.context.report, currentUserReport);
+      });
+  },
+
+  getLogs(data) {
+    return app
+      .ajax("trans/getLogs", data)
+      .then(response => response.data)
+      .then(logs => {
+        Object.assign(app.context.transactionLogs, logs);
+      });
   },
 
   sync(data) {

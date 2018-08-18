@@ -2,7 +2,7 @@ import React from "react";
 import _remove from "lodash/remove";
 import _sortBy from "lodash/sortBy";
 
-import app, { GIT, NetworkError } from "./app.js";
+import app, { GIT, NetworkError, currency } from "./app.js";
 import Grid from "../components/grid/grid.jsx";
 import TransactionDialog, {
   DialogTypes
@@ -33,6 +33,7 @@ import { Drawer, DrawerHeader, DrawerContent } from "rmwc/Drawer";
 import { ListItem, ListItemText } from "rmwc/List";
 
 import "../styles/app.less";
+import { fakeReport } from "./fakeReport.js";
 
 export const MARK = {
   EDIT: "edit",
@@ -206,6 +207,14 @@ export default class Web extends React.Component {
 
         return response;
       })
+      .then(response => {
+        app.getReport();
+        var version = app.context.transactionLogs.version || 0;
+        app.getLogs({ version: version });
+
+        return response;
+      })
+
       .catch(error => {
         //rollback
         head.unshift(...allDirty);
@@ -280,8 +289,10 @@ export default class Web extends React.Component {
   };
 
   onEmptyClick = () => {
-    const { head } = this.state;
+    const { head, report } = this.state;
     head.splice(0);
+    //todo: clear report
+    Object.assign(report, fakeReport);
     this.updateStateFromContext();
   };
 
@@ -304,19 +315,6 @@ export default class Web extends React.Component {
   }
 
   toggleReportDialog = () => {
-    if (!this.state.reportIsShown) {
-      app
-        .getReport()
-        .then(response => response.data)
-        .then(userReports => {
-          const currentUserReport = userReports.find(
-            urep => urep.user === this.state.CurrentUser.Name
-          );
-
-          this.setState({ report: currentUserReport });
-        });
-    }
-
     this.setState({ reportIsShown: !this.state.reportIsShown });
   };
 
@@ -332,7 +330,8 @@ export default class Web extends React.Component {
       dialog,
       CurrentRoom: room,
       CurrentUser: user,
-      head
+      head,
+      report
     } = context;
 
     const filterBy = context.Settings.filterBy;
@@ -386,7 +385,12 @@ export default class Web extends React.Component {
         >
           <DrawerHeader>Menu</DrawerHeader>
           <DrawerContent>
-            <ListItem onClick={() => this.toggleReportDialog()}>
+            <ListItem
+              onClick={() => {
+                this.toggleDrawer();
+                this.toggleReportDialog();
+              }}
+            >
               <ListItemText>Report</ListItemText>
             </ListItem>
           </DrawerContent>
@@ -403,8 +407,10 @@ export default class Web extends React.Component {
                 Report
               </Typography>
 
-              {this.state.report &&
-                this.state.report.balances.map((bal, i) => {
+              {/* {JSON.stringify(report)} */}
+
+              {report.balances &&
+                report.balances.map((bal, i) => {
                   return (
                     <div key={i}>
                       {bal.owe > 0
@@ -426,6 +432,29 @@ export default class Web extends React.Component {
           <ChipSet filter>
             {room.Users.map((user, i) => {
               const isSelected = filterBy === user.Name;
+
+              const balance = report.balances.find(b => b.user === user.Name);
+
+              function renderBalance({ owe = 0 } = {}) {
+                if (owe === 0)
+                  return <Typography use="headline5">{user.Name}</Typography>;
+
+                const style = { color: owe > 0 ? "#4caf50" : "red" };
+
+                return (
+                  <Typography use="headline5 fl-row fl-center">
+                    <span> {user.Name}</span>
+                    <i className="material-icons" style={style}>
+                      {owe > 0 ? "arrow_upward" : "arrow_downward"}
+                    </i>
+                    <span style={style}>
+                      {Math.abs(owe)}
+                      {currency}
+                    </span>
+                  </Typography>
+                );
+              }
+
               return (
                 <SimpleChip
                   key={i}
@@ -433,8 +462,9 @@ export default class Web extends React.Component {
                   onClick={() => this.filterBy(isSelected ? "" : user.Name)}
                   checkmark
                   leadingIcon="search"
-                  text={user.Name}
-                />
+                >
+                  {renderBalance(balance)}
+                </SimpleChip>
               );
             })}
           </ChipSet>

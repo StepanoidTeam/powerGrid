@@ -4,10 +4,9 @@ import { Typography } from "rmwc/Typography";
 import { Ripple } from "rmwc/Ripple";
 
 import { MARK } from "../../js/web";
+import { currency } from "../../js/app";
 
 import "./grid.less";
-
-const currency = "💶"; //"€";
 
 function getDateObj(utcDate = null) {
   const date = new Date(utcDate);
@@ -65,7 +64,6 @@ export default class Grid extends React.Component {
                 <Typography
                   use="headline5"
                   onClick={e => {
-                    prompt("Transaction id", item.id);
                     e.stopPropagation();
                   }}
                 >
