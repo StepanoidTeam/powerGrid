@@ -58,11 +58,20 @@ export default class TransactionDialog extends React.Component {
         amount: 0
       }));
 
+      //todo: refac this, refac this shit
+      zeroDebtors.forEach(d => {
+        const oldUsr = item.debtors.find(m => m.userName == d.userName);
+        if (oldUsr) {
+          d.amount = oldUsr.amount;
+        }
+      });
+
       this.setState({
         splitEqually: false,
         item: {
           ...item,
-          debtors: _uniqBy([...item.debtors, ...zeroDebtors], "userName")
+          debtors: zeroDebtors
+          //debtors: _uniqBy([...item.debtors, ...zeroDebtors], "userName")
         }
       });
     }
@@ -239,7 +248,7 @@ export default class TransactionDialog extends React.Component {
 
     const totalDebt = _sumBy(item.debtors, "amount");
 
-    if (totalDebt > 0 && totalDebt < item.fullAmount) {
+    if (totalDebt > 0 && totalDebt !== item.fullAmount) {
       const nickelback = addMoney(item.fullAmount, -totalDebt);
       selected[0].amount = addMoney(selected[0].amount, nickelback);
     }
