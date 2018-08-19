@@ -289,11 +289,15 @@ export default class Web extends React.Component {
   };
 
   onEmptyClick = () => {
-    const { head, report } = this.state;
-    head.splice(0);
-    //todo: clear report
-    Object.assign(report, fakeReport);
-    this.updateStateFromContext();
+    const confirmText =
+      "Are you sure? Be careful, you will loose all your local unsynced data in you have any.";
+    if (confirm(confirmText)) {
+      const { head, report } = this.state;
+      head.splice(0);
+      //todo: clear report
+      Object.assign(report, fakeReport);
+      this.updateStateFromContext();
+    }
   };
 
   checkOnline() {
