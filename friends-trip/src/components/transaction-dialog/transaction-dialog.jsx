@@ -1,5 +1,6 @@
 import React from "react";
 import _uniqBy from "lodash/uniqBy";
+import _sumBy from "lodash/sumBy";
 
 import { moneyRound } from "../../js/web";
 
@@ -7,18 +8,21 @@ import "./transaction-dialog.less";
 
 import InputProgress from "../input-progress/input-progress";
 
-import { SimpleDialog } from "rmwc/Dialog";
-
 import { Typography } from "rmwc/Typography";
 
 import { Button, ButtonIcon } from "rmwc/Button";
 
 export const DialogTypes = { NEW: "NEW", EDIT: "EDIT" };
-import { Checkbox } from "rmwc/Checkbox";
 import { Switch } from "rmwc/Switch";
 import { TextField } from "rmwc/TextField";
 import Overlay from "../overlay/overlay";
 import { Elevation } from "../../../node_modules/rmwc";
+import Checkbox from "../checkbox/checkbox";
+
+//todo: make just moneyRound(num)
+function addMoney(a, b) {
+  return +(a + b).toFixed(2);
+}
 
 export default class TransactionDialog extends React.Component {
   state = { splitEqually: true, item: null };
@@ -170,6 +174,19 @@ export default class TransactionDialog extends React.Component {
                 this.onDebtorAmountChanged(debtor, +event.target.value)
               }
             />
+
+            <Button
+              onClick={event => {
+                const amt = +prompt("How much?");
+
+                this.onDebtorAmountChanged(
+                  debtor,
+                  addMoney(debtor.amount, amt)
+                );
+              }}
+            >
+              +
+            </Button>
           </div>
         );
       });
@@ -220,13 +237,7 @@ export default class TransactionDialog extends React.Component {
       debtor.amount = moneyRound(item.fullAmount / selected.length);
     });
 
-    function addMoney(a, b) {
-      return +(a + b).toFixed(2);
-    }
-
-    const totalDebt = selected.length
-      ? selected.reduce((sum, debtor) => addMoney(sum, debtor.amount), 0)
-      : 0;
+    const totalDebt = _sumBy(item.debtors, "amount");
 
     if (totalDebt > 0 && totalDebt < item.fullAmount) {
       const nickelback = addMoney(item.fullAmount, -totalDebt);
@@ -244,6 +255,9 @@ export default class TransactionDialog extends React.Component {
     this.setState({ item }, () => {
       if (this.state.splitEqually) {
         this.splitEqually();
+      } else {
+        item.fullAmount = moneyRound(_sumBy(item.debtors, "amount"));
+        this.setState({ item });
       }
     });
   }
@@ -251,9 +265,13 @@ export default class TransactionDialog extends React.Component {
   onDebtorAmountChanged(debtor, value) {
     if (!isFinite(value)) return;
 
+    this.setState({ splitEqually: false });
+
     const { item } = this.state;
 
     debtor.amount = value;
+
+    item.fullAmount = moneyRound(_sumBy(item.debtors, "amount"));
 
     this.setState({ item });
   }
