@@ -58,11 +58,13 @@ const app = {
     //todo: if empty room - redir to login?
     const prefix = app.context.CurrentRoom.Id;
     app.context.head = new Store(`${prefix}:transactions`, []);
+    app.context.report = new Store(`${prefix}:report`, fakeReport);
     app.context.transactionLogs = new Store(`${prefix}:transactionLogs`, {
       logs: [],
       version: 0
     });
-    app.context.report = new Store(`${prefix}:report`, fakeReport);
+
+    console.log("@@", app.context.head);
   },
 
   isLogged() {
