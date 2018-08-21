@@ -19,11 +19,6 @@ import Overlay from "../overlay/overlay";
 import { Elevation } from "../../../node_modules/rmwc";
 import Checkbox from "../checkbox/checkbox";
 
-//todo: make just moneyRound(num)
-function addMoney(a, b) {
-  return +(a + b).toFixed(2);
-}
-
 export default class TransactionDialog extends React.Component {
   state = { splitEqually: true, item: null };
 
@@ -190,7 +185,7 @@ export default class TransactionDialog extends React.Component {
 
                 this.onDebtorAmountChanged(
                   debtor,
-                  addMoney(debtor.amount, amt)
+                  moneyRound(debtor.amount + amt)
                 );
               }}
             >
@@ -249,8 +244,8 @@ export default class TransactionDialog extends React.Component {
     const totalDebt = _sumBy(item.debtors, "amount");
 
     if (totalDebt > 0 && totalDebt !== item.fullAmount) {
-      const nickelback = addMoney(item.fullAmount, -totalDebt);
-      selected[0].amount = addMoney(selected[0].amount, nickelback);
+      const nickelback = moneyRound(item.fullAmount - totalDebt);
+      selected[0].amount = moneyRound(selected[0].amount + nickelback);
     }
 
     this.setState({ item });

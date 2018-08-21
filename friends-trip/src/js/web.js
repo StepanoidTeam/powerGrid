@@ -109,7 +109,7 @@ export default class Web extends React.Component {
   }
 
   updateStateFromContext() {
-    console.warn("remove that shit");
+    console.warn("todo: remove that shit");
     this.setState(app.context);
     this.setState({ isLoading: false });
   }
