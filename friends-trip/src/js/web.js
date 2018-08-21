@@ -447,7 +447,7 @@ export default class Web extends React.Component {
                 const style = { color: owe > 0 ? "#4caf50" : "red" };
 
                 return (
-                  <Typography use="headline5 fl-row fl-center">
+                  <Typography use="headline5 fl-row ai-c">
                     <span> {user.Name}</span>
                     <i className="material-icons" style={style}>
                       {owe > 0 ? "arrow_upward" : "arrow_downward"}

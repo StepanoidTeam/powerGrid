@@ -111,7 +111,7 @@ export default class TransactionDialog extends React.Component {
                   onChange={event => this.totalChanged(+event.target.value)}
                 />
 
-                <label className="fl-row fl-center">
+                <label className="fl-row ai-c">
                   ⚖️eq.Split
                   <Switch
                     checked={splitEqually}
@@ -167,7 +167,7 @@ export default class TransactionDialog extends React.Component {
         const hasValue = debtor.amount !== 0;
 
         return (
-          <div className="fl-row fl-center" key={key}>
+          <div className="fl-row ai-c" key={key}>
             <Checkbox
               checked={hasValue}
               onChange={event =>
