@@ -4,6 +4,7 @@ import { fakeReport } from "./fakeReport";
 export class NetworkError extends Error {
   constructor(value) {
     super(value);
+    this.message = "Network problems";
   }
 }
 

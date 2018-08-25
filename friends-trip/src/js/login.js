@@ -5,7 +5,7 @@ import Overlay from "../components/overlay/overlay.jsx";
 
 import { Typography } from "rmwc/Typography";
 import { Button, ButtonIcon } from "rmwc/Button";
-import { Snackbar } from "rmwc/Snackbar";
+import Snackbar from "../components/snackbar/snackbar";
 import { TextField } from "rmwc/TextField";
 import { LinearProgress } from "rmwc/LinearProgress";
 import { Elevation } from "rmwc/Elevation";
@@ -73,7 +73,8 @@ export default class Login extends React.Component {
   render() {
     const { errorModel, isError, isLoading } = this.state;
 
-    const errorMessage = (errorModel && errorModel.message) || "kakoy-to bag";
+    const errorMessage =
+      isError && errorModel && (errorModel.message || "kakoy-to bag");
 
     return (
       <div>
@@ -114,8 +115,8 @@ export default class Login extends React.Component {
         </Overlay>
 
         <Snackbar
-          show={this.state.isError}
-          message={<div>⛔{errorModel.message || "kakoy-to bag"}</div>}
+          show={isError}
+          message={<div>⛔{errorMessage}</div>}
           alignStart
         />
       </div>
