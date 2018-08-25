@@ -103,7 +103,7 @@ export default class TransactionDialog extends React.Component {
                   outlined
                   label="Total"
                   value={item.fullAmount}
-                  onChange={event => this.totalChanged(+event.target.value)}
+                  onChange={event => this.totalChanged(event.target.value)}
                 />
 
                 <label className="fl-row ai-c">
@@ -206,7 +206,7 @@ export default class TransactionDialog extends React.Component {
   }
 
   totalChanged(value) {
-    if (!isFinite(value)) return;
+    if (!isFinite(+value)) return;
 
     this.setState(
       {
@@ -238,13 +238,13 @@ export default class TransactionDialog extends React.Component {
     const selected = item.debtors.filter(debtor => debtor.amount > 0);
 
     selected.forEach(debtor => {
-      debtor.amount = moneyRound(item.fullAmount / selected.length);
+      debtor.amount = moneyRound(+item.fullAmount / selected.length);
     });
 
     const totalDebt = _sumBy(item.debtors, "amount");
 
-    if (totalDebt > 0 && totalDebt !== item.fullAmount) {
-      const nickelback = moneyRound(item.fullAmount - totalDebt);
+    if (totalDebt > 0 && totalDebt !== +item.fullAmount) {
+      const nickelback = moneyRound(+item.fullAmount - totalDebt);
       selected[0].amount = moneyRound(selected[0].amount + nickelback);
     }
 
