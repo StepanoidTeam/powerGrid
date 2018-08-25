@@ -42,7 +42,7 @@ export const MARK = {
 };
 
 export function moneyRound(value) {
-  return +value.toFixed(2);
+  return (+value).toFixed(2);
 }
 
 function logout() {

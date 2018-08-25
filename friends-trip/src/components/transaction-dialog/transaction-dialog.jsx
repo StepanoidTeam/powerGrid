@@ -159,7 +159,7 @@ export default class TransactionDialog extends React.Component {
     return item.debtors
       .sort((d1, d2) => d1.userName > d2.userName)
       .map((debtor, key) => {
-        const hasValue = debtor.amount !== 0;
+        const hasValue = +debtor.amount !== 0;
 
         return (
           <div className="fl-row ai-c" key={key}>
@@ -175,7 +175,7 @@ export default class TransactionDialog extends React.Component {
               value={debtor.amount}
               max={item.fullAmount}
               onChange={event =>
-                this.onDebtorAmountChanged(debtor, +event.target.value)
+                this.onDebtorAmountChanged(debtor, event.target.value)
               }
             />
 
@@ -185,7 +185,7 @@ export default class TransactionDialog extends React.Component {
 
                 this.onDebtorAmountChanged(
                   debtor,
-                  moneyRound(debtor.amount + amt)
+                  moneyRound(+debtor.amount + amt)
                 );
               }}
             >
@@ -235,17 +235,17 @@ export default class TransactionDialog extends React.Component {
   splitEqually() {
     const { item } = this.state;
 
-    const selected = item.debtors.filter(debtor => debtor.amount > 0);
+    const selected = item.debtors.filter(debtor => +debtor.amount > 0);
 
     selected.forEach(debtor => {
       debtor.amount = moneyRound(+item.fullAmount / selected.length);
     });
 
-    const totalDebt = _sumBy(item.debtors, "amount");
+    const totalDebt = _sumBy(item.debtors, d => +d.amount);
 
     if (totalDebt > 0 && totalDebt !== +item.fullAmount) {
       const nickelback = moneyRound(+item.fullAmount - totalDebt);
-      selected[0].amount = moneyRound(selected[0].amount + nickelback);
+      selected[0].amount = moneyRound(+selected[0].amount + nickelback);
     }
 
     this.setState({ item });
@@ -260,14 +260,14 @@ export default class TransactionDialog extends React.Component {
       if (this.state.splitEqually) {
         this.splitEqually();
       } else {
-        item.fullAmount = moneyRound(_sumBy(item.debtors, "amount"));
+        item.fullAmount = moneyRound(_sumBy(item.debtors, d => +d.amount));
         this.setState({ item });
       }
     });
   }
 
   onDebtorAmountChanged(debtor, value) {
-    if (!isFinite(value)) return;
+    if (!isFinite(+value)) return;
 
     this.setState({ splitEqually: false });
 
@@ -275,7 +275,7 @@ export default class TransactionDialog extends React.Component {
 
     debtor.amount = value;
 
-    item.fullAmount = moneyRound(_sumBy(item.debtors, "amount"));
+    item.fullAmount = moneyRound(_sumBy(item.debtors, d => +d.amount));
 
     this.setState({ item });
   }
