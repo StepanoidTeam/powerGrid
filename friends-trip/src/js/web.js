@@ -16,7 +16,7 @@ import { ChipSet, SimpleChip } from "rmwc/Chip";
 
 import { LinearProgress } from "rmwc/LinearProgress";
 
-import { Snackbar } from "rmwc/Snackbar";
+import Snackbar from "../components/snackbar/snackbar";
 
 import {
   Toolbar,
