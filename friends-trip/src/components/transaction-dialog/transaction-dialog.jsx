@@ -82,7 +82,7 @@ export default class TransactionDialog extends React.Component {
       <Overlay isOpen={isOpen}>
         <Elevation
           z="2"
-          className="fl-col"
+          className="fl-col window"
           style={{ backgroundColor: "white" }}
         >
           <div className="fl-col controls">
@@ -120,7 +120,7 @@ export default class TransactionDialog extends React.Component {
               {this.renderDebtors(item)}
             </div>
 
-            <div className="fl-row controls">
+            <div className="fl-row ai-c controls">
               <Button type="button" onClick={() => onClose()}>
                 <ButtonIcon use="clear" />
                 Cancel
