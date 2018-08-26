@@ -147,6 +147,12 @@ const app = {
       .ajax("trans/getLogs", data)
       .then(response => response.data)
       .then(resp => {
+        if (
+          !app.context.transactionLogs.version ||
+          app.context.transactionLogs.version <= 0
+        )
+          app.context.transactionLogs.logs = [];
+
         app.context.transactionLogs.version = resp.version;
         resp.logs.forEach(log => {
           app.context.transactionLogs.logs.push(log);
