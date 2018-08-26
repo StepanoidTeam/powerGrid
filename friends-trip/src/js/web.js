@@ -42,7 +42,7 @@ export const MARK = {
 };
 
 export function moneyRound(value) {
-  return (+value).toFixed(2);
+  return +(+value).toFixed(2);
 }
 
 function logout() {
@@ -294,6 +294,10 @@ export default class Web extends React.Component {
     if (confirm(confirmText)) {
       const { head, report } = this.state;
       head.splice(0);
+      Object.assign(report, {
+        logs: [],
+        version: 0
+      });
       //todo: clear report
       Object.assign(report, fakeReport);
       this.updateStateFromContext();
