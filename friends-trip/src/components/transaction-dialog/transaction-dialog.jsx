@@ -93,6 +93,7 @@ export default class TransactionDialog extends React.Component {
             <div className="fl-col dialog-main-content">
               <TextField
                 outlined
+                required
                 label="Description"
                 value={item.description}
                 onChange={event => this.descriptionChanged(event.target.value)}
@@ -101,6 +102,8 @@ export default class TransactionDialog extends React.Component {
               <div className="fl-row">
                 <TextField
                   outlined
+                  required
+                  inputmode="numeric"
                   label="Total"
                   value={item.fullAmount}
                   onChange={event => this.totalChanged(event.target.value)}
@@ -139,21 +142,6 @@ export default class TransactionDialog extends React.Component {
       </Overlay>
     );
   }
-
-  //todo: validate diag form
-  // $("#detailsForm").validate({
-  //   rules: {
-  //     //description: "required",
-  //     fullAmount: { required: true }
-  //   },
-  //   messages: {
-  //     // name: "Please enter name",
-  //     fullAmount: "Please enter valid amount"
-  //   },
-  //   submitHandler: function(event) {
-  //     formSubmitHandler(event);
-  //   }
-  // });
 
   renderDebtors(item) {
     return item.debtors

@@ -18,6 +18,7 @@ export default class InputProgress extends React.Component {
         />
         <TextField
           outlined
+          inputmode="numeric"
           label={label}
           min={0}
           max={max}
