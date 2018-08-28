@@ -30,7 +30,7 @@ import {
 
 import { Drawer, DrawerHeader, DrawerContent } from "rmwc/Drawer";
 
-import { ListItem, ListItemText } from "rmwc/List";
+import { ListItem, ListItemText, SimpleListItem } from "rmwc/List";
 
 import "../styles/app.less";
 import { fakeReport } from "./fakeReport.js";
@@ -369,13 +369,7 @@ export default class Web extends React.Component {
             </ToolbarTitle>
 
             <ToolbarSection alignEnd>
-              <ToolbarIcon
-                use="face"
-                onClick={() => prompt(`[${user.Name}] authKey`, user.AuthToken)}
-              />
-
               <ToolbarIcon use={cloudIcon} onClick={this.onPushClick} />
-              <ToolbarIcon use="delete_forever" onClick={this.onEmptyClick} />
               <ToolbarIcon use="exit_to_app" onClick={logout} />
             </ToolbarSection>
           </ToolbarRow>
@@ -391,16 +385,41 @@ export default class Web extends React.Component {
           open={this.state.drawerOpen}
           onClose={this.toggleDrawer}
         >
-          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerHeader className="drawer-header">
+            <div className="fl-col">
+              <Typography use="headline5" className="login-splash">
+                ✈️ Friends Trip
+              </Typography>
+              <div>
+                ver.
+                {app.version}
+              </div>
+            </div>
+          </DrawerHeader>
           <DrawerContent>
-            <ListItem
-              onClick={() => {
-                this.toggleDrawer();
-                this.toggleReportDialog();
-              }}
-            >
-              <ListItemText>Report</ListItemText>
-            </ListItem>
+            <SimpleListItem
+              graphic="face"
+              text={user.Name}
+              onClick={() => prompt(`[${user.Name}] authKey`, user.AuthToken)}
+              meta="vpn_key"
+            />
+
+            <SimpleListItem
+              graphic={cloudIcon}
+              text="Update"
+              onClick={this.onPushClick}
+            />
+
+            <SimpleListItem
+              graphic="delete_forever"
+              text="Delete all local data"
+              onClick={this.onEmptyClick}
+            />
+            <SimpleListItem
+              graphic="exit_to_app"
+              text="Log Out"
+              onClick={logout}
+            />
           </DrawerContent>
         </Drawer>
 
@@ -410,7 +429,7 @@ export default class Web extends React.Component {
             className="fl-col"
             style={{ backgroundColor: "white" }}
           >
-            <div className="fl-col controls">
+            <div className="fl-col form-field">
               <Typography use="headline5" className="login-splash">
                 Report
               </Typography>
