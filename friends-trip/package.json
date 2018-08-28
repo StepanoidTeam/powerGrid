@@ -1,11 +1,13 @@
 {
   "name": "friends-trip",
-  "version": "1.0.0",
+  "version": "1.2.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development",
     "build": "webpack --mode production",
+    "release": "npm version patch && npm run build",
+    "bigrelease": "npm version minor && npm run build",
     "start": "webpack-dev-server --progress --colors --config ./webpack.config.js --mode development --host 0.0.0.0",
     "server": "http-server dist"
   },
