@@ -101,6 +101,7 @@ export default class TransactionDialog extends React.Component {
 
               <div className="fl-row">
                 <TextField
+                  className="fl-11a"
                   outlined
                   required
                   inputmode="numeric"
@@ -123,7 +124,7 @@ export default class TransactionDialog extends React.Component {
               {this.renderDebtors(item)}
             </div>
 
-            <div className="fl-row ai-c controls">
+            <div className="fl-row ai-c jc-e controls">
               <Button type="button" onClick={() => onClose()}>
                 <ButtonIcon use="clear" />
                 Cancel
@@ -159,6 +160,7 @@ export default class TransactionDialog extends React.Component {
             />
 
             <InputProgress
+              className="fl-11a"
               label={`${debtor.userName}'s debt`}
               value={debtor.amount}
               max={item.fullAmount}
