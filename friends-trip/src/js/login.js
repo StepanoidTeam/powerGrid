@@ -80,7 +80,7 @@ export default class Login extends React.Component {
       <div>
         <Overlay>
           <Elevation z="2" className="fl-col">
-            <div className="fl-col controls">
+            <div className="fl-col form-field">
               <Typography use="headline5" className="login-splash">
                 ✈️ Friends Trip
               </Typography>
@@ -100,7 +100,7 @@ export default class Login extends React.Component {
               />
             </div>
 
-            <div className="fl-row controls">
+            <div className="fl-row form-field">
               <Button type="button" onClick={this.register}>
                 <ButtonIcon use="fiber_new" />
                 Register

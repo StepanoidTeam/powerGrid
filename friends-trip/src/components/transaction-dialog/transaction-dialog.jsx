@@ -80,64 +80,59 @@ export default class TransactionDialog extends React.Component {
 
     return (
       <Overlay isOpen={isOpen}>
-        <Elevation
-          z="2"
-          className="fl-col window"
-          style={{ backgroundColor: "white" }}
-        >
-          <div className="fl-col controls">
-            <Typography use="headline5" className="login-splash">
-              Transaction
-            </Typography>
+        <Elevation z="2" className="fl-col window">
+          <Typography use="headline5" className="login-splash">
+            Transaction
+          </Typography>
 
-            <div className="fl-col dialog-main-content">
+          <div className="fl-col dialog-main-content">
+            <TextField
+              className="form-field"
+              outlined
+              required
+              label="Description"
+              value={item.description}
+              onChange={event => this.descriptionChanged(event.target.value)}
+            />
+
+            <div className="fl-row form-field">
               <TextField
+                className="fl-11a"
                 outlined
                 required
-                label="Description"
-                value={item.description}
-                onChange={event => this.descriptionChanged(event.target.value)}
+                inputmode="numeric"
+                label="Total"
+                value={item.fullAmount}
+                onChange={event => this.totalChanged(event.target.value)}
               />
 
-              <div className="fl-row">
-                <TextField
-                  className="fl-11a"
-                  outlined
-                  required
-                  inputmode="numeric"
-                  label="Total"
-                  value={item.fullAmount}
-                  onChange={event => this.totalChanged(event.target.value)}
+              <label className="fl-row ai-c">
+                ⚖️eq.Split
+                <Switch
+                  checked={splitEqually}
+                  onChange={event =>
+                    this.splitEquallyChecked(event.target.checked)
+                  }
                 />
-
-                <label className="fl-row ai-c">
-                  ⚖️eq.Split
-                  <Switch
-                    checked={splitEqually}
-                    onChange={event =>
-                      this.splitEquallyChecked(event.target.checked)
-                    }
-                  />
-                </label>
-              </div>
-
-              {this.renderDebtors(item)}
+              </label>
             </div>
 
-            <div className="fl-row ai-c jc-e controls">
-              <Button type="button" onClick={() => onClose()}>
-                <ButtonIcon use="clear" />
-                Cancel
-              </Button>
-              <Button
-                raised
-                type="submit"
-                onClick={() => onClose(this.state.item)}
-              >
-                <ButtonIcon use="save" />
-                Save
-              </Button>
-            </div>
+            {this.renderDebtors(item)}
+          </div>
+
+          <div className="fl-row ai-c jc-e form-field">
+            <Button type="button" onClick={() => onClose()}>
+              <ButtonIcon use="clear" />
+              Cancel
+            </Button>
+            <Button
+              raised
+              type="submit"
+              onClick={() => onClose(this.state.item)}
+            >
+              <ButtonIcon use="save" />
+              Save
+            </Button>
           </div>
         </Elevation>
       </Overlay>
