@@ -1,6 +1,8 @@
 ﻿import Store, { clearStore } from "./store";
 import { fakeReport } from "./fakeReport";
 
+import { version } from "../../package.json";
+
 export class NetworkError extends Error {
   constructor(value) {
     super(value);
@@ -16,7 +18,8 @@ const config = {
     Login: "login.html",
     Transactions: "index.html",
     Report: "report.html"
-  }
+  },
+  version
 };
 
 export const currency = "💶"; //"€";
@@ -42,6 +45,7 @@ export const GIT = {
 const app = {
   //todo: remove this
   context: {},
+  version,
 
   init({ updateIsLogged }) {
     //todo: remove context prosloyka
